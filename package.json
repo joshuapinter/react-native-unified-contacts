@@ -1,0 +1,17 @@
+{
+  "name": "react-native-unified-contacts",
+  "version": "0.0.1",
+  "description": "React Native module for making use of iOS 9+ Unified Contacts framework.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Joshua Pinter",
+  "license": "MIT",
+  "devDependencies": {
+    "react-native": "^0.22.2"
+  },
+  "peerDependencies": {
+    "react-native": "^0.22.2"
+  }
+}
