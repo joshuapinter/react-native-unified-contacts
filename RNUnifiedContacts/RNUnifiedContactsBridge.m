@@ -12,6 +12,10 @@
 
 @interface RCT_EXTERN_MODULE(RNUnifiedContacts, NSObject)
 
-RCT_EXTERN_METHOD(myTestFunction);
+//RCT_EXTERN_METHOD(getContact:(NSObject *)contact callback:(RCTResponseSenderBlock)callback);
+
+RCT_EXTERN_METHOD(getContacts:(RCTResponseSenderBlock)callback);
+
+RCT_EXTERN_METHOD(addEvent:(NSString *)name location:(NSString *)location date:(nonnull NSNumber *)date callback:(RCTResponseSenderBlock)callback);
 
 @end
