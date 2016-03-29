@@ -58,8 +58,6 @@ class RNUnifiedContacts: NSObject {
       for cNContact in cNContacts {
         contacts.append( convertCNContactToDictionary(cNContact) )
       }
-      
-      print(contacts)
 
       callback([NSNull(), contacts])
     }
@@ -93,13 +91,24 @@ class RNUnifiedContacts: NSObject {
   
   func convertCNContactToDictionary(cNContact: CNContact) -> NSDictionary {
     
-    let contact = [
-      "identifier" : cNContact.identifier,
-      "givenName" : cNContact.givenName,
-      "familyName" : cNContact.familyName
-    ]
+    var contact = [String: AnyObject]()
     
-    return contact;
+    contact["identifier"]         = cNContact.identifier
+    contact["givenName"]          = cNContact.givenName
+    contact["familyName"]         = cNContact.familyName
+    contact["imageDataAvailable"] = cNContact.imageDataAvailable
+    
+    if (cNContact.imageDataAvailable) {
+      let thumbnailImageDataAsBase64String = cNContact.thumbnailImageData!.base64EncodedStringWithOptions([])
+      contact["thumbnailImageData"] = thumbnailImageDataAsBase64String
+      
+      let imageDataAsBase64String = cNContact.imageData!.base64EncodedStringWithOptions([])
+      contact["imageData"] = imageDataAsBase64String
+    }
+    
+    let contactAsNSDictionary = contact as NSDictionary
+    
+    return contactAsNSDictionary;
   }
   
 
