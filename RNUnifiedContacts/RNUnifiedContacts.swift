@@ -7,6 +7,7 @@
 //
 
 import Contacts
+import ContactsUI
 import Foundation
 
 @objc(RNUnifiedContacts)
@@ -47,7 +48,7 @@ class RNUnifiedContacts: NSObject {
 
     let predicate = CNContact.predicateForContactsInContainerWithIdentifier(defaultContainerIdentifier)
 
-    let keysToFetch = [ CNContactFormatter.descriptorForRequiredKeysForStyle(CNContactFormatterStyle.FullName) ]
+    let keysToFetch = [ CNContactViewController.descriptorForRequiredKeys() ]
 
     do {
       let cNContacts = try contactStore.unifiedContactsMatchingPredicate(predicate, keysToFetch: keysToFetch)
