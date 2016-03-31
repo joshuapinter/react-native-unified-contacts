@@ -37,21 +37,54 @@ class RNUnifiedContacts: NSObject {
 
   }
   
+
   
+  // Pseudo overloads getContacts but with no searchText.
+  // Makes it easy to get all the Contacts with not passing anything.
+  // NOTE: I tried calling the two methods the same but it barfed. It should be 
+  //   allowed but perhaps how React Native is handling it, it won't work. PR 
+  //   possibility.
+  //
   @objc func getContacts(callback: (NSObject) -> ()) -> Void {
-    
-    NSLog("Inside getContacts in RNUnifiedContacts.swift")
+    searchContacts(nil) { (result: NSObject) in
+      callback(result)
+    }
+  }
+  
+  @objc func searchContacts(searchText: String?, callback: (NSObject) -> ()) -> Void {
     
     let contactStore = CNContactStore()
 
-    let defaultContainerIdentifier = contactStore.defaultContainerIdentifier()
+//    let defaultContainerIdentifier = contactStore.defaultContainerIdentifier()
 
-    let predicate = CNContact.predicateForContactsInContainerWithIdentifier(defaultContainerIdentifier)
-
-    let keysToFetch = [ CNContactViewController.descriptorForRequiredKeys() ]
-
+//    let predicate = CNContact.predicateForContactsInContainerWithIdentifier(defaultContainerIdentifier)
+    
+    let keysToFetch = [ CNContactGivenNameKey, CNContactFamilyNameKey, CNContactImageDataAvailableKey, CNContactThumbnailImageDataKey ]
+    
     do {
-      let cNContacts = try contactStore.unifiedContactsMatchingPredicate(predicate, keysToFetch: keysToFetch)
+      
+      var cNContacts = [CNContact]()
+      
+      let fetchRequest = CNContactFetchRequest(keysToFetch: keysToFetch)
+      
+      fetchRequest.sortOrder = CNContactSortOrder.GivenName
+      
+      try contactStore.enumerateContactsWithFetchRequest(fetchRequest) { (cNContact, pointer) -> Void in
+
+        if !cNContact.givenName.isEmpty {  // Ignore any Contacts that don't have a Given Name. Garbage Contact.
+          
+          if searchText == nil {
+            // Add all Contacts if no searchText is provided.
+            cNContacts.append(cNContact)
+          }
+          else {
+            // If the Contact contains the search string then add it.
+            if self.contactContainsText( cNContact, searchText: searchText! ) {
+              cNContacts.append(cNContact)
+            }
+          }
+        }
+      }
       
       var contacts = [NSDictionary]();
       
@@ -88,6 +121,17 @@ class RNUnifiedContacts: NSObject {
   /////////////
   // PRIVATE //
   
+  func contactContainsText( cNContact: CNContact, searchText: String ) -> Bool {
+    let searchText   = searchText.lowercaseString;
+    let textToSearch = cNContact.givenName.lowercaseString + " " + cNContact.familyName.lowercaseString
+    
+    if searchText.isEmpty || textToSearch.containsString(searchText) {
+      return true
+    }
+    else {
+      return false
+    }
+  }
   
   func convertCNContactToDictionary(cNContact: CNContact) -> NSDictionary {
     
@@ -102,8 +146,8 @@ class RNUnifiedContacts: NSObject {
       let thumbnailImageDataAsBase64String = cNContact.thumbnailImageData!.base64EncodedStringWithOptions([])
       contact["thumbnailImageData"] = thumbnailImageDataAsBase64String
       
-      let imageDataAsBase64String = cNContact.imageData!.base64EncodedStringWithOptions([])
-      contact["imageData"] = imageDataAsBase64String
+//      let imageDataAsBase64String = cNContact.imageData!.base64EncodedStringWithOptions([])
+//      contact["imageData"] = imageDataAsBase64String
     }
     
     let contactAsNSDictionary = contact as NSDictionary
