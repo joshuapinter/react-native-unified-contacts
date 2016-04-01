@@ -13,28 +13,7 @@ import Foundation
 @objc(RNUnifiedContacts)
 class RNUnifiedContacts: NSObject {
   
-  @objc func addEvent(name: String, location: String, date: NSNumber, callback: (NSObject) -> ()) -> Void {
-    NSLog("Inside addEvent in RNUnifiedContacts.swift")
     
-    NSLog("Name: " + name)
-    NSLog("Location: " + location)
-    NSLog("Date: " + date.stringValue)
-    
-    let events = [
-      [
-        "Name" : "name1",
-        "Location" : "location1",
-        "Date" : "date1"
-      ],
-      [
-        "Name" : "name2",
-        "Location" : "location2",
-        "Date" : "date2"
-      ]
-    ]
-    
-    callback([NSNull(), events])
-
   }
   
 

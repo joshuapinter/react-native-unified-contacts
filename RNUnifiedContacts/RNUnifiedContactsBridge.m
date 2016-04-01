@@ -18,6 +18,5 @@ RCT_EXTERN_METHOD(getContacts:(RCTResponseSenderBlock)callback);
 
 RCT_EXTERN_METHOD(searchContacts:(NSString *)searchText callback:(RCTResponseSenderBlock)callback);
 
-RCT_EXTERN_METHOD(addEvent:(NSString *)name location:(NSString *)location date:(nonnull NSNumber *)date callback:(RCTResponseSenderBlock)callback);
 
 @end
