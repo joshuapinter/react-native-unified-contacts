@@ -75,8 +75,9 @@ class RNUnifiedContacts: NSObject {
     }
     catch let error as NSError {
       NSLog("Problem getting unified Contacts")
+      NSLog(error.localizedDescription)
       
-      callback([error, NSNull()])
+      callback([error.localizedDescription, NSNull()])
     }
     
   }
