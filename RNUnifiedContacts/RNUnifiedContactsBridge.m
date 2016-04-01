@@ -14,6 +14,10 @@
 
 //RCT_EXTERN_METHOD(getContact:(NSObject *)contact callback:(RCTResponseSenderBlock)callback);
 
+RCT_EXTERN_METHOD(userCanAccessContacts:(RCTResponseSenderBlock)callback);
+
+RCT_EXTERN_METHOD(requestAccessToContacts:(RCTResponseSenderBlock)callback);
+
 RCT_EXTERN_METHOD(getContacts:(RCTResponseSenderBlock)callback);
 
 RCT_EXTERN_METHOD(searchContacts:(NSString *)searchText callback:(RCTResponseSenderBlock)callback);

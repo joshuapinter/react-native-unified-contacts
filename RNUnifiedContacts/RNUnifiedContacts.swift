@@ -13,14 +13,50 @@ import Foundation
 @objc(RNUnifiedContacts)
 class RNUnifiedContacts: NSObject {
   
+  @objc func userCanAccessContacts(callback: (NSObject) -> ()) -> Void {
+    let authorizationStatus = CNContactStore.authorizationStatusForEntityType(CNEntityType.Contacts)
     
+    switch authorizationStatus{
+      case .NotDetermined, .Restricted, .Denied:
+        callback([false])
+      
+      
+      case .Authorized:
+        callback([true])
+    }
   }
   
+  @objc func requestAccessToContacts(callback: (NSObject) -> ()) -> Void {
+    userCanAccessContacts() { (userCanAccessContacts) in
+      
+      if (userCanAccessContacts == [true]) {
+        callback([true])
+        
+        return
+      }
+      
+      CNContactStore().requestAccessForEntityType(CNEntityType.Contacts) { (userCanAccessContacts, error) in
+        
+        if (userCanAccessContacts) {
+          callback([true])
+          return
+        }
+        else {
+          callback([false])
+            
+          return
+        }
+        
+      }
+      
+    }
+
+  }
 
   
   // Pseudo overloads getContacts but with no searchText.
   // Makes it easy to get all the Contacts with not passing anything.
-  // NOTE: I tried calling the two methods the same but it barfed. It should be 
+  // NOTE: I tried calling the two methods the same but it barfed. It should be
   //   allowed but perhaps how React Native is handling it, it won't work. PR 
   //   possibility.
   //
