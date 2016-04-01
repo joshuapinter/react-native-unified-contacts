@@ -7,8 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "UIKit/UIKit.h"
 
 #import "RCTBridgeModule.h"
+
 
 @interface RCT_EXTERN_MODULE(RNUnifiedContacts, NSObject)
 
@@ -22,5 +24,8 @@ RCT_EXTERN_METHOD(getContacts:(RCTResponseSenderBlock)callback);
 
 RCT_EXTERN_METHOD(searchContacts:(NSString *)searchText callback:(RCTResponseSenderBlock)callback);
 
+RCT_EXPORT_METHOD(openPrivacySettings) {
+  [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+}
 
 @end
