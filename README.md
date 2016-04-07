@@ -143,6 +143,10 @@ function alertUserToAllowAccessToContacts() {
 }
 ```
 
+This will produce an alert similar to this:
+
+![Privacy Settings Alert](readme_assets/privacy_settings_alert.png)
+
 
 #### Thumbnail Image
 
