@@ -69,10 +69,6 @@ class RNUnifiedContacts: NSObject {
   @objc func searchContacts(searchText: String?, callback: (NSObject) -> ()) -> Void {
     
     let contactStore = CNContactStore()
-
-//    let defaultContainerIdentifier = contactStore.defaultContainerIdentifier()
-
-//    let predicate = CNContact.predicateForContactsInContainerWithIdentifier(defaultContainerIdentifier)
     
     let keysToFetch = [ CNContactGivenNameKey, CNContactFamilyNameKey, CNContactImageDataAvailableKey, CNContactThumbnailImageDataKey ]
     

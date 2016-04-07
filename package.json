@@ -1,7 +1,7 @@
 {
   "name": "react-native-unified-contacts",
   "version": "0.0.1",
-  "description": "React Native module for making use of iOS 9+ Unified Contacts framework.",
+  "description": "Your best friend when working with the latest and greatest Contacts Framework in iOS 9+ in React Native.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
