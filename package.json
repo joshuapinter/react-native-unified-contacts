@@ -9,6 +9,5 @@
   "author": "Joshua Pinter",
   "license": "MIT",
   "devDependencies": {
-    "react-native": "^0.22.2"
   }
 }
