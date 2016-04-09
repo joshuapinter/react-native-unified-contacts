@@ -82,7 +82,7 @@ Contacts.userCanAccessContacts( (userCanAccessContacts) => {
   }
 });
 ```
-_This will not **request** access. For that, use the `requestAccessToContacts`._
+_This will not **request** access. For that, use the [`requestAccessToContacts`](#request-access-to-contacts)._
 
 #### Request Access To Contacts
 
