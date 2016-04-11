@@ -7,7 +7,7 @@
 
 ### **Requires iOS 9+**
 
-Apple recently did a complete overhaul with their Contacts Framework that does a number of things, including:
+Apple recently did a complete overhaul of their Contacts Framework that does a number of things, including:
 
   1. Making it simpler to use the framework.
 
