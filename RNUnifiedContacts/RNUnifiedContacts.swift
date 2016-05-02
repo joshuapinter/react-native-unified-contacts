@@ -148,6 +148,7 @@ class RNUnifiedContacts: NSObject {
   func convertCNContactToDictionary(cNContact: CNContact) -> NSDictionary {
     
     var contact = [String: AnyObject]()
+    let phoneNumbers = NSMutableArray()
     
     contact["identifier"]         = cNContact.identifier
     contact["givenName"]          = cNContact.givenName
@@ -160,6 +161,20 @@ class RNUnifiedContacts: NSObject {
       
 //      let imageDataAsBase64String = cNContact.imageData!.base64EncodedStringWithOptions([])
 //      contact["imageData"] = imageDataAsBase64String
+    }
+    
+    if (cNContact.isKeyAvailable(CNContactPhoneNumbersKey)) {
+      for number in cNContact.phoneNumbers {
+        var numbers = [String: AnyObject]()
+        let phoneNumber = (number.value as! CNPhoneNumber).valueForKey("digits") as! String
+        let countryCode = (number.value as! CNPhoneNumber).valueForKey("countryCode") as? String
+        let label = CNLabeledValue.localizedStringForLabel(number.label)
+        numbers["number"] = phoneNumber
+        numbers["countryCode"] = countryCode
+        numbers["label"] = label
+        phoneNumbers.addObject(numbers)
+      }
+      contact["phoneNumbers"] = phoneNumbers
     }
     
     let contactAsNSDictionary = contact as NSDictionary
