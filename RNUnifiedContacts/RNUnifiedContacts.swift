@@ -70,7 +70,7 @@ class RNUnifiedContacts: NSObject {
     
     let contactStore = CNContactStore()
     
-    let keysToFetch = [ CNContactGivenNameKey, CNContactFamilyNameKey, CNContactImageDataAvailableKey, CNContactThumbnailImageDataKey ]
+    let keysToFetch = [ CNContactGivenNameKey, CNContactFamilyNameKey, CNContactImageDataAvailableKey, CNContactThumbnailImageDataKey, CNContactPhoneNumbersKey ]
     
     do {
       
