@@ -154,7 +154,7 @@ class RNUnifiedContacts: NSObject {
     contact["familyName"]         = cNContact.familyName
     contact["imageDataAvailable"] = cNContact.imageDataAvailable
     
-    if (cNContact.imageDataAvailable) {
+    if (cNContact.thumbnailImageData != nil) {
       let thumbnailImageDataAsBase64String = cNContact.thumbnailImageData!.base64EncodedStringWithOptions([])
       contact["thumbnailImageData"] = thumbnailImageDataAsBase64String
       
