@@ -154,7 +154,7 @@ This will produce an alert similar to this:
 
 ### Contact Object
 
-The returned Contact object will look something like this:
+The returned Contact object(s) will look something like this:
 
 ```js
 {
