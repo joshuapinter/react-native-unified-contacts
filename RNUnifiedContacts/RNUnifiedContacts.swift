@@ -70,7 +70,12 @@ class RNUnifiedContacts: NSObject {
     
     let contactStore = CNContactStore()
     
-    let keysToFetch = [ CNContactGivenNameKey, CNContactFamilyNameKey, CNContactImageDataAvailableKey, CNContactThumbnailImageDataKey, CNContactPhoneNumbersKey ]
+    let keysToFetch = [
+      CNContactGivenNameKey,
+      CNContactFamilyNameKey,
+      CNContactImageDataAvailableKey,
+      CNContactPhoneNumbersKey,
+      CNContactThumbnailImageDataKey ]
     
     do {
       
@@ -148,7 +153,6 @@ class RNUnifiedContacts: NSObject {
   func convertCNContactToDictionary(cNContact: CNContact) -> NSDictionary {
     
     var contact = [String: AnyObject]()
-    let phoneNumbers = NSMutableArray()
     
     contact["identifier"]         = cNContact.identifier
     contact["givenName"]          = cNContact.givenName
@@ -163,23 +167,32 @@ class RNUnifiedContacts: NSObject {
 //      contact["imageData"] = imageDataAsBase64String
     }
     
-    if (cNContact.isKeyAvailable(CNContactPhoneNumbersKey)) {
-      for number in cNContact.phoneNumbers {
-        var numbers = [String: AnyObject]()
-        let phoneNumber = (number.value as! CNPhoneNumber).valueForKey("digits") as! String
-        let countryCode = (number.value as! CNPhoneNumber).valueForKey("countryCode") as? String
-        let label = CNLabeledValue.localizedStringForLabel(number.label)
-        numbers["number"] = phoneNumber
-        numbers["countryCode"] = countryCode
-        numbers["label"] = label
-        phoneNumbers.addObject(numbers)
-      }
-      contact["phoneNumbers"] = phoneNumbers
-    }
+    contact["phoneNumbers"] = generatePhoneNumbers(cNContact)
     
     let contactAsNSDictionary = contact as NSDictionary
     
-    return contactAsNSDictionary;
+    return contactAsNSDictionary
+  }
+  
+  func generatePhoneNumbers(cNContact: CNContact) -> [AnyObject] {
+    var phoneNumbers: [AnyObject] = []
+    
+    for cNContactPhoneNumber in cNContact.phoneNumbers {
+      
+      var phoneNumber = [String: AnyObject]()
+      
+      let cNPhoneNumber = cNContactPhoneNumber.value as! CNPhoneNumber
+      
+      phoneNumber["identifier"]  = cNContactPhoneNumber.identifier
+      phoneNumber["label"]       = CNLabeledValue.localizedStringForLabel( cNContactPhoneNumber.label )
+      phoneNumber["stringValue"] = cNPhoneNumber.stringValue
+      phoneNumber["countryCode"] = cNPhoneNumber.valueForKey("countryCode") as! String
+      phoneNumber["digits"]      = cNPhoneNumber.valueForKey("digits") as! String
+      
+      phoneNumbers.append( phoneNumber )
+    }
+    
+    return phoneNumbers
   }
   
 
