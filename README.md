@@ -39,9 +39,13 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
 
 ## Usage
 
+### Require Library
+
 ```js
 var Contacts  = require('react-native-unified-contacts');
 ```
+
+### Methods
 
 #### Get All Contacts
 
@@ -147,6 +151,35 @@ This will produce an alert similar to this:
 
 ![Privacy Settings Alert](readme_assets/privacy_settings_alert.png)
 
+
+### Contact Object
+
+The returned Contact object will look something like this:
+
+```js
+{
+  familyName: "Draper",
+  givenName:  "Donald",
+  identifier: "A7806266-6574-4731-82E1-C54946F63E1C",
+  imageDataAvailable: false,
+  phoneNumbers: [
+    {
+      countryCode: "us",
+      digits:      "4032694148",
+      identifier:  "9CDE4C1B-412F-4974-BE8D-80C951004694",
+      label:       "work",
+      stringValue: "(403) 269-4147"  
+    },
+    {
+      countryCode: "us",
+      digits:      "4036071713",
+      identifier:  "40477249-B50B-46A8-BF35-0A62B895A15A",
+      label:       "mobile",
+      stringValue: "(403) 607-1713"  
+    }  
+  ]
+}
+```
 
 #### Thumbnail Image
 
