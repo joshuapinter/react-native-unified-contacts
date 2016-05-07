@@ -70,7 +70,12 @@ class RNUnifiedContacts: NSObject {
     
     let contactStore = CNContactStore()
     
-    let keysToFetch = [ CNContactGivenNameKey, CNContactFamilyNameKey, CNContactImageDataAvailableKey, CNContactThumbnailImageDataKey ]
+    let keysToFetch = [
+      CNContactGivenNameKey,
+      CNContactFamilyNameKey,
+      CNContactImageDataAvailableKey,
+      CNContactPhoneNumbersKey,
+      CNContactThumbnailImageDataKey ]
     
     do {
       
@@ -162,9 +167,32 @@ class RNUnifiedContacts: NSObject {
 //      contact["imageData"] = imageDataAsBase64String
     }
     
+    contact["phoneNumbers"] = generatePhoneNumbers(cNContact)
+    
     let contactAsNSDictionary = contact as NSDictionary
     
-    return contactAsNSDictionary;
+    return contactAsNSDictionary
+  }
+  
+  func generatePhoneNumbers(cNContact: CNContact) -> [AnyObject] {
+    var phoneNumbers: [AnyObject] = []
+    
+    for cNContactPhoneNumber in cNContact.phoneNumbers {
+      
+      var phoneNumber = [String: AnyObject]()
+      
+      let cNPhoneNumber = cNContactPhoneNumber.value as! CNPhoneNumber
+      
+      phoneNumber["identifier"]  = cNContactPhoneNumber.identifier
+      phoneNumber["label"]       = CNLabeledValue.localizedStringForLabel( cNContactPhoneNumber.label )
+      phoneNumber["stringValue"] = cNPhoneNumber.stringValue
+      phoneNumber["countryCode"] = cNPhoneNumber.valueForKey("countryCode") as! String
+      phoneNumber["digits"]      = cNPhoneNumber.valueForKey("digits") as! String
+      
+      phoneNumbers.append( phoneNumber )
+    }
+    
+    return phoneNumbers
   }
   
 
