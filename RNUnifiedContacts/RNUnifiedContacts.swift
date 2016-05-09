@@ -146,18 +146,27 @@ class RNUnifiedContacts: NSObject {
     
   }
   
-  //
-  //  @objc func getContact(contact: NSObject, callback: (NSObject) -> () ) -> Void {
-  //
-  //    let contact = [
-  //      "firstName": "firstName2",
-  //      "lastName": "lastName2"
-  //    ]
-  //
-  //    callback(contact)
-  //    
-  //  }
-  //
+  @objc func getContact(identifier: String, callback: (NSObject) -> () ) -> Void {
+    
+    let contactStore = CNContactStore()
+    
+    do {
+      
+      let cNContact = try contactStore.unifiedContactWithIdentifier( identifier, keysToFetch: keysToFetch )
+      
+      let contact = convertCNContactToDictionary( cNContact )
+      
+      callback( [NSNull(), contact] )
+      
+    }
+    catch let error as NSError {
+      NSLog("Problem getting unified Contact with identifier: " + identifier)
+      NSLog(error.localizedDescription)
+      
+      callback( [error.localizedDescription, NSNull()] )
+    }
+
+  }
   
   
   
