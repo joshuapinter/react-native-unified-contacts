@@ -54,7 +54,6 @@ class RNUnifiedContacts: NSObject {
       case .NotDetermined, .Restricted, .Denied:
         callback([false])
       
-      
       case .Authorized:
         callback([true])
     }
