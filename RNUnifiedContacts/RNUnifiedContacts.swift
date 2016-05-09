@@ -12,6 +12,40 @@ import Foundation
 
 @objc(RNUnifiedContacts)
 class RNUnifiedContacts: NSObject {
+
+  //  iOS Reference: https://developer.apple.com/library/ios/documentation/Contacts/Reference/CNContact_Class/#//apple_ref/doc/constant_group/Metadata_Keys
+  
+  let keysToFetch = [
+//    CNContactBirthdayKey,
+//    CNContactDatesKey,
+//    CNContactDepartmentNameKey,
+//    CNContactEmailAddressesKey,
+    CNContactFamilyNameKey,
+    CNContactGivenNameKey,
+    CNContactImageDataAvailableKey,
+//    CNContactImageDataKey,
+//    CNContactInstantMessageAddressesKey,
+//    CNContactJobTitleKey,
+    CNContactMiddleNameKey,
+    CNContactNamePrefixKey,
+    CNContactNameSuffixKey,
+    CNContactNicknameKey,
+//    CNContactNonGregorianBirthdayKey,
+//    CNContactNoteKey,
+    CNContactOrganizationNameKey,
+    CNContactPhoneNumbersKey,
+//    CNContactPhoneticFamilyNameKey,
+//    CNContactPhoneticGivenNameKey,
+//    CNContactPhoneticMiddleNameKey,
+//    CNContactPostalAddressesKey,
+//    CNContactPreviousFamilyNameKey,
+//    CNContactRelationsKey,
+//    CNContactSocialProfilesKey,
+    CNContactThumbnailImageDataKey,
+    CNContactTypeKey,
+//    CNContactUrlAddressesKey
+  ]
+  
   
   @objc func userCanAccessContacts(callback: (NSObject) -> ()) -> Void {
     let authorizationStatus = CNContactStore.authorizationStatusForEntityType(CNEntityType.Contacts)
@@ -69,13 +103,6 @@ class RNUnifiedContacts: NSObject {
   @objc func searchContacts(searchText: String?, callback: (NSObject) -> ()) -> Void {
     
     let contactStore = CNContactStore()
-    
-    let keysToFetch = [
-      CNContactGivenNameKey,
-      CNContactFamilyNameKey,
-      CNContactImageDataAvailableKey,
-      CNContactPhoneNumbersKey,
-      CNContactThumbnailImageDataKey ]
     
     do {
       
