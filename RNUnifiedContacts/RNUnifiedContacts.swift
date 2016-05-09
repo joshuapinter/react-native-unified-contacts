@@ -193,6 +193,8 @@ class RNUnifiedContacts: NSObject {
     contact["identifier"]         = cNContact.identifier
     contact["givenName"]          = cNContact.givenName
     contact["familyName"]         = cNContact.familyName
+    contact["fullName"]           = CNContactFormatter.stringFromContact( cNContact, style: .FullName )
+    contact["organizationName"]   = cNContact.organizationName
     contact["imageDataAvailable"] = cNContact.imageDataAvailable
     
     if (cNContact.thumbnailImageData != nil) {
