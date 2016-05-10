@@ -19,7 +19,7 @@ class RNUnifiedContacts: NSObject {
 //    CNContactBirthdayKey,
 //    CNContactDatesKey,
 //    CNContactDepartmentNameKey,
-//    CNContactEmailAddressesKey,
+    CNContactEmailAddressesKey,
     CNContactFamilyNameKey,
     CNContactGivenNameKey,
     CNContactImageDataAvailableKey,
@@ -204,7 +204,8 @@ class RNUnifiedContacts: NSObject {
 //      contact["imageData"] = imageDataAsBase64String
     }
     
-    contact["phoneNumbers"] = generatePhoneNumbers(cNContact)
+    contact["phoneNumbers"]   = generatePhoneNumbers(cNContact)
+    contact["emailAddresses"] = generateEmailAddresses(cNContact)
     
     let contactAsNSDictionary = contact as NSDictionary
     
@@ -230,6 +231,23 @@ class RNUnifiedContacts: NSObject {
     }
     
     return phoneNumbers
+  }
+  
+  func generateEmailAddresses(cNContact: CNContact) -> [AnyObject] {
+    var emailAddresses: [AnyObject] = []
+    
+    for cNContactEmailAddress in cNContact.emailAddresses {
+      
+      var emailAddress = [String: AnyObject]()
+      
+      emailAddress["identifier"]  = cNContactEmailAddress.identifier
+      emailAddress["label"]       = CNLabeledValue.localizedStringForLabel( cNContactEmailAddress.label )
+      emailAddress["value"]       = cNContactEmailAddress.value
+      
+      emailAddresses.append( emailAddress )
+    }
+    
+    return emailAddresses
   }
   
 

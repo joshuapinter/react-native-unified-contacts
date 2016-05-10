@@ -177,6 +177,18 @@ The returned Contact object(s) will look something like this:
       label:       "mobile",
       stringValue: "(403) 607-1713"  
     }  
+  ],
+  emailAddresses: [
+    {
+      identifier: "9CDE4C1B-412F-4974-BE8D-80C951004694",
+      label:      "work",
+      value:      "don.draper@scdp.com"
+    },
+    {
+      identifier: "9CDE4C1B-412F-4974-BE8D-80C951004694",
+      label:      "home",
+      value:      "theonedon@gmail.com"
+    }
   ]
 }
 ```
