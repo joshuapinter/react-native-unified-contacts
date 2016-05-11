@@ -37,7 +37,7 @@ class RNUnifiedContacts: NSObject {
 //    CNContactPhoneticFamilyNameKey,
 //    CNContactPhoneticGivenNameKey,
 //    CNContactPhoneticMiddleNameKey,
-//    CNContactPostalAddressesKey,
+    CNContactPostalAddressesKey,
 //    CNContactPreviousFamilyNameKey,
 //    CNContactRelationsKey,
 //    CNContactSocialProfilesKey,
@@ -205,8 +205,9 @@ class RNUnifiedContacts: NSObject {
 //      contact["imageData"] = imageDataAsBase64String
     }
     
-    contact["phoneNumbers"]   = generatePhoneNumbers(cNContact)
-    contact["emailAddresses"] = generateEmailAddresses(cNContact)
+    contact["phoneNumbers"]    = generatePhoneNumbers(cNContact)
+    contact["emailAddresses"]  = generateEmailAddresses(cNContact)
+    contact["postalAddresses"] = generatePostalAddresses(cNContact)
     
     if (cNContact.birthday != nil) {
       
@@ -269,6 +270,34 @@ class RNUnifiedContacts: NSObject {
     }
     
     return emailAddresses
+  }
+  
+  func generatePostalAddresses(cNContact: CNContact) -> [AnyObject] {
+    
+    var postalAddresses: [AnyObject] = []
+    
+    for cNContactPostalAddress in cNContact.postalAddresses {
+      
+      var postalAddress = [String: AnyObject]()
+      
+      let cNPostalAddress = cNContactPostalAddress.value as! CNPostalAddress
+      
+      postalAddress["identifier"]  = cNContactPostalAddress.identifier
+      postalAddress["label"]       = CNLabeledValue.localizedStringForLabel( cNContactPostalAddress.label )
+      postalAddress["street"]      = cNPostalAddress.valueForKey("street") as! String
+      postalAddress["city"]        = cNPostalAddress.valueForKey("city") as! String
+      postalAddress["state"]       = cNPostalAddress.valueForKey("state") as! String
+      postalAddress["postalCode"]  = cNPostalAddress.valueForKey("postalCode") as! String
+      postalAddress["country"]     = cNPostalAddress.valueForKey("country") as! String
+      postalAddress["stringValue"] = CNPostalAddressFormatter.stringFromPostalAddress(cNPostalAddress, style: .MailingAddress)
+      
+      // FIXME: For some reason, it throws an error with isoCountryCode.
+      // postalAddress["isoCountryCode"] = cNPostalAddress.valueForKey("isoCountryCode") as! String
+      
+      postalAddresses.append( postalAddress )
+    }
+    
+    return postalAddresses
   }
   
 

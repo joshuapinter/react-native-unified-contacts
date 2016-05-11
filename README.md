@@ -190,6 +190,18 @@ The returned Contact object(s) will look something like this:
       value:      "theonedon@gmail.com"
     }
   ],
+  postalAddresses: [
+    {
+      city:        "Menlo Park",
+      country:     "United States",
+      identifier:  "7481D15D-C27C-4805-876F-D2C0D413CEBD",
+      label:       "work",
+      postalCode:  "94025",
+      state:       "CA",
+      street:      "3000 Sand Hill Road, 3-290"
+      stringValue: "3000 Sand Hill Road, 3-290.↵Menlo Park CA 94025↵"
+    }
+  ],
   birthday: [
     {
       day:   "15",
