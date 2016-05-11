@@ -167,6 +167,16 @@ class RNUnifiedContacts: NSObject {
 
   }
   
+  @objc func createContact(contactData: Dictionary<String, String>, callback: (NSObject) -> () ) -> Void {
+    
+    let contact = CNMutableContact()
+    
+    contact.givenName = contactData["givenName"]!
+    contact.familyName = contactData["familyName"]!
+    contact.organizationName = contactData["organizationName"]!
+    
+  }
+  
   @objc func deleteContact(identifier: String, callback: (NSObject) -> () ) -> Void {
     
     let contactStore = CNContactStore()
