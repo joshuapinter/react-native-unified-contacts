@@ -196,7 +196,8 @@ The returned Contact object(s) will look something like this:
       month: "4",
       year:  "1985"
     }
-  ]
+  ],
+  note: "What you call love was invented by guys like me … to sell nylons."
 }
 ```
 

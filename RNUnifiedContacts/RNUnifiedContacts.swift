@@ -31,7 +31,7 @@ class RNUnifiedContacts: NSObject {
     CNContactNameSuffixKey,
     CNContactNicknameKey,
 //    CNContactNonGregorianBirthdayKey,
-//    CNContactNoteKey,
+    CNContactNoteKey,
     CNContactOrganizationNameKey,
     CNContactPhoneNumbersKey,
 //    CNContactPhoneticFamilyNameKey,
@@ -194,6 +194,7 @@ class RNUnifiedContacts: NSObject {
     contact["familyName"]         = cNContact.familyName
     contact["fullName"]           = CNContactFormatter.stringFromContact( cNContact, style: .FullName )
     contact["organizationName"]   = cNContact.organizationName
+    contact["note"]               = cNContact.note
     contact["imageDataAvailable"] = cNContact.imageDataAvailable
     
     if (cNContact.thumbnailImageData != nil) {
