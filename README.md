@@ -189,9 +189,19 @@ The returned Contact object(s) will look something like this:
       label:      "home",
       value:      "theonedon@gmail.com"
     }
+  ],
+  birthday: [
+    {
+      day:   "15",
+      month: "4",
+      year:  "1985"
+    }
   ]
 }
 ```
+
+_NOTE: The birthday key will not be included if the Contact's birthday is not set. Also, it's possible for a Contact's
+  birthday to not include the `year`. In this case, `year` will be `null`._
 
 #### Thumbnail Image
 

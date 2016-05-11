@@ -16,7 +16,7 @@ class RNUnifiedContacts: NSObject {
   //  iOS Reference: https://developer.apple.com/library/ios/documentation/Contacts/Reference/CNContact_Class/#//apple_ref/doc/constant_group/Metadata_Keys
   
   let keysToFetch = [
-//    CNContactBirthdayKey,
+    CNContactBirthdayKey,
 //    CNContactDatesKey,
 //    CNContactDepartmentNameKey,
     CNContactEmailAddressesKey,
@@ -206,6 +206,26 @@ class RNUnifiedContacts: NSObject {
     
     contact["phoneNumbers"]   = generatePhoneNumbers(cNContact)
     contact["emailAddresses"] = generateEmailAddresses(cNContact)
+    
+    if (cNContact.birthday != nil) {
+      
+      var birthday = [String: AnyObject]()
+      
+      if ( cNContact.birthday!.year != NSDateComponentUndefined ) {
+        birthday["year"] = String(cNContact.birthday!.year)
+      }
+      
+      if ( cNContact.birthday!.month != NSDateComponentUndefined ) {
+        birthday["month"] = String(cNContact.birthday!.month)
+      }
+      
+      if ( cNContact.birthday!.day != NSDateComponentUndefined ) {
+        birthday["day"] = String(cNContact.birthday!.day)
+      }
+      
+      contact["birthday"] = birthday
+    
+    }
     
     let contactAsNSDictionary = contact as NSDictionary
     
