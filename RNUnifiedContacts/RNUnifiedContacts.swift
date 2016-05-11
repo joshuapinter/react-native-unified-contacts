@@ -16,7 +16,7 @@ class RNUnifiedContacts: NSObject {
   //  iOS Reference: https://developer.apple.com/library/ios/documentation/Contacts/Reference/CNContact_Class/#//apple_ref/doc/constant_group/Metadata_Keys
   
   let keysToFetch = [
-//    CNContactBirthdayKey,
+    CNContactBirthdayKey,
 //    CNContactDatesKey,
 //    CNContactDepartmentNameKey,
     CNContactEmailAddressesKey,
@@ -31,7 +31,7 @@ class RNUnifiedContacts: NSObject {
     CNContactNameSuffixKey,
     CNContactNicknameKey,
 //    CNContactNonGregorianBirthdayKey,
-//    CNContactNoteKey,
+    CNContactNoteKey,
     CNContactOrganizationNameKey,
     CNContactPhoneNumbersKey,
 //    CNContactPhoneticFamilyNameKey,
@@ -167,6 +167,45 @@ class RNUnifiedContacts: NSObject {
 
   }
   
+  @objc func deleteContact(identifier: String, callback: (NSObject) -> () ) -> Void {
+    
+    let contactStore = CNContactStore()
+    
+    do {
+      
+      let cNContact = try contactStore.unifiedContactWithIdentifier( identifier, keysToFetch: keysToFetch )
+      let req = CNSaveRequest()
+      let mutableContact = cNContact.mutableCopy() as! CNMutableContact
+      req.deleteContact(mutableContact)
+      
+      do {
+        
+        try contactStore.executeSaveRequest(req)
+        NSLog("Success, You deleted the user with identifier: " + identifier)
+        
+        callback( [NSNull(), identifier] )
+        
+      } catch let error as NSError {
+        
+        NSLog("Problem deleting unified Contact with indentifier: " + identifier)
+        NSLog(error.localizedDescription)
+        
+        callback( [error.localizedDescription, NSNull()] )
+        
+      }
+      
+      
+    }
+    
+    catch let error as NSError {
+      NSLog("Problem getting unified Contact with identifier: " + identifier)
+      NSLog(error.localizedDescription)
+      
+      callback( [error.localizedDescription, NSNull()] )
+    }
+    
+  }
+  
   
   
   
@@ -194,6 +233,7 @@ class RNUnifiedContacts: NSObject {
     contact["familyName"]         = cNContact.familyName
     contact["fullName"]           = CNContactFormatter.stringFromContact( cNContact, style: .FullName )
     contact["organizationName"]   = cNContact.organizationName
+    contact["note"]               = cNContact.note
     contact["imageDataAvailable"] = cNContact.imageDataAvailable
     
     if (cNContact.thumbnailImageData != nil) {
@@ -206,6 +246,26 @@ class RNUnifiedContacts: NSObject {
     
     contact["phoneNumbers"]   = generatePhoneNumbers(cNContact)
     contact["emailAddresses"] = generateEmailAddresses(cNContact)
+    
+    if (cNContact.birthday != nil) {
+      
+      var birthday = [String: AnyObject]()
+      
+      if ( cNContact.birthday!.year != NSDateComponentUndefined ) {
+        birthday["year"] = String(cNContact.birthday!.year)
+      }
+      
+      if ( cNContact.birthday!.month != NSDateComponentUndefined ) {
+        birthday["month"] = String(cNContact.birthday!.month)
+      }
+      
+      if ( cNContact.birthday!.day != NSDateComponentUndefined ) {
+        birthday["day"] = String(cNContact.birthday!.day)
+      }
+      
+      contact["birthday"] = birthday
+    
+    }
     
     let contactAsNSDictionary = contact as NSDictionary
     
