@@ -47,6 +47,21 @@ var Contacts  = require('react-native-unified-contacts');
 
 ### Methods
 
+#### Get a Single Contact
+
+```js
+let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
+
+Contacts.getContact( contactIdentifier, (error, contact) =>  {
+  if (error) {
+    console.error(error);
+  }
+  else {
+    console.log(contact);
+  }
+});
+```
+
 #### Get All Contacts
 
 ```js
