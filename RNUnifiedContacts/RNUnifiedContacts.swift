@@ -165,11 +165,11 @@ class RNUnifiedContacts: NSObject {
     }
 
   }
+  
+  
+  
+  
 
-  
-  
-  
-  
   /////////////
   // PRIVATE //
 
