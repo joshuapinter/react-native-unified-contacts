@@ -87,6 +87,28 @@ class RNUnifiedContacts: NSObject {
   }
 
   
+  @objc func getContact(identifier: String, callback: (NSObject) -> () ) -> Void {
+
+    let contactStore = CNContactStore()
+
+    do {
+
+      let cNContact = try contactStore.unifiedContactWithIdentifier( identifier, keysToFetch: keysToFetch )
+
+      let contact = convertCNContactToDictionary( cNContact )
+
+      callback( [NSNull(), contact] )
+
+    }
+    catch let error as NSError {
+      NSLog("Problem getting unified Contact with identifier: " + identifier)
+      NSLog(error.localizedDescription)
+
+      callback( [error.localizedDescription, NSNull()] )
+    }
+
+  }
+
   // Pseudo overloads getContacts but with no searchText.
   // Makes it easy to get all the Contacts with not passing anything.
   // NOTE: I tried calling the two methods the same but it barfed. It should be
@@ -143,27 +165,6 @@ class RNUnifiedContacts: NSObject {
       callback([error.localizedDescription, NSNull()])
     }
     
-  }
-  
-  @objc func getContact(identifier: String, callback: (NSObject) -> () ) -> Void {
-    
-    let contactStore = CNContactStore()
-    
-    do {
-      
-      let cNContact = try contactStore.unifiedContactWithIdentifier( identifier, keysToFetch: keysToFetch )
-      
-      let contact = convertCNContactToDictionary( cNContact )
-      
-      callback( [NSNull(), contact] )
-      
-    }
-    catch let error as NSError {
-      NSLog("Problem getting unified Contact with identifier: " + identifier)
-      NSLog(error.localizedDescription)
-      
-      callback( [error.localizedDescription, NSNull()] )
-    }
 
   }
   
