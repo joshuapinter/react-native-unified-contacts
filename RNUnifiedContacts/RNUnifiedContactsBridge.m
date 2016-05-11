@@ -24,6 +24,8 @@ RCT_EXTERN_METHOD(getContacts:(RCTResponseSenderBlock)callback);
 
 RCT_EXTERN_METHOD(getContact:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
 
+RCT_EXTERN_METHOD(deleteContact:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
+
 RCT_EXTERN_METHOD(searchContacts:(NSString *)searchText callback:(RCTResponseSenderBlock)callback);
 
 RCT_EXPORT_METHOD(openPrivacySettings) {
