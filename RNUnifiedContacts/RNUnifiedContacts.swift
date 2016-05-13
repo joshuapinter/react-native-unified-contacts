@@ -167,13 +167,35 @@ class RNUnifiedContacts: NSObject {
 
   }
   
-  @objc func createContact(contactData: Dictionary<String, String>, callback: (NSObject) -> () ) -> Void {
+  @objc func createContact(contactData: NSDictionary, callback: (NSObject) -> () ) -> Void {
     
-    let contact = CNMutableContact()
+    let mutableContact = CNMutableContact()
+    let contactStore = CNContactStore()
+    let req = CNSaveRequest()
     
-    contact.givenName = contactData["givenName"]!
-    contact.familyName = contactData["familyName"]!
-    contact.organizationName = contactData["organizationName"]!
+    mutableContact.givenName = contactData["givenName"] as! String
+    mutableContact.familyName = contactData["familyName"] as! String
+    mutableContact.organizationName = contactData["organizationName"] as! String
+    
+    for number in contactData["phoneNumbers"] as! NSArray {
+      let transformedNumber = transformNumber( number as! NSDictionary )
+      mutableContact.phoneNumbers.append( transformedNumber )
+    }
+    
+    for email in contactData["emailAddresses"] as! NSArray {
+      let transformedEmail = transformEmail ( email as! NSDictionary )
+      mutableContact.emailAddresses.append( transformedEmail )
+    }
+    
+    do {
+      req.addContact(mutableContact, toContainerWithIdentifier:nil)
+      try contactStore.executeSaveRequest(req)
+      print("Successfully created contact")
+      callback( [NSNull(), ""] )
+    } catch let error as NSError {
+      print("Something went wrong")
+      callback( [error.localizedDescription, NSNull()] )
+    }
     
   }
   
@@ -318,6 +340,36 @@ class RNUnifiedContacts: NSObject {
     }
     
     return emailAddresses
+  }
+  
+  func transformNumber(number: NSDictionary) -> CNLabeledValue {
+    var label = String()
+    if (number["label"] as! String == "home") {
+      label = CNLabelHome
+    } else if (number["label"] as! String == "work") {
+      label = CNLabelWork
+    } else if (number["label"] as! String == "mobile") {
+      label = CNLabelPhoneNumberMobile
+    }
+    
+    return CNLabeledValue(
+      label:label,
+      value:CNPhoneNumber(stringValue: number["number"] as! String)
+    )
+  }
+  
+  func transformEmail(email: NSDictionary) -> CNLabeledValue {
+    var label = String()
+    if (email["label"] as! String == "home") {
+      label = CNLabelHome
+    } else if (email["label"] as! String == "work") {
+      label = CNLabelWork
+    }
+    
+    return CNLabeledValue(
+      label:label,
+      value: email["email"] as! String
+    )
   }
   
 
