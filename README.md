@@ -62,6 +62,52 @@ Contacts.getContact( contactIdentifier, (error, contact) =>  {
 });
 ```
 
+#### Delete a Single Contact
+
+```js
+let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
+
+Contacts.deleteContact( contactIndetifier, (error, contactId) => {
+  if (error) {
+    console.log(error);
+  }
+  else {
+    console.log(contactId);
+  }
+}
+```
+
+#### Create a Single Contact
+
+```js
+let data = {
+  'givenName': 'John',
+  'familyName': 'Appleseed',
+  'organizationName': 'Apple Inc',
+  'phoneNumbers': [
+    // (NOTE)
+    // Available lables 'home', 'work', 'mobile'
+    {'label': 'home', 'number': '555-522-8243'},
+    {'label': 'work': 'number': '(408) 555-5270'},
+  ],
+  emailAddresses: [
+    // (Note)
+    // Available labels 'work', 'home'
+    {'label': 'work', 'email': 'john.appleseed@apple.com'},
+    {'label': 'home', 'email': 'john@gmail.com'},
+  ],
+}
+
+Contact.createContact( data, (error, resp) {
+  if (error) {
+    console.log(error);
+  } 
+  else {
+    console.log(resp);
+  }
+}
+```
+
 #### Get All Contacts
 
 ```js
