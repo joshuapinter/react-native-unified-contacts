@@ -151,11 +151,11 @@ class RNUnifiedContacts: NSObject {
     
     do {
       
-      let cNContact = try contactStore.unifiedContactWithIdentifier( identifier, keysToFetch: keysToFetch )
+    let cNContact = try contactStore.unifiedContactWithIdentifier( identifier, keysToFetch: keysToFetch )
       
-      let contact = convertCNContactToDictionary( cNContact )
+    let contact = convertCNContactToDictionary( cNContact )
       
-      callback( [NSNull(), contact] )
+    callback( [NSNull(), contact] )
       
     }
     catch let error as NSError {
@@ -173,6 +173,10 @@ class RNUnifiedContacts: NSObject {
     let contactStore = CNContactStore()
     let req = CNSaveRequest()
     
+    // TODO:
+    // Extend method to handle more fields
+    //
+    //
     mutableContact.givenName = contactData["givenName"] as! String
     mutableContact.familyName = contactData["familyName"] as! String
     mutableContact.organizationName = contactData["organizationName"] as! String
@@ -203,46 +207,50 @@ class RNUnifiedContacts: NSObject {
     
     let contactStore = CNContactStore()
     
+    let cNContact = getCNContact( identifier, keys: keysToFetch )
+    let req = CNSaveRequest()
+    let mutableContact = cNContact!.mutableCopy() as! CNMutableContact
+    req.deleteContact(mutableContact)
+    
     do {
       
-      let cNContact = try contactStore.unifiedContactWithIdentifier( identifier, keysToFetch: keysToFetch )
-      let req = CNSaveRequest()
-      let mutableContact = cNContact.mutableCopy() as! CNMutableContact
-      req.deleteContact(mutableContact)
+      try contactStore.executeSaveRequest(req)
+      NSLog("Success, You deleted the user with identifier: " + identifier)
       
-      do {
-        
-        try contactStore.executeSaveRequest(req)
-        NSLog("Success, You deleted the user with identifier: " + identifier)
-        
-        callback( [NSNull(), identifier] )
-        
-      } catch let error as NSError {
-        
-        NSLog("Problem deleting unified Contact with indentifier: " + identifier)
-        NSLog(error.localizedDescription)
-        
-        callback( [error.localizedDescription, NSNull()] )
-        
-      }
+      callback( [NSNull(), identifier] )
       
+    } catch let error as NSError {
       
-    }
-    
-    catch let error as NSError {
-      NSLog("Problem getting unified Contact with identifier: " + identifier)
+      NSLog("Problem deleting unified Contact with indentifier: " + identifier)
       NSLog(error.localizedDescription)
       
       callback( [error.localizedDescription, NSNull()] )
+      
     }
     
   }
   
   
   
-  
   /////////////
   // PRIVATE //
+
+  func getCNContact( identifier: String, keys: [CNKeyDescriptor] ) -> CNContact? {
+    let contactStore = CNContactStore()
+    do {
+      
+      let cNContact = try contactStore.unifiedContactWithIdentifier( identifier, keysToFetch: keys )
+      return cNContact
+      
+    }
+    catch let error as NSError {
+      
+      NSLog("Problem getting unified Contact with identifier: " + identifier)
+      NSLog(error.localizedDescription)
+      return nil
+      
+    }
+  }
   
   func contactContainsText( cNContact: CNContact, searchText: String ) -> Bool {
     let searchText   = searchText.lowercaseString;
