@@ -86,7 +86,7 @@ let data = {
   'organizationName': 'Apple Inc',
   'phoneNumbers': [
     // (NOTE)
-    // Available lables 'home', 'work', 'mobile'
+    // Available labels 'home', 'work', 'mobile'
     {'label': 'home', 'number': '555-522-8243'},
     {'label': 'work': 'number': '(408) 555-5270'},
   ],
