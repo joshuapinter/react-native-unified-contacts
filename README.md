@@ -91,7 +91,7 @@ let data = {
     {'label': 'work': 'number': '(408) 555-5270'},
   ],
   emailAddresses: [
-    // (Note)
+    // (NOTE)
     // Available labels 'work', 'home'
     {'label': 'work', 'email': 'john.appleseed@apple.com'},
     {'label': 'home', 'email': 'john@gmail.com'},
