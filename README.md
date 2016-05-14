@@ -47,6 +47,21 @@ var Contacts  = require('react-native-unified-contacts');
 
 ### Methods
 
+#### Get a Single Contact
+
+```js
+let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
+
+Contacts.getContact( contactIdentifier, (error, contact) =>  {
+  if (error) {
+    console.error(error);
+  }
+  else {
+    console.log(contact);
+  }
+});
+```
+
 #### Get All Contacts
 
 ```js
@@ -188,6 +203,18 @@ The returned Contact object(s) will look something like this:
       identifier: "9CDE4C1B-412F-4974-BE8D-80C951004694",
       label:      "home",
       value:      "theonedon@gmail.com"
+    }
+  ],
+  postalAddresses: [
+    {
+      city:        "Menlo Park",
+      country:     "United States",
+      identifier:  "7481D15D-C27C-4805-876F-D2C0D413CEBD",
+      label:       "work",
+      postalCode:  "94025",
+      state:       "CA",
+      street:      "3000 Sand Hill Road, 3-290"
+      stringValue: "3000 Sand Hill Road, 3-290.↵Menlo Park CA 94025↵"
     }
   ],
   birthday: [
