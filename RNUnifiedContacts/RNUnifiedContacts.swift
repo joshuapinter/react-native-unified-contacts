@@ -167,35 +167,44 @@ class RNUnifiedContacts: NSObject {
   
   @objc func addContact(contactData: NSDictionary, callback: (NSObject) -> () ) -> Void {
     
+    let contactStore   = CNContactStore()
     let mutableContact = CNMutableContact()
-    let contactStore = CNContactStore()
-    let saveRequest = CNSaveRequest()
+    let saveRequest    = CNSaveRequest()
     
-    // TODO:
-    // Extend method to handle more fields
+    // TODO: Extend method to handle more fields.
+    // TODO: Check for values in contactData before assigning to mutableContact.
     //
-    //
-    mutableContact.givenName = contactData["givenName"] as! String
-    mutableContact.familyName = contactData["familyName"] as! String
+    mutableContact.givenName        = contactData["givenName"] as! String
+    mutableContact.familyName       = contactData["familyName"] as! String
     mutableContact.organizationName = contactData["organizationName"] as! String
     
     for phoneNumber in contactData["phoneNumbers"] as! NSArray {
       let phoneNumberAsCNLabeledValue = convertPhoneNumberToCNLabeledValue( phoneNumber as! NSDictionary )
+      
       mutableContact.phoneNumbers.append( phoneNumberAsCNLabeledValue )
     }
     
     for emailAddress in contactData["emailAddresses"] as! NSArray {
       let emailAddressAsCNLabeledValue = convertEmailAddressToCNLabeledValue ( emailAddress as! NSDictionary )
+      
       mutableContact.emailAddresses.append( emailAddressAsCNLabeledValue )
     }
     
     do {
+      
       saveRequest.addContact(mutableContact, toContainerWithIdentifier:nil)
+      
       try contactStore.executeSaveRequest(saveRequest)
+      
       print("Successfully created contact")
+      
       callback( [NSNull(), true] )
-    } catch let error as NSError {
+      
+    }
+    catch let error as NSError {
+      
       print("Something went wrong")
+      
       callback( [error.localizedDescription, false] )
     }
     
@@ -206,24 +215,28 @@ class RNUnifiedContacts: NSObject {
     let contactStore = CNContactStore()
     
     let cNContact = getCNContact( identifier, keysToFetch: keysToFetch )
+    
     let saveRequest = CNSaveRequest()
+    
     let mutableContact = cNContact!.mutableCopy() as! CNMutableContact
+    
     saveRequest.deleteContact(mutableContact)
     
     do {
       
       try contactStore.executeSaveRequest(saveRequest)
+      
       NSLog("Success, You deleted the user with identifier: " + identifier)
       
       callback( [NSNull(), true] )
       
-    } catch let error as NSError {
+    }
+    catch let error as NSError {
       
       NSLog("Problem deleting unified Contact with indentifier: " + identifier)
       NSLog(error.localizedDescription)
       
       callback( [error.localizedDescription, false] )
-      
     }
     
   }
