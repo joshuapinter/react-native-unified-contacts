@@ -72,7 +72,7 @@ Contacts.deleteContact( contactIndetifier, (error, success) => {
     console.log(error);
   }
   else {
-    console.log(success;
+    console.log(success);
   }
 }
 ```
