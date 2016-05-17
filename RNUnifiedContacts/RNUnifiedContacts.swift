@@ -165,7 +165,7 @@ class RNUnifiedContacts: NSObject {
     }
   }
   
-  @objc func createContact(contactData: NSDictionary, callback: (NSObject) -> () ) -> Void {
+  @objc func addContact(contactData: NSDictionary, callback: (NSObject) -> () ) -> Void {
     
     let mutableContact = CNMutableContact()
     let contactStore = CNContactStore()

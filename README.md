@@ -92,11 +92,11 @@ let data = {
     // (NOTE)
     // Available labels 'work', 'home'
     {'label': Contacts.emailAddressLabel.WORK, 'email': 'john.appleseed@apple.com'},
-    {'label': 'home', Contact.emailAddressLabel.HOME: 'john@gmail.com'},
+    {'label': Contact.emailAddressLabel.HOME, 'email': 'john@gmail.com'},
   ],
 }
 
-Contact.createContact( data, (error, success) {
+Contacts.addContact( data, (error, success) {
   if (error) {
     console.log(error);
   } 
