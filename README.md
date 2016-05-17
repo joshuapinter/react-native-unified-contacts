@@ -86,7 +86,7 @@ let data = {
   'organizationName': 'Apple Inc',
   'phoneNumbers': [
     {'label': Contacts.phoneNumberLabel.HOME, 'number': '555-522-8243'},
-    {'label': Contacts.phoneNumberLabel.WORK: 'number': '(408) 555-5270'},
+    {'label': Contacts.phoneNumberLabel.WORK, 'number': '(408) 555-5270'},
   ],
   emailAddresses: [
     {'label': Contacts.emailAddressLabel.WORK, 'email': 'john.appleseed@apple.com'},
