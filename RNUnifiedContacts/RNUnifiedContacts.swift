@@ -193,10 +193,10 @@ class RNUnifiedContacts: NSObject {
       req.addContact(mutableContact, toContainerWithIdentifier:nil)
       try contactStore.executeSaveRequest(req)
       print("Successfully created contact")
-      callback( [NSNull(), ""] )
+      callback( [NSNull(), true] )
     } catch let error as NSError {
       print("Something went wrong")
-      callback( [error.localizedDescription, NSNull()] )
+      callback( [error.localizedDescription, false] )
     }
     
   }
@@ -215,14 +215,14 @@ class RNUnifiedContacts: NSObject {
       try contactStore.executeSaveRequest(req)
       NSLog("Success, You deleted the user with identifier: " + identifier)
       
-      callback( [NSNull(), identifier] )
+      callback( [NSNull(), true] )
       
     } catch let error as NSError {
       
       NSLog("Problem deleting unified Contact with indentifier: " + identifier)
       NSLog(error.localizedDescription)
       
-      callback( [error.localizedDescription, NSNull()] )
+      callback( [error.localizedDescription, false] )
       
     }
     

@@ -67,12 +67,12 @@ Contacts.getContact( contactIdentifier, (error, contact) =>  {
 ```js
 let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
 
-Contacts.deleteContact( contactIndetifier, (error, contactId) => {
+Contacts.deleteContact( contactIndetifier, (error, success) => {
   if (error) {
     console.log(error);
   }
   else {
-    console.log(contactId);
+    console.log(success;
   }
 }
 ```
@@ -96,12 +96,12 @@ let data = {
   ],
 }
 
-Contact.createContact( data, (error, resp) {
+Contact.createContact( data, (error, success) {
   if (error) {
     console.log(error);
   } 
   else {
-    console.log(resp);
+    console.log(success);
   }
 }
 ```
