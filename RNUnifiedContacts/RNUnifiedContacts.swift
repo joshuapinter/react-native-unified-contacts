@@ -206,13 +206,13 @@ class RNUnifiedContacts: NSObject {
     let contactStore = CNContactStore()
     
     let cNContact = getCNContact( identifier, keys: keysToFetch )
-    let req = CNSaveRequest()
+    let saveRequest = CNSaveRequest()
     let mutableContact = cNContact!.mutableCopy() as! CNMutableContact
-    req.deleteContact(mutableContact)
+    saveRequest.deleteContact(mutableContact)
     
     do {
       
-      try contactStore.executeSaveRequest(req)
+      try contactStore.executeSaveRequest(saveRequest)
       NSLog("Success, You deleted the user with identifier: " + identifier)
       
       callback( [NSNull(), true] )
