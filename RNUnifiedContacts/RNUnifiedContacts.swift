@@ -87,24 +87,18 @@ class RNUnifiedContacts: NSObject {
   }
   
   @objc func getContact(identifier: String, callback: (NSObject) -> () ) -> Void {
-
-    let contactStore = CNContactStore()
-
-    do {
-
-      let cNContact = try contactStore.unifiedContactWithIdentifier( identifier, keysToFetch: keysToFetch )
-
-      let contact = convertCNContactToDictionary( cNContact )
-
-      callback( [NSNull(), contact] )
-
+      
+    let cNContact = getCNContact( identifier, keysToFetch: keysToFetch )
+    
+    if ( cNContact == nil ) {
+      callback( ["Could not find a contact with the identifier " + identifier, NSNull()] )
+      
+      return
     }
-    catch let error as NSError {
-      NSLog("Problem getting unified Contact with identifier: " + identifier)
-      NSLog(error.localizedDescription)
-
-      callback( [error.localizedDescription, NSNull()] )
-    }
+    
+    let contactAsDictionary = convertCNContactToDictionary( cNContact! )
+    
+    callback( [NSNull(), contactAsDictionary] )
 
   }
 
