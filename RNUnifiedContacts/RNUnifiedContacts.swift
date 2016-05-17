@@ -87,24 +87,18 @@ class RNUnifiedContacts: NSObject {
   }
   
   @objc func getContact(identifier: String, callback: (NSObject) -> () ) -> Void {
-
-    let contactStore = CNContactStore()
-
-    do {
-
-      let cNContact = try contactStore.unifiedContactWithIdentifier( identifier, keysToFetch: keysToFetch )
-
-      let contact = convertCNContactToDictionary( cNContact )
-
-      callback( [NSNull(), contact] )
-
+      
+    let cNContact = getCNContact( identifier, keysToFetch: keysToFetch )
+    
+    if ( cNContact == nil ) {
+      callback( ["Could not find a contact with the identifier " + identifier, NSNull()] )
+      
+      return
     }
-    catch let error as NSError {
-      NSLog("Problem getting unified Contact with identifier: " + identifier)
-      NSLog(error.localizedDescription)
-
-      callback( [error.localizedDescription, NSNull()] )
-    }
+    
+    let contactAsDictionary = convertCNContactToDictionary( cNContact! )
+    
+    callback( [NSNull(), contactAsDictionary] )
 
   }
 
@@ -163,17 +157,107 @@ class RNUnifiedContacts: NSObject {
 
       callback([error.localizedDescription, NSNull()])
     }
-
   }
-
-
-
-
-
+  
+  @objc func addContact(contactData: NSDictionary, callback: (NSObject) -> () ) -> Void {
+    
+    let contactStore   = CNContactStore()
+    let mutableContact = CNMutableContact()
+    let saveRequest    = CNSaveRequest()
+    
+    // TODO: Extend method to handle more fields.
+    // TODO: Check for values in contactData before assigning to mutableContact.
+    //
+    mutableContact.givenName        = contactData["givenName"] as! String
+    mutableContact.familyName       = contactData["familyName"] as! String
+    mutableContact.organizationName = contactData["organizationName"] as! String
+    
+    for phoneNumber in contactData["phoneNumbers"] as! NSArray {
+      let phoneNumberAsCNLabeledValue = convertPhoneNumberToCNLabeledValue( phoneNumber as! NSDictionary )
+      
+      mutableContact.phoneNumbers.append( phoneNumberAsCNLabeledValue )
+    }
+    
+    for emailAddress in contactData["emailAddresses"] as! NSArray {
+      let emailAddressAsCNLabeledValue = convertEmailAddressToCNLabeledValue ( emailAddress as! NSDictionary )
+      
+      mutableContact.emailAddresses.append( emailAddressAsCNLabeledValue )
+    }
+    
+    do {
+      
+      saveRequest.addContact(mutableContact, toContainerWithIdentifier:nil)
+      
+      try contactStore.executeSaveRequest(saveRequest)
+      
+      print("Successfully created contact")
+      
+      callback( [NSNull(), true] )
+      
+    }
+    catch let error as NSError {
+      
+      print("Something went wrong")
+      
+      callback( [error.localizedDescription, false] )
+    }
+    
+  }
+  
+  @objc func deleteContact(identifier: String, callback: (NSObject) -> () ) -> Void {
+    
+    let contactStore = CNContactStore()
+    
+    let cNContact = getCNContact( identifier, keysToFetch: keysToFetch )
+    
+    let saveRequest = CNSaveRequest()
+    
+    let mutableContact = cNContact!.mutableCopy() as! CNMutableContact
+    
+    saveRequest.deleteContact(mutableContact)
+    
+    do {
+      
+      try contactStore.executeSaveRequest(saveRequest)
+      
+      NSLog("Success, You deleted the user with identifier: " + identifier)
+      
+      callback( [NSNull(), true] )
+      
+    }
+    catch let error as NSError {
+      
+      NSLog("Problem deleting unified Contact with indentifier: " + identifier)
+      NSLog(error.localizedDescription)
+      
+      callback( [error.localizedDescription, false] )
+    }
+    
+  }
+  
+  
+  
 
   /////////////
   // PRIVATE //
-
+    
+  func getCNContact( identifier: String, keysToFetch: [CNKeyDescriptor] ) -> CNContact? {
+    let contactStore = CNContactStore()
+    do {
+      
+      let cNContact = try contactStore.unifiedContactWithIdentifier( identifier, keysToFetch: keysToFetch )
+      return cNContact
+      
+    }
+    catch let error as NSError {
+      
+      NSLog("Problem getting unified Contact with identifier: " + identifier)
+      NSLog(error.localizedDescription)
+      return nil
+      
+    }
+  }
+  
   func contactContainsText( cNContact: CNContact, searchText: String ) -> Bool {
     let searchText   = searchText.lowercaseString;
     let textToSearch = cNContact.givenName.lowercaseString + " " + cNContact.familyName.lowercaseString
@@ -272,6 +356,59 @@ class RNUnifiedContacts: NSObject {
 
     return emailAddresses
   }
+  
+  func convertPhoneNumberToCNLabeledValue(phoneNumber: NSDictionary) -> CNLabeledValue {
+    var label = String()
+    switch (phoneNumber["label"] as! String) {
+      case "home":
+        label = CNLabelHome
+      case "work":
+        label = CNLabelWork
+      case "mobile":
+        label = CNLabelPhoneNumberMobile
+      case "iPhone":
+        label = CNLabelPhoneNumberiPhone
+      case "main":
+        label = CNLabelPhoneNumberMain
+      case "home fax":
+        label = CNLabelPhoneNumberHomeFax
+      case "work fax":
+        label = CNLabelPhoneNumberWorkFax
+      case "pager":
+        label = CNLabelPhoneNumberPager
+      case "other":
+        label = CNLabelOther
+      default:
+        label = ""
+    }
+    
+    return CNLabeledValue(
+      label:label,
+      value:CNPhoneNumber(stringValue: phoneNumber["number"] as! String)
+    )
+  }
+  
+  func convertEmailAddressToCNLabeledValue(emailAddress: NSDictionary) -> CNLabeledValue {
+    var label = String()
+    switch (emailAddress["label"] as! String) {
+      case "home":
+        label = CNLabelHome
+      case "work":
+        label = CNLabelWork
+      case "iCloud":
+        label = CNLabelEmailiCloud
+      case "other":
+        label = CNLabelOther
+      default:
+        label = ""
+    }
+    
+    return CNLabeledValue(
+      label:label,
+      value: emailAddress["email"] as! String
+    )
+  }
+  
 
   func generatePostalAddresses(cNContact: CNContact) -> [AnyObject] {
 
@@ -300,6 +437,5 @@ class RNUnifiedContacts: NSObject {
 
     return postalAddresses
   }
-
 
 }
