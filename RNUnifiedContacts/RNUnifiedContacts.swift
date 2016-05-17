@@ -180,13 +180,13 @@ class RNUnifiedContacts: NSObject {
     mutableContact.organizationName = contactData["organizationName"] as! String
     
     for phoneNumber in contactData["phoneNumbers"] as! NSArray {
-      let phoneNumberAsNSDictionary = convertPhoneNumberToNSDictionary( phoneNumber as! NSDictionary )
-      mutableContact.phoneNumbers.append( phoneNumberAsNSDictionary )
+      let phoneNumberAsCNLabeledValue = convertPhoneNumberToCNLabeledValue( phoneNumber as! NSDictionary )
+      mutableContact.phoneNumbers.append( phoneNumberAsCNLabeledValue )
     }
     
     for emailAddress in contactData["emailAddresses"] as! NSArray {
-      let emailAddressAsNSDictionary = convertEmailAddressToNSDictionary ( emailAddress as! NSDictionary )
-      mutableContact.emailAddresses.append( emailAddressAsNSDictionary )
+      let emailAddressAsCNLabeledValue = convertEmailAddressToCNLabeledValue ( emailAddress as! NSDictionary )
+      mutableContact.emailAddresses.append( emailAddressAsCNLabeledValue )
     }
     
     do {
@@ -350,7 +350,7 @@ class RNUnifiedContacts: NSObject {
     return emailAddresses
   }
   
-  func convertPhoneNumberToNSDictionary(phoneNumber: NSDictionary) -> CNLabeledValue {
+  func convertPhoneNumberToCNLabeledValue(phoneNumber: NSDictionary) -> CNLabeledValue {
     var label = String()
     switch (phoneNumber["label"] as! String) {
       case "home":
@@ -381,7 +381,7 @@ class RNUnifiedContacts: NSObject {
     )
   }
   
-  func convertEmailAddressToNSDictionary(emailAddress: NSDictionary) -> CNLabeledValue {
+  func convertEmailAddressToCNLabeledValue(emailAddress: NSDictionary) -> CNLabeledValue {
     var label = String()
     switch (emailAddress["label"] as! String) {
       case "home":
