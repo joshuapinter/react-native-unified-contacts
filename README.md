@@ -85,16 +85,14 @@ let data = {
   'familyName': 'Appleseed',
   'organizationName': 'Apple Inc',
   'phoneNumbers': [
-    // (NOTE)
-    // Available labels 'home', 'work', 'mobile'
-    {'label': 'home', 'number': '555-522-8243'},
-    {'label': 'work': 'number': '(408) 555-5270'},
+    {'label': Contacts.phoneNumberLabel.HOME, 'number': '555-522-8243'},
+    {'label': Contacts.phoneNumberLabel.WORK: 'number': '(408) 555-5270'},
   ],
   emailAddresses: [
     // (NOTE)
     // Available labels 'work', 'home'
-    {'label': 'work', 'email': 'john.appleseed@apple.com'},
-    {'label': 'home', 'email': 'john@gmail.com'},
+    {'label': Contacts.emailAddressLabel.WORK, 'email': 'john.appleseed@apple.com'},
+    {'label': 'home', Contact.emailAddressLabel.HOME: 'john@gmail.com'},
   ],
 }
 

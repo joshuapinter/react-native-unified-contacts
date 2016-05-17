@@ -409,6 +409,4 @@ class RNUnifiedContacts: NSObject {
     return postalAddresses
   }
 
-
-
 }
