@@ -19,12 +19,12 @@
 {
   return @{
           @"phoneNumberLabel": @{
-              @"HOME"     :@"home",
+              @"HOME"     : @"home",
               @"WORK"     : @"work",
               @"MOBILE"   : @"mobile",
               @"IPHONE"   : @"iPhone",
               @"MAIN"     : @"main",
-              @"HOME_FAX"  : @"home fax",
+              @"HOME_FAX" : @"home fax",
               @"WORK_FAX" : @"work fax",
               @"PAGER"    : @"pager",
               @"OTHER"    : @"other",
@@ -32,7 +32,7 @@
           @"emailAddressLabel": @{
               @"HOME"     : @"home",
               @"WORK"     : @"work",
-              @"ICLOUD"   :@"iCloud",
+              @"ICLOUD"   : @"iCloud",
               @"OTHER"    : @"other",
               },
          };
