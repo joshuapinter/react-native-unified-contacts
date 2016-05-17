@@ -205,7 +205,7 @@ class RNUnifiedContacts: NSObject {
     
     let contactStore = CNContactStore()
     
-    let cNContact = getCNContact( identifier, keys: keysToFetch )
+    let cNContact = getCNContact( identifier, keysToFetch: keysToFetch )
     let saveRequest = CNSaveRequest()
     let mutableContact = cNContact!.mutableCopy() as! CNMutableContact
     saveRequest.deleteContact(mutableContact)
@@ -234,11 +234,11 @@ class RNUnifiedContacts: NSObject {
   /////////////
   // PRIVATE //
     
-  func getCNContact( identifier: String, keys: [CNKeyDescriptor] ) -> CNContact? {
+  func getCNContact( identifier: String, keysToFetch: [CNKeyDescriptor] ) -> CNContact? {
     let contactStore = CNContactStore()
     do {
       
-      let cNContact = try contactStore.unifiedContactWithIdentifier( identifier, keysToFetch: keys )
+      let cNContact = try contactStore.unifiedContactWithIdentifier( identifier, keysToFetch: keysToFetch )
       return cNContact
       
     }
