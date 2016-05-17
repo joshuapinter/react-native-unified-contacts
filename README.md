@@ -92,7 +92,7 @@ let data = {
     // (NOTE)
     // Available labels 'work', 'home'
     {'label': Contacts.emailAddressLabel.WORK, 'email': 'john.appleseed@apple.com'},
-    {'label': Contact.emailAddressLabel.HOME, 'email': 'john@gmail.com'},
+    {'label': Contacts.emailAddressLabel.HOME, 'email': 'john@gmail.com'},
   ],
 }
 
