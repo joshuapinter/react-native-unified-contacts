@@ -78,7 +78,7 @@ Contacts.getContacts( (error, contacts) =>  {
 #### Search All Contacts
 
 ```js
-Contacts.searchContacts( 'Bob', (error, contacts) =>  {
+Contacts.searchContacts( 'Don Draper', (error, contacts) =>  {
   if (error) {
     console.error(error);
   }
