@@ -89,8 +89,6 @@ let data = {
     {'label': Contacts.phoneNumberLabel.WORK: 'number': '(408) 555-5270'},
   ],
   emailAddresses: [
-    // (NOTE)
-    // Available labels 'work', 'home'
     {'label': Contacts.emailAddressLabel.WORK, 'email': 'john.appleseed@apple.com'},
     {'label': Contacts.emailAddressLabel.HOME, 'email': 'john@gmail.com'},
   ],
