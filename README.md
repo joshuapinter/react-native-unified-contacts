@@ -85,23 +85,51 @@ let data = {
   'familyName': 'Appleseed',
   'organizationName': 'Apple Inc',
   'phoneNumbers': [
-    {'label': Contacts.phoneNumberLabel.HOME, 'number': '555-522-8243'},
-    {'label': Contacts.phoneNumberLabel.WORK, 'number': '(408) 555-5270'},
+    {'label': Contacts.phoneNumberLabel.HOME, 'stringValue': '555-522-8243'},
+    {'label': Contacts.phoneNumberLabel.WORK, 'stringValue': '(408) 555-5270'},
   ],
   emailAddresses: [
-    {'label': Contacts.emailAddressLabel.WORK, 'email': 'john.appleseed@apple.com'},
-    {'label': Contacts.emailAddressLabel.HOME, 'email': 'john@gmail.com'},
+    {'label': Contacts.emailAddressLabel.WORK, 'value': 'john.appleseed@apple.com'},
+    {'label': Contacts.emailAddressLabel.HOME, 'value': 'john@gmail.com'},
   ],
 }
 
-Contacts.addContact( data, (error, success) {
+Contacts.addContact( data, (error, success) => {
   if (error) {
     console.log(error);
   } 
   else {
     console.log(success);
   }
+});
+```
+
+#### Update a Single Contact
+
+```js
+let data = {
+  'identifier': 'A7806266-6574-4731-82E1-C54946F63E1C',
+  'givenName': 'John',
+  'familyName': 'Appleseed',
+  'organizationName': 'Apple Inc',
+  'phoneNumbers': [
+    {'label': Contacts.phoneNumberLabel.HOME, 'stringValue': '555-522-8243'},
+    {'label': Contacts.phoneNumberLabel.WORK, 'stringValue': '(408) 555-5270'},
+  ],
+  emailAddresses: [
+    {'label': Contacts.emailAddressLabel.WORK, 'value': 'john.appleseed@apple.com'},
+    {'label': Contacts.emailAddressLabel.HOME, 'value': 'john@gmail.com'},
+  ],
 }
+
+Contacts.updateContact(data, (error, success) => {
+  if (error) {
+    console.log(error);
+  }
+  else {
+    console.log(success);
+  }
+});
 ```
 
 #### Get All Contacts
