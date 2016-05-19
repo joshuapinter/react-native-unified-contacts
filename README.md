@@ -288,10 +288,11 @@ var base64ImageUri = 'data:image/png;base64,' + contact.thumbnailImageData;
 ## Many Thanks To
 
 * My friend **[Smixx][smixx]** for working through adding a Swift library to a React Native project over his lunch hour.
+* **[Ismail Pelaseyed][homanp]** for adding a couple of [huge PRs][homanp-prs] for Creating, Updating and Deleting Contacts.
 
 ## TODO
 
-- [ ] Add Create/Update/Delete methods for Contacts.
+- [X] Add Create/Update/Delete methods for Contacts. **_(Thanks [homanp][homanp]!)_**
 - [ ] Add Android support.
 - [ ] Add integration with Contacts-UI (_Coming Soon!_).
 
@@ -300,10 +301,13 @@ var base64ImageUri = 'data:image/png;base64,' + contact.thumbnailImageData;
 
 The MIT License (MIT)
 
-Copyright (c) 2016 - `Time.now()`, Joshua Pinter
+Copyright 2016 - `Time.now()` by [Joshua Pinter][joshuapinter]
 
 
 [apple-contacts-framework]: https://developer.apple.com/library/ios/documentation/Contacts/Reference/Contacts_Framework/index.html
-[react-native-contacts]: https://github.com/rt2zz/react-native-contacts
+[react-native-contacts]:    https://github.com/rt2zz/react-native-contacts
 [react-native-addressbook]: https://github.com/rt2zz/react-native-addressbook
-[smixx]: https://twitter.com/smixx
+[smixx]:                    https://twitter.com/smixx
+[joshuapinter]:             https://twitter.com/joshuapinter
+[homanp]:                   https://twitter.com/pelaseyed
+[homanp-prs]:               https://github.com/joshuapinter/react-native-unified-contacts/pulls?utf8=%E2%9C%93&q=is%3Apr+author%3Ahomanp+
