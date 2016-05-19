@@ -204,6 +204,53 @@ class RNUnifiedContacts: NSObject {
     
   }
   
+  @objc func updateContact(contactData: NSDictionary, callback: (NSObject) -> () ) -> Void {
+    
+    let contactStore = CNContactStore()
+    
+    let saveRequest = CNSaveRequest()
+    
+    let cNContact = getCNContact(contactData["identifier"] as! String, keysToFetch: keysToFetch)
+    
+    let mutableContact = cNContact!.mutableCopy() as! CNMutableContact
+    
+    mutableContact.givenName = contactData["givenName"] as! String
+    mutableContact.familyName = contactData["familyName"] as! String
+    mutableContact.organizationName = contactData["organizationName"] as! String
+    
+    for phoneNumber in contactData["phoneNumbers"] as! NSArray {
+      let phoneNumberAsCNLabeledValue = convertPhoneNumberToCNLabeledValue( phoneNumber as! NSDictionary )
+      
+      mutableContact.phoneNumbers.append( phoneNumberAsCNLabeledValue )
+    }
+    
+    for emailAddress in contactData["emailAddresses"] as! NSArray {
+      let emailAddressAsCNLabeledValue = convertEmailAddressToCNLabeledValue ( emailAddress as! NSDictionary )
+      
+      mutableContact.emailAddresses.append( emailAddressAsCNLabeledValue )
+    }
+    
+    do {
+      
+      saveRequest.updateContact(mutableContact)
+      
+      try contactStore.executeSaveRequest(saveRequest)
+      
+      print("Successfully updated contact")
+      
+      callback( [NSNull(), true] )
+      
+    }
+    catch let error as NSError {
+      
+      print("Something went wrong")
+      
+      callback( [error.localizedDescription, false] )
+    }
+    
+    
+  }
+  
   @objc func deleteContact(identifier: String, callback: (NSObject) -> () ) -> Void {
     
     let contactStore = CNContactStore()
@@ -385,7 +432,7 @@ class RNUnifiedContacts: NSObject {
     
     return CNLabeledValue(
       label:label,
-      value:CNPhoneNumber(stringValue: phoneNumber["number"] as! String)
+      value:CNPhoneNumber(stringValue: phoneNumber["stringValue"] as! String)
     )
   }
   
@@ -406,7 +453,7 @@ class RNUnifiedContacts: NSObject {
     
     return CNLabeledValue(
       label:label,
-      value: emailAddress["email"] as! String
+      value: emailAddress["value"] as! String
     )
   }
   
