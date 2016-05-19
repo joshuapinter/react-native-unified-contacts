@@ -217,6 +217,8 @@ class RNUnifiedContacts: NSObject {
     mutableContact.givenName = contactData["givenName"] as! String
     mutableContact.familyName = contactData["familyName"] as! String
     mutableContact.organizationName = contactData["organizationName"] as! String
+    mutableContact.phoneNumbers.removeAll()
+    mutableContact.emailAddresses.removeAll()
     
     for phoneNumber in contactData["phoneNumbers"] as! NSArray {
       let phoneNumberAsCNLabeledValue = convertPhoneNumberToCNLabeledValue( phoneNumber as! NSDictionary )
