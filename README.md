@@ -13,7 +13,7 @@ Apple recently did a complete overhaul of their Contacts Framework that does a n
 
   2. Use the same framework across all their platforms, including iOS, tvOS, watchOS and even OS X.
 
-  3. Get a unified Contact details not only from a User's local Contact entry, but also from the user's social accounts, like Facebook and Twitter. This allows you to get a Facebook profile picture for a Contact you have in your contact database.
+  3. Get unified Contact details not only from a User's local Contact entry, but also from the user's social accounts, like Facebook and Twitter. This allows you to get a Facebook profile picture for a Contact you have in your contact database.
 
 There are a couple of react native packages that give you access to Contacts already ([react-native-contacts][react-native-contacts] and [react-native-addressbook][react-native-addressbook]) but neither of them utilize the new Unified Contacts framework available in iOS 9+. For good reason too, as most people are still supporting devices that are pre-iOS 9.
 
@@ -45,7 +45,7 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
 var Contacts  = require('react-native-unified-contacts');
 ```
 
-### Methods
+### Getting Contacts
 
 #### Get a Single Contact
 
@@ -58,76 +58,6 @@ Contacts.getContact( contactIdentifier, (error, contact) =>  {
   }
   else {
     console.log(contact);
-  }
-});
-```
-
-#### Delete a Single Contact
-
-```js
-let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
-
-Contacts.deleteContact( contactIndetifier, (error, success) => {
-  if (error) {
-    console.log(error);
-  }
-  else {
-    console.log(success);
-  }
-}
-```
-
-#### Create a Single Contact
-
-```js
-let data = {
-  'givenName': 'John',
-  'familyName': 'Appleseed',
-  'organizationName': 'Apple Inc',
-  'phoneNumbers': [
-    {'label': Contacts.phoneNumberLabel.HOME, 'stringValue': '555-522-8243'},
-    {'label': Contacts.phoneNumberLabel.WORK, 'stringValue': '(408) 555-5270'},
-  ],
-  emailAddresses: [
-    {'label': Contacts.emailAddressLabel.WORK, 'value': 'john.appleseed@apple.com'},
-    {'label': Contacts.emailAddressLabel.HOME, 'value': 'john@gmail.com'},
-  ],
-}
-
-Contacts.addContact( data, (error, success) => {
-  if (error) {
-    console.log(error);
-  } 
-  else {
-    console.log(success);
-  }
-});
-```
-
-#### Update a Single Contact
-
-```js
-let data = {
-  'identifier': 'A7806266-6574-4731-82E1-C54946F63E1C',
-  'givenName': 'John',
-  'familyName': 'Appleseed',
-  'organizationName': 'Apple Inc',
-  'phoneNumbers': [
-    {'label': Contacts.phoneNumberLabel.HOME, 'stringValue': '555-522-8243'},
-    {'label': Contacts.phoneNumberLabel.WORK, 'stringValue': '(408) 555-5270'},
-  ],
-  emailAddresses: [
-    {'label': Contacts.emailAddressLabel.WORK, 'value': 'john.appleseed@apple.com'},
-    {'label': Contacts.emailAddressLabel.HOME, 'value': 'john@gmail.com'},
-  ],
-}
-
-Contacts.updateContact(data, (error, success) => {
-  if (error) {
-    console.log(error);
-  }
-  else {
-    console.log(success);
   }
 });
 ```
@@ -159,6 +89,85 @@ Contacts.searchContacts( 'Don Draper', (error, contacts) =>  {
 ```
 _This will search the given (first) and family (last) name of all of the Contacts for the provided string. Future versions will allow you to search other fields as well, like phone or email._
 
+### Adding Contacts
+
+#### Add a Single Contact
+
+```js
+let contactData = {
+  'givenName': 'John',
+  'familyName': 'Appleseed',
+  'organizationName': 'Apple Inc',
+  'phoneNumbers': [
+    {'label': Contacts.phoneNumberLabel.HOME, 'stringValue': '555-522-8243'},
+    {'label': Contacts.phoneNumberLabel.WORK, 'stringValue': '(408) 555-5270'},
+  ],
+  'emailAddresses': [
+    {'label': Contacts.emailAddressLabel.WORK, 'value': 'john.appleseed@apple.com'},
+    {'label': Contacts.emailAddressLabel.HOME, 'value': 'john@gmail.com'},
+  ],
+}
+
+Contacts.addContact( contactData, (error, success) => {
+  if (error) {
+    console.log(error);
+  }
+  else {
+    console.log(success);
+  }
+});
+```
+
+### Updating Contacts
+
+#### Update a Single Contact
+
+```js
+let contactData = {
+  'identifier': 'A7806266-6574-4731-82E1-C54946F63E1C',
+  'givenName': 'John',
+  'familyName': 'Appleseed',
+  'organizationName': 'Apple Inc',
+  'phoneNumbers': [
+    {'label': Contacts.phoneNumberLabel.HOME, 'stringValue': '555-522-8243'},
+    {'label': Contacts.phoneNumberLabel.WORK, 'stringValue': '(408) 555-5270'},
+  ],
+  'emailAddresses': [
+    {'label': Contacts.emailAddressLabel.WORK, 'value': 'john.appleseed@apple.com'},
+    {'label': Contacts.emailAddressLabel.HOME, 'value': 'john@gmail.com'},
+  ],
+}
+
+Contacts.updateContact(contactData, (error, success) => {
+  if (error) {
+    console.log(error);
+  }
+  else {
+    console.log(success);
+  }
+});
+```
+
+### Deleting Contacts
+
+#### Delete a Single Contact
+
+```js
+let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
+
+Contacts.deleteContact( contactIdentifier, (error, success) => {
+  if (error) {
+    console.log(error);
+  }
+  else {
+    console.log(success);
+  }
+}
+```
+
+
+### Accessing the User's Contacts
+
 #### Can The User Access Contacts?
 
 ```js
@@ -172,6 +181,7 @@ Contacts.userCanAccessContacts( (userCanAccessContacts) => {
 });
 ```
 _This will not **request** access. For that, use the [`requestAccessToContacts`](#request-access-to-contacts)._
+
 
 #### Request Access To Contacts
 
@@ -187,7 +197,7 @@ Contacts.requestAccessToContacts( (userCanAccessContacts) => {
 ```
 This will do everything you'd expect. Here's the workflow:
 
-Does the user already have access to Contacts?
+1. Does the user already have access to Contacts?
 
    1. Yes. Return `true`.
 
@@ -204,7 +214,7 @@ Does the user already have access to Contacts?
         _The user will have to go to their privacy settings and allow access manually. We provide a [`openPrivacySettings`](#open-privacy-settings) method that allows you to bring up the privacy page easily for the user. See below._
 
 
-#### Open Privacy Settings
+#### Open the User's Privacy Settings
 
 ```js
 Contacts.openPrivacySettings()
