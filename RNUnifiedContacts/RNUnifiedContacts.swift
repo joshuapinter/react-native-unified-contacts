@@ -280,8 +280,6 @@ class RNUnifiedContacts: NSObject {
     
   }
   
-  
-  
 
 
   /////////////
