@@ -265,8 +265,6 @@ class RNUnifiedContacts: NSObject {
       
       try contactStore.executeSaveRequest(saveRequest)
       
-      NSLog("Success, You deleted the user with identifier: " + identifier)
-      
       callback( [NSNull(), true] )
       
     }
