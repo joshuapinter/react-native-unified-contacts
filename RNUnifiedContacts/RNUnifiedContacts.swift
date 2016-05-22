@@ -102,45 +102,6 @@ class RNUnifiedContacts: NSObject {
 
   }
 
-  @objc func deleteContact(identifier: String, callback: (NSObject) -> () ) -> Void {
-    
-    let contactStore = CNContactStore()
-    
-    do {
-      
-      let cNContact = try contactStore.unifiedContactWithIdentifier( identifier, keysToFetch: keysToFetch )
-      let req = CNSaveRequest()
-      let mutableContact = cNContact.mutableCopy() as! CNMutableContact
-      req.deleteContact(mutableContact)
-      
-      do {
-        
-        try contactStore.executeSaveRequest(req)
-        NSLog("Success, You deleted the user with identifier: " + identifier)
-        
-        callback( [NSNull(), identifier] )
-        
-      } catch let error as NSError {
-        
-        NSLog("Problem deleting unified Contact with indentifier: " + identifier)
-        NSLog(error.localizedDescription)
-        
-        callback( [error.localizedDescription, NSNull()] )
-        
-      }
-      
-      
-    }
-      
-    catch let error as NSError {
-      NSLog("Problem getting unified Contact with identifier: " + identifier)
-      NSLog(error.localizedDescription)
-      
-      callback( [error.localizedDescription, NSNull()] )
-    }
-    
-  }
-
   // Pseudo overloads getContacts but with no searchText.
   // Makes it easy to get all the Contacts with not passing anything.
   // NOTE: I tried calling the two methods the same but it barfed. It should be
