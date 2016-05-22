@@ -95,8 +95,8 @@ _This will search the given (first) and family (last) name of all of the Contact
 
 ```js
 let contactData = {
-  'givenName': 'John',
-  'familyName': 'Appleseed',
+  'givenName':        'John',
+  'familyName':       'Appleseed',
   'organizationName': 'Apple Inc',
   'phoneNumbers': [
     {'label': Contacts.phoneNumberLabel.HOME, 'stringValue': '555-522-8243'},
@@ -126,9 +126,8 @@ Contacts.addContact( contactData, (error, success) => {
 let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
 
 let contactData = {
-  'identifier': 'A7806266-6574-4731-82E1-C54946F63E1C',
-  'givenName': 'John',
-  'familyName': 'Appleseed',
+  'givenName':        'John',
+  'familyName':       'Appleseed',
   'organizationName': 'Apple Inc',
   'phoneNumbers': [
     {'label': Contacts.phoneNumberLabel.HOME, 'stringValue': '555-522-8243'},
