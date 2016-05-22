@@ -166,11 +166,18 @@ class RNUnifiedContacts: NSObject {
     let saveRequest    = CNSaveRequest()
     
     // TODO: Extend method to handle more fields.
-    // TODO: Check for values in contactData before assigning to mutableContact.
     //
-    mutableContact.givenName        = contactData["givenName"] as! String
-    mutableContact.familyName       = contactData["familyName"] as! String
-    mutableContact.organizationName = contactData["organizationName"] as! String
+    if (contactData["givenName"] != nil) {
+      mutableContact.givenName = contactData["givenName"] as! String
+    }
+    
+    if (contactData["familyName"] != nil) {
+      mutableContact.familyName = contactData["familyName"] as! String
+    }
+    
+    if (contactData["organizationName"] != nil) {
+      mutableContact.organizationName = contactData["organizationName"] as! String
+    }
     
     for phoneNumber in contactData["phoneNumbers"] as! NSArray {
       let phoneNumberAsCNLabeledValue = convertPhoneNumberToCNLabeledValue( phoneNumber as! NSDictionary )
