@@ -326,7 +326,7 @@ var base64ImageUri = 'data:image/png;base64,' + contact.thumbnailImageData;
 ## Many Thanks To
 
 * My friend **[Smixx][smixx]** for working through adding a Swift library to a React Native project over his lunch hour.
-* **[Ismail Pelaseyed][homanp]** for adding a couple of [huge PRs][homanp-prs] for Creating, Updating and Deleting Contacts.
+* **[Ismail Pelaseyed (homanp)][homanp]** for adding a couple of [huge PRs][homanp-prs] for Creating, Updating and Deleting Contacts.
 
 ## TODO
 
