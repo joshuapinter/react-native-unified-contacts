@@ -219,23 +219,38 @@ class RNUnifiedContacts: NSObject {
     
     let mutableContact = cNContact!.mutableCopy() as! CNMutableContact
     
-    mutableContact.givenName = contactData["givenName"] as! String
-    mutableContact.familyName = contactData["familyName"] as! String
-    mutableContact.organizationName = contactData["organizationName"] as! String
-    mutableContact.phoneNumbers.removeAll()
-    mutableContact.emailAddresses.removeAll()
-    
-    for phoneNumber in contactData["phoneNumbers"] as! NSArray {
-      let phoneNumberAsCNLabeledValue = convertPhoneNumberToCNLabeledValue( phoneNumber as! NSDictionary )
-      
-      mutableContact.phoneNumbers.append( phoneNumberAsCNLabeledValue )
+    if ( contactData["givenName"] != nil ) {
+      mutableContact.givenName = contactData["givenName"] as! String
     }
     
-    for emailAddress in contactData["emailAddresses"] as! NSArray {
-      let emailAddressAsCNLabeledValue = convertEmailAddressToCNLabeledValue ( emailAddress as! NSDictionary )
-      
-      mutableContact.emailAddresses.append( emailAddressAsCNLabeledValue )
+    if ( contactData["familyName"] != nil ) {
+      mutableContact.familyName = contactData["familyName"] as! String
     }
+    
+    if ( contactData["givenName"] != nil ) {
+      mutableContact.organizationName = contactData["organizationName"] as! String
+    }
+    
+    if ( contactData["phoneNumbers"] != nil ) {
+      mutableContact.phoneNumbers.removeAll()
+      
+      for phoneNumber in contactData["phoneNumbers"] as! NSArray {
+        let phoneNumberAsCNLabeledValue = convertPhoneNumberToCNLabeledValue( phoneNumber as! NSDictionary )
+        
+        mutableContact.phoneNumbers.append( phoneNumberAsCNLabeledValue )
+      }
+    }
+    
+    if ( contactData["emailAddresses"] != nil ) {
+      mutableContact.emailAddresses.removeAll()
+      
+      for emailAddress in contactData["emailAddresses"] as! NSArray {
+        let emailAddressAsCNLabeledValue = convertEmailAddressToCNLabeledValue ( emailAddress as! NSDictionary )
+        
+        mutableContact.emailAddresses.append( emailAddressAsCNLabeledValue )
+      }
+    }
+    
     
     do {
       
