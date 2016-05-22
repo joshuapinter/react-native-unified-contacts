@@ -190,14 +190,10 @@ class RNUnifiedContacts: NSObject {
       
       try contactStore.executeSaveRequest(saveRequest)
       
-      print("Successfully created contact")
-      
       callback( [NSNull(), true] )
       
     }
     catch let error as NSError {
-      
-      print("Something went wrong")
       
       callback( [error.localizedDescription, false] )
     }
@@ -238,14 +234,10 @@ class RNUnifiedContacts: NSObject {
       
       try contactStore.executeSaveRequest(saveRequest)
       
-      print("Successfully updated contact")
-      
       callback( [NSNull(), true] )
       
     }
     catch let error as NSError {
-      
-      print("Something went wrong")
       
       callback( [error.localizedDescription, false] )
     }
