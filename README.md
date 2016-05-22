@@ -13,7 +13,7 @@ Apple recently did a complete overhaul of their Contacts Framework that does a n
 
   2. Use the same framework across all their platforms, including iOS, tvOS, watchOS and even OS X.
 
-  3. Get a unified Contact details not only from a User's local Contact entry, but also from the user's social accounts, like Facebook and Twitter. This allows you to get a Facebook profile picture for a Contact you have in your contact database.
+  3. Get unified Contact details not only from a User's local Contact entry, but also from the user's social accounts, like Facebook and Twitter. This allows you to get a Facebook profile picture for a Contact you have in your contact database.
 
 There are a couple of react native packages that give you access to Contacts already ([react-native-contacts][react-native-contacts] and [react-native-addressbook][react-native-addressbook]) but neither of them utilize the new Unified Contacts framework available in iOS 9+. For good reason too, as most people are still supporting devices that are pre-iOS 9.
 
@@ -45,7 +45,7 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
 var Contacts  = require('react-native-unified-contacts');
 ```
 
-### Methods
+### Getting Contacts
 
 #### Get a Single Contact
 
@@ -60,48 +60,6 @@ Contacts.getContact( contactIdentifier, (error, contact) =>  {
     console.log(contact);
   }
 });
-```
-
-#### Delete a Single Contact
-
-```js
-let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
-
-Contacts.deleteContact( contactIndetifier, (error, success) => {
-  if (error) {
-    console.log(error);
-  }
-  else {
-    console.log(success);
-  }
-}
-```
-
-#### Create a Single Contact
-
-```js
-let data = {
-  'givenName': 'John',
-  'familyName': 'Appleseed',
-  'organizationName': 'Apple Inc',
-  'phoneNumbers': [
-    {'label': Contacts.phoneNumberLabel.HOME, 'number': '555-522-8243'},
-    {'label': Contacts.phoneNumberLabel.WORK, 'number': '(408) 555-5270'},
-  ],
-  emailAddresses: [
-    {'label': Contacts.emailAddressLabel.WORK, 'email': 'john.appleseed@apple.com'},
-    {'label': Contacts.emailAddressLabel.HOME, 'email': 'john@gmail.com'},
-  ],
-}
-
-Contacts.addContact( data, (error, success) {
-  if (error) {
-    console.log(error);
-  } 
-  else {
-    console.log(success);
-  }
-}
 ```
 
 #### Get All Contacts
@@ -131,6 +89,89 @@ Contacts.searchContacts( 'Don Draper', (error, contacts) =>  {
 ```
 _This will search the given (first) and family (last) name of all of the Contacts for the provided string. Future versions will allow you to search other fields as well, like phone or email._
 
+### Adding Contacts
+
+#### Add a Single Contact
+
+```js
+let contactData = {
+  'givenName':        'John',
+  'familyName':       'Appleseed',
+  'organizationName': 'Apple Inc',
+  'phoneNumbers': [
+    {'label': Contacts.phoneNumberLabel.HOME, 'stringValue': '555-522-8243'},
+    {'label': Contacts.phoneNumberLabel.WORK, 'stringValue': '(408) 555-5270'},
+  ],
+  'emailAddresses': [
+    {'label': Contacts.emailAddressLabel.WORK, 'value': 'john.appleseed@apple.com'},
+    {'label': Contacts.emailAddressLabel.HOME, 'value': 'john@gmail.com'},
+  ],
+}
+
+Contacts.addContact( contactData, (error, success) => {
+  if (error) {
+    console.log(error);
+  }
+  else {
+    console.log(success);
+  }
+});
+```
+
+### Updating Contacts
+
+#### Update a Single Contact
+
+```js
+let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
+
+let contactData = {
+  'givenName':        'John',
+  'familyName':       'Appleseed',
+  'organizationName': 'Apple Inc',
+  'phoneNumbers': [
+    {'label': Contacts.phoneNumberLabel.HOME, 'stringValue': '555-522-8243'},
+    {'label': Contacts.phoneNumberLabel.WORK, 'stringValue': '(408) 555-5270'},
+  ],
+  'emailAddresses': [
+    {'label': Contacts.emailAddressLabel.WORK, 'value': 'john.appleseed@apple.com'},
+    {'label': Contacts.emailAddressLabel.HOME, 'value': 'john@gmail.com'},
+  ],
+}
+
+Contacts.updateContact(contactIdentifier, contactData, (error, success) => {
+  if (error) {
+    console.log(error);
+  }
+  else {
+    console.log(success);
+  }
+});
+```
+
+_NOTE: If your `contactData` includes the keys `phoneNumbers` or `emailAddresses`, the associated value will completely replace any Phone Numbers or Email Addresses for that Contact, respectively. In other words, if you have a contact with two Phone Numbers and you'd like to add a third, you need to pass in ALL THREE Phone Numbers, not just the new one. Same goes for Email Addresses._
+
+
+### Deleting Contacts
+
+#### Delete a Single Contact
+
+```js
+let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
+
+Contacts.deleteContact( contactIdentifier, (error, success) => {
+  if (error) {
+    console.log(error);
+  }
+  else {
+    console.log(success);
+  }
+}
+```
+
+
+### Accessing the User's Contacts
+
 #### Can The User Access Contacts?
 
 ```js
@@ -144,6 +185,7 @@ Contacts.userCanAccessContacts( (userCanAccessContacts) => {
 });
 ```
 _This will not **request** access. For that, use the [`requestAccessToContacts`](#request-access-to-contacts)._
+
 
 #### Request Access To Contacts
 
@@ -159,7 +201,7 @@ Contacts.requestAccessToContacts( (userCanAccessContacts) => {
 ```
 This will do everything you'd expect. Here's the workflow:
 
-Does the user already have access to Contacts?
+1. Does the user already have access to Contacts?
 
    1. Yes. Return `true`.
 
@@ -176,7 +218,7 @@ Does the user already have access to Contacts?
         _The user will have to go to their privacy settings and allow access manually. We provide a [`openPrivacySettings`](#open-privacy-settings) method that allows you to bring up the privacy page easily for the user. See below._
 
 
-#### Open Privacy Settings
+#### Open the User's Privacy Settings
 
 ```js
 Contacts.openPrivacySettings()
@@ -288,10 +330,11 @@ var base64ImageUri = 'data:image/png;base64,' + contact.thumbnailImageData;
 ## Many Thanks To
 
 * My friend **[Smixx][smixx]** for working through adding a Swift library to a React Native project over his lunch hour.
+* **[Ismail Pelaseyed (homanp)][homanp]** for adding a couple of [huge PRs][homanp-prs] for Creating, Updating and Deleting Contacts.
 
 ## TODO
 
-- [ ] Add Create/Update/Delete methods for Contacts.
+- [X] Add Create/Update/Delete methods for Contacts. **_(Thanks [homanp][homanp]!)_**
 - [ ] Add Android support.
 - [ ] Add integration with Contacts-UI (_Coming Soon!_).
 
@@ -300,10 +343,13 @@ var base64ImageUri = 'data:image/png;base64,' + contact.thumbnailImageData;
 
 The MIT License (MIT)
 
-Copyright (c) 2016 - `Time.now()`, Joshua Pinter
+Copyright 2016 - `Time.now()` by [Joshua Pinter][joshuapinter]
 
 
 [apple-contacts-framework]: https://developer.apple.com/library/ios/documentation/Contacts/Reference/Contacts_Framework/index.html
-[react-native-contacts]: https://github.com/rt2zz/react-native-contacts
+[react-native-contacts]:    https://github.com/rt2zz/react-native-contacts
 [react-native-addressbook]: https://github.com/rt2zz/react-native-addressbook
-[smixx]: https://twitter.com/smixx
+[smixx]:                    https://twitter.com/smixx
+[joshuapinter]:             https://twitter.com/joshuapinter
+[homanp]:                   https://twitter.com/pelaseyed
+[homanp-prs]:               https://github.com/joshuapinter/react-native-unified-contacts/pulls?utf8=%E2%9C%93&q=is%3Apr+author%3Ahomanp+

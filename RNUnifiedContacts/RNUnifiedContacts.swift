@@ -152,7 +152,7 @@ class RNUnifiedContacts: NSObject {
       callback([NSNull(), contacts])
     }
     catch let error as NSError {
-      NSLog("Problem getting unified Contacts")
+      NSLog("Problem getting Contacts.")
       NSLog(error.localizedDescription)
 
       callback([error.localizedDescription, NSNull()])
@@ -166,11 +166,18 @@ class RNUnifiedContacts: NSObject {
     let saveRequest    = CNSaveRequest()
     
     // TODO: Extend method to handle more fields.
-    // TODO: Check for values in contactData before assigning to mutableContact.
     //
-    mutableContact.givenName        = contactData["givenName"] as! String
-    mutableContact.familyName       = contactData["familyName"] as! String
-    mutableContact.organizationName = contactData["organizationName"] as! String
+    if (contactData["givenName"] != nil) {
+      mutableContact.givenName = contactData["givenName"] as! String
+    }
+    
+    if (contactData["familyName"] != nil) {
+      mutableContact.familyName = contactData["familyName"] as! String
+    }
+    
+    if (contactData["organizationName"] != nil) {
+      mutableContact.organizationName = contactData["organizationName"] as! String
+    }
     
     for phoneNumber in contactData["phoneNumbers"] as! NSArray {
       let phoneNumberAsCNLabeledValue = convertPhoneNumberToCNLabeledValue( phoneNumber as! NSDictionary )
@@ -190,17 +197,77 @@ class RNUnifiedContacts: NSObject {
       
       try contactStore.executeSaveRequest(saveRequest)
       
-      print("Successfully created contact")
+      callback( [NSNull(), true] )
+      
+    }
+    catch let error as NSError {
+      NSLog("Problem creating Contact.")
+      NSLog(error.localizedDescription)
+      
+      callback( [error.localizedDescription, false] )
+    }
+    
+  }
+  
+  @objc func updateContact(identifier: String, contactData: NSDictionary, callback: (NSObject) -> () ) -> Void {
+    
+    let contactStore = CNContactStore()
+    
+    let saveRequest = CNSaveRequest()
+    
+    let cNContact = getCNContact(identifier, keysToFetch: keysToFetch)
+    
+    let mutableContact = cNContact!.mutableCopy() as! CNMutableContact
+    
+    if ( contactData["givenName"] != nil ) {
+      mutableContact.givenName = contactData["givenName"] as! String
+    }
+    
+    if ( contactData["familyName"] != nil ) {
+      mutableContact.familyName = contactData["familyName"] as! String
+    }
+    
+    if ( contactData["givenName"] != nil ) {
+      mutableContact.organizationName = contactData["organizationName"] as! String
+    }
+    
+    if ( contactData["phoneNumbers"] != nil ) {
+      mutableContact.phoneNumbers.removeAll()
+      
+      for phoneNumber in contactData["phoneNumbers"] as! NSArray {
+        let phoneNumberAsCNLabeledValue = convertPhoneNumberToCNLabeledValue( phoneNumber as! NSDictionary )
+        
+        mutableContact.phoneNumbers.append( phoneNumberAsCNLabeledValue )
+      }
+    }
+    
+    if ( contactData["emailAddresses"] != nil ) {
+      mutableContact.emailAddresses.removeAll()
+      
+      for emailAddress in contactData["emailAddresses"] as! NSArray {
+        let emailAddressAsCNLabeledValue = convertEmailAddressToCNLabeledValue ( emailAddress as! NSDictionary )
+        
+        mutableContact.emailAddresses.append( emailAddressAsCNLabeledValue )
+      }
+    }
+    
+    
+    do {
+      
+      saveRequest.updateContact(mutableContact)
+      
+      try contactStore.executeSaveRequest(saveRequest)
       
       callback( [NSNull(), true] )
       
     }
     catch let error as NSError {
-      
-      print("Something went wrong")
+      NSLog("Problem updating Contact with identifier: " + identifier)
+      NSLog(error.localizedDescription)
       
       callback( [error.localizedDescription, false] )
     }
+    
     
   }
   
@@ -220,8 +287,6 @@ class RNUnifiedContacts: NSObject {
       
       try contactStore.executeSaveRequest(saveRequest)
       
-      NSLog("Success, You deleted the user with identifier: " + identifier)
-      
       callback( [NSNull(), true] )
       
     }
@@ -235,8 +300,7 @@ class RNUnifiedContacts: NSObject {
     
   }
   
-  
-  
+
 
   /////////////
   // PRIVATE //
@@ -384,7 +448,7 @@ class RNUnifiedContacts: NSObject {
     
     return CNLabeledValue(
       label:label,
-      value:CNPhoneNumber(stringValue: phoneNumber["number"] as! String)
+      value:CNPhoneNumber(stringValue: phoneNumber["stringValue"] as! String)
     )
   }
   
@@ -405,7 +469,7 @@ class RNUnifiedContacts: NSObject {
     
     return CNLabeledValue(
       label:label,
-      value: emailAddress["email"] as! String
+      value: emailAddress["value"] as! String
     )
   }
   
