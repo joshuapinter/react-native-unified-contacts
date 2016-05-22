@@ -123,6 +123,8 @@ Contacts.addContact( contactData, (error, success) => {
 #### Update a Single Contact
 
 ```js
+let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
+
 let contactData = {
   'identifier': 'A7806266-6574-4731-82E1-C54946F63E1C',
   'givenName': 'John',
@@ -138,7 +140,7 @@ let contactData = {
   ],
 }
 
-Contacts.updateContact(contactData, (error, success) => {
+Contacts.updateContact(contactIdentifier, contactData, (error, success) => {
   if (error) {
     console.log(error);
   }

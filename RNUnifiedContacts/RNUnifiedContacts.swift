@@ -202,13 +202,13 @@ class RNUnifiedContacts: NSObject {
     
   }
   
-  @objc func updateContact(contactData: NSDictionary, callback: (NSObject) -> () ) -> Void {
+  @objc func updateContact(identifier: String, contactData: NSDictionary, callback: (NSObject) -> () ) -> Void {
     
     let contactStore = CNContactStore()
     
     let saveRequest = CNSaveRequest()
     
-    let cNContact = getCNContact(contactData["identifier"] as! String, keysToFetch: keysToFetch)
+    let cNContact = getCNContact(identifier, keysToFetch: keysToFetch)
     
     let mutableContact = cNContact!.mutableCopy() as! CNMutableContact
     
