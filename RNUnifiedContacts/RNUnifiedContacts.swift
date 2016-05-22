@@ -152,7 +152,7 @@ class RNUnifiedContacts: NSObject {
       callback([NSNull(), contacts])
     }
     catch let error as NSError {
-      NSLog("Problem getting unified Contacts")
+      NSLog("Problem getting Contacts.")
       NSLog(error.localizedDescription)
 
       callback([error.localizedDescription, NSNull()])
@@ -194,6 +194,8 @@ class RNUnifiedContacts: NSObject {
       
     }
     catch let error as NSError {
+      NSLog("Problem creating Contact.")
+      NSLog(error.localizedDescription)
       
       callback( [error.localizedDescription, false] )
     }
@@ -238,6 +240,8 @@ class RNUnifiedContacts: NSObject {
       
     }
     catch let error as NSError {
+      NSLog("Problem updating Contact with identifier: " + identifier)
+      NSLog(error.localizedDescription)
       
       callback( [error.localizedDescription, false] )
     }
