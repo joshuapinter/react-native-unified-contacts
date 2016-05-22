@@ -149,6 +149,9 @@ Contacts.updateContact(contactIdentifier, contactData, (error, success) => {
 });
 ```
 
+_NOTE: If your `contactData` includes the keys `phoneNumbers` or `emailAddresses`, the associated value will completely replace any Phone Numbers or Email Addresses for that Contact, respectively. In other words, if you have a contact with two Phone Numbers and you'd like to add a third, you need to pass in ALL THREE Phone Numbers, not just the new one. Same goes for Email Addresses._
+
+
 ### Deleting Contacts
 
 #### Delete a Single Contact
