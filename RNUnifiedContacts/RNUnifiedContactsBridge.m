@@ -38,15 +38,11 @@
          };
 }
 
-//RCT_EXTERN_METHOD(getContact:(NSObject *)contact callback:(RCTResponseSenderBlock)callback);
-
-RCT_EXTERN_METHOD(userCanAccessContacts:(RCTResponseSenderBlock)callback);
-
-RCT_EXTERN_METHOD(requestAccessToContacts:(RCTResponseSenderBlock)callback);
+RCT_EXTERN_METHOD(getContact:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
 
 RCT_EXTERN_METHOD(getContacts:(RCTResponseSenderBlock)callback);
 
-RCT_EXTERN_METHOD(getContact:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
+RCT_EXTERN_METHOD(searchContacts:(NSString *)searchText callback:(RCTResponseSenderBlock)callback);
 
 RCT_EXTERN_METHOD(addContact:(NSDictionary *)contactData callback:(RCTResponseSenderBlock)callback);
 
@@ -54,7 +50,9 @@ RCT_EXTERN_METHOD(updateContact:(NSString *)identifier contactData:(NSDictionary
 
 RCT_EXTERN_METHOD(deleteContact:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
 
-RCT_EXTERN_METHOD(searchContacts:(NSString *)searchText callback:(RCTResponseSenderBlock)callback);
+RCT_EXTERN_METHOD(userCanAccessContacts:(RCTResponseSenderBlock)callback);
+
+RCT_EXTERN_METHOD(requestAccessToContacts:(RCTResponseSenderBlock)callback);
 
 RCT_EXPORT_METHOD(openPrivacySettings) {
   [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
