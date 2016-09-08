@@ -38,7 +38,7 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
   
   4. Make sure `RNUnifiedContacts` is "under" the "top-level". For example, this is how it looks for my project called ntwrk:
   
-  
+  ![Project Structure](readme_assets/project-structure.png)
 
 
 ## Usage
