@@ -35,6 +35,10 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
   3. Navigate to `<your-project-directory>/node_modules/react-native-unified-contacts/` and click on the `RNUnifiedContacts` directory:
 
   ![Select RNUnifiedContacts](readme_assets/select_RNUnifiedContacts.gif)
+  
+  4. Make sure `RNUnifiedContacts` is "under" the "top-level". For example, this is how it looks for my project called ntwrk:
+  
+  
 
 
 ## Usage
