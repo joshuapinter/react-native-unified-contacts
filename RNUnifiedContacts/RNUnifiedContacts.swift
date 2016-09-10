@@ -413,7 +413,7 @@ class RNUnifiedContacts: NSObject {
       var emailAddress = [String: AnyObject]()
 
       emailAddress["identifier"]  = cNContactEmailAddress.identifier
-      emailAddress["label"]       = CNLabeledValue.localizedStringForLabel( cNContactEmailAddress.label )as! String
+      emailAddress["label"]       = CNLabeledValue.localizedStringForLabel( cNContactEmailAddress.label ) as! String
       emailAddress["value"]       = cNContactEmailAddress.value
 
       emailAddresses.append( emailAddress )
