@@ -10,6 +10,7 @@ import Contacts
 import ContactsUI
 import Foundation
 
+@available(iOS 9.0, *)
 @objc(RNUnifiedContacts)
 class RNUnifiedContacts: NSObject {
 
@@ -393,7 +394,7 @@ class RNUnifiedContacts: NSObject {
       let cNPhoneNumber = cNContactPhoneNumber.value as! CNPhoneNumber
 
       phoneNumber["identifier"]  = cNContactPhoneNumber.identifier
-      phoneNumber["label"]       = CNLabeledValue.localizedStringForLabel( cNContactPhoneNumber.label )
+      phoneNumber["label"]       = CNLabeledValue.localizedStringForLabel( cNContactPhoneNumber.label ) as! String
       phoneNumber["stringValue"] = cNPhoneNumber.stringValue
       phoneNumber["countryCode"] = cNPhoneNumber.valueForKey("countryCode") as! String
       phoneNumber["digits"]      = cNPhoneNumber.valueForKey("digits") as! String
@@ -412,7 +413,7 @@ class RNUnifiedContacts: NSObject {
       var emailAddress = [String: AnyObject]()
 
       emailAddress["identifier"]  = cNContactEmailAddress.identifier
-      emailAddress["label"]       = CNLabeledValue.localizedStringForLabel( cNContactEmailAddress.label )
+      emailAddress["label"]       = CNLabeledValue.localizedStringForLabel( cNContactEmailAddress.label ) as! String
       emailAddress["value"]       = cNContactEmailAddress.value
 
       emailAddresses.append( emailAddress )
