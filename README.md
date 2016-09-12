@@ -213,9 +213,9 @@ This will do everything you'd expect. Here's the workflow:
 
      1. If the User has not been asked before (first time asking), prompt user for access:
 
-       1. Yes. Return `true`.
+        1. Yes. Return `true`.
 
-       2. No. Return `false`.
+        2. No. Return `false`.
 
      2. If user has already denied access to Contacts, return `false`.
 
