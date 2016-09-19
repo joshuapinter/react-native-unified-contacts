@@ -394,7 +394,7 @@ class RNUnifiedContacts: NSObject {
       let cNPhoneNumber = cNContactPhoneNumber.value as! CNPhoneNumber
 
       phoneNumber["identifier"]  = cNContactPhoneNumber.identifier
-      phoneNumber["label"]       = CNLabeledValue.localizedStringForLabel( cNContactPhoneNumber.label ) as! String
+      phoneNumber["label"]       = CNLabeledValue.localizedStringForLabel( cNContactPhoneNumber.label ?? "" )
       phoneNumber["stringValue"] = cNPhoneNumber.stringValue
       phoneNumber["countryCode"] = cNPhoneNumber.valueForKey("countryCode") as! String
       phoneNumber["digits"]      = cNPhoneNumber.valueForKey("digits") as! String
@@ -413,7 +413,7 @@ class RNUnifiedContacts: NSObject {
       var emailAddress = [String: AnyObject]()
 
       emailAddress["identifier"]  = cNContactEmailAddress.identifier
-      emailAddress["label"]       = CNLabeledValue.localizedStringForLabel( cNContactEmailAddress.label ) as! String
+      emailAddress["label"]       = CNLabeledValue.localizedStringForLabel( cNContactEmailAddress.label ?? "" )
       emailAddress["value"]       = cNContactEmailAddress.value
 
       emailAddresses.append( emailAddress )
@@ -486,7 +486,7 @@ class RNUnifiedContacts: NSObject {
       let cNPostalAddress = cNContactPostalAddress.value as! CNPostalAddress
 
       postalAddress["identifier"]  = cNContactPostalAddress.identifier
-      postalAddress["label"]       = CNLabeledValue.localizedStringForLabel( cNContactPostalAddress.label )
+      postalAddress["label"]       = CNLabeledValue.localizedStringForLabel( cNContactPostalAddress.label ?? "" )
       postalAddress["street"]      = cNPostalAddress.valueForKey("street") as! String
       postalAddress["city"]        = cNPostalAddress.valueForKey("city") as! String
       postalAddress["state"]       = cNPostalAddress.valueForKey("state") as! String
