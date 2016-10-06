@@ -494,8 +494,7 @@ class RNUnifiedContacts: NSObject {
       postalAddress["country"]     = cNPostalAddress.valueForKey("country") as! String
       postalAddress["stringValue"] = CNPostalAddressFormatter.stringFromPostalAddress(cNPostalAddress, style: .MailingAddress)
 
-      // FIXME: For some reason, it throws an error with isoCountryCode.
-      // postalAddress["isoCountryCode"] = cNPostalAddress.valueForKey("isoCountryCode") as! String
+      postalAddress["isoCountryCode"] = cNPostalAddress.valueForKey("ISOCountryCode") as! String
 
       postalAddresses.append( postalAddress )
     }
