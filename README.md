@@ -35,10 +35,19 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
   3. Navigate to `<your-project-directory>/node_modules/react-native-unified-contacts/` and click on the `RNUnifiedContacts` directory:
 
   ![Select RNUnifiedContacts](readme_assets/select_RNUnifiedContacts.gif)
-  
+
   4. Make sure `RNUnifiedContacts` is "under" the "top-level". For example, this is how it looks for my project called ntwrk:
-  
+
   ![Project Structure](readme_assets/project-structure.png)
+
+  5. For iOS 10+, you need to add a `NSContactsUsageDescription` key to your `Info.plist` that provides a reason why your app needs to access private information:
+
+  ```
+<key>NSContactsUsageDescription</key>
+<string>ntwrk accesses Contacts in order to quickly add Relationships and allow them to reach out via ntwrk through email, text, phone, etc.</string>
+```
+
+  If done through XCode UI, the key is named `Privacy - Contacts Usage Description`.
 
 
 ## Usage
