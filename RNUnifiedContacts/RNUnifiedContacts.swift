@@ -2,7 +2,6 @@
 //  RNUnifiedContacts.swift
 //  RNUnifiedContacts
 //
-//  Created by Joshua Pinter on 2016-03-23.
 //  Copyright © 2016 Joshua Pinter. All rights reserved.
 //
 
@@ -48,7 +47,7 @@ class RNUnifiedContacts: NSObject {
   ]
 
 
-  @objc func userCanAccessContacts(_ callback: (NSObject) -> ()) -> Void {
+  @objc func userCanAccessContacts(_ callback: (Array<Bool>) -> ()) -> Void {
     let authorizationStatus = CNContactStore.authorizationStatus(for: CNEntityType.contacts)
 
     switch authorizationStatus{
@@ -60,10 +59,10 @@ class RNUnifiedContacts: NSObject {
     }
   }
 
-  @objc func requestAccessToContacts(_ callback: @escaping (NSObject) -> ()) -> Void {
+  @objc func requestAccessToContacts(_ callback: @escaping (Array<Bool>) -> ()) -> Void {
     userCanAccessContacts() { (userCanAccessContacts) in
 
-      if (userCanAccessContacts as! Array<Bool> == [true]) {
+      if (userCanAccessContacts == [true]) {
         callback([true])
 
         return
@@ -87,12 +86,12 @@ class RNUnifiedContacts: NSObject {
 
   }
   
-  @objc func getContact(_ identifier: String, callback: (NSObject) -> () ) -> Void {
+  @objc func getContact(_ identifier: String, callback: (NSArray) -> () ) -> Void {
       
     let cNContact = getCNContact( identifier, keysToFetch: keysToFetch as [CNKeyDescriptor] )
     
     if ( cNContact == nil ) {
-      callback( ["Could not find a contact with the identifier " + identifier, NSNull()] )
+      callback( ["Could not find a contact with the identifier ".appending(identifier), NSNull()] )
       
       return
     }
@@ -115,7 +114,7 @@ class RNUnifiedContacts: NSObject {
     }
   }
 
-  @objc func searchContacts(_ searchText: String?, callback: (NSObject) -> ()) -> Void {
+  @objc func searchContacts(_ searchText: String?, callback: (NSArray) -> ()) -> Void {
 
     let contactStore = CNContactStore()
 
@@ -160,7 +159,7 @@ class RNUnifiedContacts: NSObject {
     }
   }
   
-  @objc func addContact(_ contactData: NSDictionary, callback: (NSObject) -> () ) -> Void {
+  @objc func addContact(_ contactData: NSDictionary, callback: (NSArray) -> () ) -> Void {
     
     let contactStore   = CNContactStore()
     let mutableContact = CNMutableContact()
@@ -210,7 +209,7 @@ class RNUnifiedContacts: NSObject {
     
   }
   
-  @objc func updateContact(_ identifier: String, contactData: NSDictionary, callback: (NSObject) -> () ) -> Void {
+  @objc func updateContact(_ identifier: String, contactData: NSDictionary, callback: (NSArray) -> () ) -> Void {
     
     let contactStore = CNContactStore()
     
@@ -272,7 +271,7 @@ class RNUnifiedContacts: NSObject {
     
   }
   
-  @objc func deleteContact(_ identifier: String, callback: (NSObject) -> () ) -> Void {
+  @objc func deleteContact(_ identifier: String, callback: (NSArray) -> () ) -> Void {
     
     let contactStore = CNContactStore()
     
@@ -361,18 +360,18 @@ class RNUnifiedContacts: NSObject {
 
     if (cNContact.birthday != nil) {
 
-      var birthday = [String: AnyObject]()
+      var birthday = [String: Int]()
 
       if ( cNContact.birthday!.year != NSDateComponentUndefined ) {
-        birthday["year"] = String(cNContact.birthday!.year)
+        birthday["year"] = cNContact.birthday!.year
       }
 
       if ( cNContact.birthday!.month != NSDateComponentUndefined ) {
-        birthday["month"] = String(cNContact.birthday!.month)
+        birthday["month"] = cNContact.birthday!.month
       }
 
       if ( cNContact.birthday!.day != NSDateComponentUndefined ) {
-        birthday["day"] = String(cNContact.birthday!.day)
+        birthday["day"] = cNContact.birthday!.day
       }
 
       contact["birthday"] = birthday as AnyObject?
@@ -389,15 +388,15 @@ class RNUnifiedContacts: NSObject {
 
     for cNContactPhoneNumber in cNContact.phoneNumbers {
 
-      var phoneNumber = [String: AnyObject]()
+      var phoneNumber = [String: String]()
 
       let cNPhoneNumber = cNContactPhoneNumber.value 
 
-      phoneNumber["identifier"]  = cNContactPhoneNumber.identifier as AnyObject?
-      phoneNumber["label"]       = CNLabeledValue.localizedString( forLabel: cNContactPhoneNumber.label ?? "" ) as AnyObject?
-      phoneNumber["stringValue"] = cNPhoneNumber.stringValue as AnyObject?
-      phoneNumber["countryCode"] = cNPhoneNumber.value(forKey: "countryCode") as! String as AnyObject?
-      phoneNumber["digits"]      = cNPhoneNumber.value(forKey: "digits") as! String as AnyObject?
+      phoneNumber["identifier"]  = cNContactPhoneNumber.identifier
+      phoneNumber["label"]       = CNLabeledValue<NSString>.localizedString( forLabel: cNContactPhoneNumber.label ?? "" )
+      phoneNumber["stringValue"] = cNPhoneNumber.stringValue
+      phoneNumber["countryCode"] = cNPhoneNumber.value(forKey: "countryCode") as? String
+      phoneNumber["digits"]      = cNPhoneNumber.value(forKey: "digits") as? String
 
       phoneNumbers.append( phoneNumber as AnyObject )
     }
@@ -410,11 +409,11 @@ class RNUnifiedContacts: NSObject {
 
     for cNContactEmailAddress in cNContact.emailAddresses {
 
-      var emailAddress = [String: AnyObject]()
+      var emailAddress = [String: String]()
 
-      emailAddress["identifier"]  = cNContactEmailAddress.identifier as AnyObject?
-      emailAddress["label"]       = CNLabeledValue.localizedString( forLabel: cNContactEmailAddress.label ?? "" ) as AnyObject?
-      emailAddress["value"]       = cNContactEmailAddress.value
+      emailAddress["identifier"]  = cNContactEmailAddress.identifier
+      emailAddress["label"]       = CNLabeledValue<NSString>.localizedString( forLabel: cNContactEmailAddress.label ?? "" )
+      emailAddress["value"]       = cNContactEmailAddress.value as String
 
       emailAddresses.append( emailAddress as AnyObject )
     }
@@ -422,7 +421,7 @@ class RNUnifiedContacts: NSObject {
     return emailAddresses
   }
   
-  func convertPhoneNumberToCNLabeledValue(_ phoneNumber: NSDictionary) -> CNLabeledValue<AnyObject> {
+  func convertPhoneNumberToCNLabeledValue(_ phoneNumber: NSDictionary) -> CNLabeledValue<CNPhoneNumber> {
     var label = String()
     switch (phoneNumber["label"] as! String) {
       case "home":
@@ -453,7 +452,7 @@ class RNUnifiedContacts: NSObject {
     )
   }
   
-  func convertEmailAddressToCNLabeledValue(_ emailAddress: NSDictionary) -> CNLabeledValue<AnyObject> {
+  func convertEmailAddressToCNLabeledValue(_ emailAddress: NSDictionary) -> CNLabeledValue<NSString> {
     var label = String()
     switch (emailAddress["label"] as! String) {
       case "home":
@@ -470,7 +469,7 @@ class RNUnifiedContacts: NSObject {
     
     return CNLabeledValue(
       label:label,
-      value: emailAddress["value"] as! String
+      value: emailAddress["value"] as! NSString
     )
   }
   
@@ -481,18 +480,18 @@ class RNUnifiedContacts: NSObject {
 
     for cNContactPostalAddress in cNContact.postalAddresses {
 
-      var postalAddress = [String: AnyObject]()
+      var postalAddress = [String: String]()
 
       let cNPostalAddress = cNContactPostalAddress.value 
 
-      postalAddress["identifier"]  = cNContactPostalAddress.identifier as AnyObject?
-      postalAddress["label"]       = CNLabeledValue.localizedString( forLabel: cNContactPostalAddress.label ?? "" ) as AnyObject?
-      postalAddress["street"]      = cNPostalAddress.value(forKey: "street") as! String as AnyObject?
-      postalAddress["city"]        = cNPostalAddress.value(forKey: "city") as! String as AnyObject?
-      postalAddress["state"]       = cNPostalAddress.value(forKey: "state") as! String as AnyObject?
-      postalAddress["postalCode"]  = cNPostalAddress.value(forKey: "postalCode") as! String as AnyObject?
-      postalAddress["country"]     = cNPostalAddress.value(forKey: "country") as! String as AnyObject?
-      postalAddress["stringValue"] = CNPostalAddressFormatter.string(from: cNPostalAddress, style: .mailingAddress) as AnyObject?
+      postalAddress["identifier"]  = cNContactPostalAddress.identifier
+      postalAddress["label"]       = CNLabeledValue<NSString>.localizedString( forLabel: cNContactPostalAddress.label ?? "" )
+      postalAddress["street"]      = cNPostalAddress.value(forKey: "street") as? String
+      postalAddress["city"]        = cNPostalAddress.value(forKey: "city") as? String
+      postalAddress["state"]       = cNPostalAddress.value(forKey: "state") as? String
+      postalAddress["postalCode"]  = cNPostalAddress.value(forKey: "postalCode") as? String
+      postalAddress["country"]     = cNPostalAddress.value(forKey: "country") as? String
+      postalAddress["stringValue"] = CNPostalAddressFormatter.string(from: cNPostalAddress, style: .mailingAddress)
 
       // FIXME: For some reason, it throws an error with isoCountryCode.
       // postalAddress["isoCountryCode"] = cNPostalAddress.valueForKey("isoCountryCode") as! String
