@@ -20,7 +20,7 @@ There are a couple of react native packages that give you access to Contacts alr
 However, if you have the luxury of supporting iOS 9 and up, you should definitely use this library to  make use of this great new framework by Apple.
 
 
-## Installation
+# Installation
 
   1. Install the npm package:
    ```bash
@@ -49,17 +49,17 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
 
   If done through XCode UI, the key is named `Privacy - Contacts Usage Description`.
 
-## Usage
+# Usage
 
-### Require Library
+## Require Library
 
 ```js
 var Contacts  = require('react-native-unified-contacts');
 ```
 
-### Getting Contacts
+## Getting Contacts
 
-#### Get a Single Contact
+### Get a Single Contact
 
 ```js
 let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
@@ -74,7 +74,7 @@ Contacts.getContact( contactIdentifier, (error, contact) =>  {
 });
 ```
 
-#### Get All Contacts
+### Get All Contacts
 
 ```js
 Contacts.getContacts( (error, contacts) =>  {
@@ -87,7 +87,7 @@ Contacts.getContacts( (error, contacts) =>  {
 });
 ```
 
-#### Search All Contacts
+### Search All Contacts
 
 ```js
 Contacts.searchContacts( 'Don Draper', (error, contacts) =>  {
@@ -101,9 +101,9 @@ Contacts.searchContacts( 'Don Draper', (error, contacts) =>  {
 ```
 _This will search the given (first) and family (last) name of all of the Contacts for the provided string. Future versions will allow you to search other fields as well, like phone or email._
 
-### Adding Contacts
+## Adding Contacts
 
-#### Add a Single Contact
+### Add a Single Contact
 
 ```js
 let contactData = {
@@ -130,9 +130,9 @@ Contacts.addContact( contactData, (error, success) => {
 });
 ```
 
-### Updating Contacts
+## Updating Contacts
 
-#### Update a Single Contact
+### Update a Single Contact
 
 ```js
 let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
@@ -164,9 +164,9 @@ Contacts.updateContact(contactIdentifier, contactData, (error, success) => {
 _NOTE: If your `contactData` includes the keys `phoneNumbers` or `emailAddresses`, the associated value will completely replace any Phone Numbers or Email Addresses for that Contact, respectively. In other words, if you have a contact with two Phone Numbers and you'd like to add a third, you need to pass in ALL THREE Phone Numbers, not just the new one. Same goes for Email Addresses._
 
 
-### Deleting Contacts
+## Deleting Contacts
 
-#### Delete a Single Contact
+### Delete a Single Contact
 
 ```js
 let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
@@ -182,9 +182,9 @@ Contacts.deleteContact( contactIdentifier, (error, success) => {
 ```
 
 
-### Accessing the User's Contacts
+## Accessing the User's Contacts
 
-#### Can The User Access Contacts?
+### Can The User Access Contacts?
 
 ```js
 Contacts.userCanAccessContacts( (userCanAccessContacts) => {
@@ -199,7 +199,7 @@ Contacts.userCanAccessContacts( (userCanAccessContacts) => {
 _This will not **request** access. For that, use the [`requestAccessToContacts`](#request-access-to-contacts)._
 
 
-#### Request Access To Contacts
+### Request Access To Contacts
 
 ```js
 Contacts.requestAccessToContacts( (userCanAccessContacts) => {
@@ -230,7 +230,7 @@ This will do everything you'd expect. Here's the workflow:
         _The user will have to go to their privacy settings and allow access manually. We provide a [`openPrivacySettings`](#open-privacy-settings) method that allows you to bring up the privacy page easily for the user. See below._
 
 
-#### Open the User's Privacy Settings
+### Open the User's Privacy Settings
 
 ```js
 Contacts.openPrivacySettings()
@@ -263,7 +263,7 @@ This will produce an alert similar to this:
 ![Privacy Settings Alert](readme_assets/privacy_settings_alert.png)
 
 
-### Contact Object
+## Contact Object
 
 The returned Contact object(s) will look something like this:
 
@@ -327,7 +327,7 @@ The returned Contact object(s) will look something like this:
 _NOTE: The birthday key will not be included if the Contact's birthday is not set. Also, it's possible for a Contact's
   birthday to not include the `year`. In this case, `year` will be `null`._
 
-#### Thumbnail Image
+### Thumbnail Image
 
 Thumbnail Image Data is stored in a base64 format and can easily be used with the `Image` component of React Native as follows:
 
@@ -338,7 +338,7 @@ var base64ImageUri = 'data:image/png;base64,' + contact.thumbnailImageData;
 <Image source={{uri: base64ImageUri}}/>
 ```
 
-## Troubleshooting
+# Troubleshooting
 
 If you run into trouble, take a look at:
 
@@ -348,19 +348,19 @@ If you run into trouble, take a look at:
 
 If that doesn't help you, please [create an Issue](https://github.com/joshuapinter/react-native-unified-contacts/issues/new) and we'll figure it out together.
 
-## Many Thanks To
+# Many Thanks To
 
 * My friend **[Smixx][smixx]** for working through adding a Swift library to a React Native project over his lunch hour.
 * **[Ismail Pelaseyed (homanp)][homanp]** for adding a couple of [huge PRs][homanp-prs] for Creating, Updating and Deleting Contacts.
 
-## TODO
+# TODO
 
 - [X] Add Create/Update/Delete methods for Contacts. **_(Thanks [homanp][homanp]!)_**
 - [ ] Add Android support.
 - [ ] Add integration with Contacts-UI (_Coming Soon!_).
 
 
-## License
+# License
 
 The MIT License (MIT)
 
