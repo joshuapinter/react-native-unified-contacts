@@ -49,7 +49,6 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
 
   If done through XCode UI, the key is named `Privacy - Contacts Usage Description`.
 
-
 ## Usage
 
 ### Require Library
@@ -339,6 +338,15 @@ var base64ImageUri = 'data:image/png;base64,' + contact.thumbnailImageData;
 <Image source={{uri: base64ImageUri}}/>
 ```
 
+## Troubleshooting
+
+If you run into trouble, take a look at:
+
+1. The [ExampleApp directory](https://github.com/joshuapinter/react-native-unified-contacts/tree/master/ExampleApp) in this repository as a basic working iOS example that outputs your device's Contacts to the console on launch.
+
+2. [This comment](https://github.com/joshuapinter/react-native-unified-contacts/issues/12#issuecomment-253066009) that walks through step-by-step creating a brand new React Native (v0.35) app, installing Unified Contacts and accessing the User's Contacts - it's what I used to build the `ExampleApp`.
+
+If that doesn't help you, please [create an Issue](https://github.com/joshuapinter/react-native-unified-contacts/issues/new) and we'll figure it out together.
 
 ## Many Thanks To
 
