@@ -32,13 +32,18 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
 
   ![Add Files to Project](readme_assets/add_files_to_project.gif)
 
-  3. Navigate to `<your-project-directory>/node_modules/react-native-unified-contacts/` and click on the `RNUnifiedContacts` directory:
+  3. Navigate to `<your-project-directory>/node_modules/react-native-unified-contacts/RNUnifiedContacts`, select all three files and click Add:
 
-  ![Select RNUnifiedContacts](readme_assets/select_RNUnifiedContacts.gif)
+  ![Select files](readme_assets/select_files.gif)
+
+  **It's very important that you don't just add the `RNUnifiedContacts` folder because it won't work. You HAVE to add the files separately as shown above.**
   
-  4. Make sure `RNUnifiedContacts` is "under" the "top-level". For example, this is how it looks for my project called ntwrk:
-  
-  ![Project Structure](readme_assets/project-structure.png)
+  4. Now to group these three files together to make it nice and tidy. Select all three files in the project tree and right click. Then select "New Group from Selection". Rename the new group to `RNUnifiedContacts` (or whatever you like).
+
+  ![New Group from Selection](readme_assets/new_group_from_selection.gif)
+
+  5. See the [Usage section](#usage) for how to require the library and make use of it.
+
 
 
 ## Usage
