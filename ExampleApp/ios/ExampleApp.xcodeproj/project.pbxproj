@@ -22,8 +22,8 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
-		36BD608A1DAD996B00A22207 /* RNUnifiedContacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BD60881DAD996B00A22207 /* RNUnifiedContacts.swift */; };
-		36BD608B1DAD996B00A22207 /* RNUnifiedContactsBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 36BD60891DAD996B00A22207 /* RNUnifiedContactsBridge.m */; };
+		36A0F6181DF523AF003F79C0 /* RNUnifiedContacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A0F6151DF523AF003F79C0 /* RNUnifiedContacts.swift */; };
+		36A0F6191DF523AF003F79C0 /* RNUnifiedContactsBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 36A0F6171DF523AF003F79C0 /* RNUnifiedContactsBridge.m */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 /* End PBXBuildFile section */
 
@@ -127,9 +127,9 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ExampleApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ExampleApp/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
-		36BD60871DAD996B00A22207 /* RNUnifiedContacts-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RNUnifiedContacts-Bridging-Header.h"; sourceTree = "<group>"; };
-		36BD60881DAD996B00A22207 /* RNUnifiedContacts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RNUnifiedContacts.swift; sourceTree = "<group>"; };
-		36BD60891DAD996B00A22207 /* RNUnifiedContactsBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNUnifiedContactsBridge.m; sourceTree = "<group>"; };
+		36A0F6151DF523AF003F79C0 /* RNUnifiedContacts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RNUnifiedContacts.swift; path = "../node_modules/react-native-unified-contacts/RNUnifiedContacts/RNUnifiedContacts.swift"; sourceTree = "<group>"; };
+		36A0F6161DF523AF003F79C0 /* RNUnifiedContacts-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "RNUnifiedContacts-Bridging-Header.h"; path = "../node_modules/react-native-unified-contacts/RNUnifiedContacts/RNUnifiedContacts-Bridging-Header.h"; sourceTree = "<group>"; };
+		36A0F6171DF523AF003F79C0 /* RNUnifiedContactsBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RNUnifiedContactsBridge.m; path = "../node_modules/react-native-unified-contacts/RNUnifiedContacts/RNUnifiedContactsBridge.m"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -258,15 +258,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		36BD60861DAD996B00A22207 /* RNUnifiedContacts */ = {
+		36A0F61A1DF523B8003F79C0 /* RNUnifiedContacts */ = {
 			isa = PBXGroup;
 			children = (
-				36BD60871DAD996B00A22207 /* RNUnifiedContacts-Bridging-Header.h */,
-				36BD60881DAD996B00A22207 /* RNUnifiedContacts.swift */,
-				36BD60891DAD996B00A22207 /* RNUnifiedContactsBridge.m */,
+				36A0F6151DF523AF003F79C0 /* RNUnifiedContacts.swift */,
+				36A0F6161DF523AF003F79C0 /* RNUnifiedContacts-Bridging-Header.h */,
+				36A0F6171DF523AF003F79C0 /* RNUnifiedContactsBridge.m */,
 			);
 			name = RNUnifiedContacts;
-			path = "../node_modules/react-native-unified-contacts/RNUnifiedContacts";
 			sourceTree = "<group>";
 		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
@@ -305,7 +304,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				36BD60861DAD996B00A22207 /* RNUnifiedContacts */,
+				36A0F61A1DF523B8003F79C0 /* RNUnifiedContacts */,
 				13B07FAE1A68108700A75B9A /* ExampleApp */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* ExampleAppTests */,
@@ -375,6 +374,9 @@
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					13B07F861A680F5B00A75B9A = {
+						LastSwiftMigration = 0810;
 					};
 				};
 			};
@@ -561,9 +563,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				36BD608B1DAD996B00A22207 /* RNUnifiedContactsBridge.m in Sources */,
+				36A0F6191DF523AF003F79C0 /* RNUnifiedContactsBridge.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
-				36BD608A1DAD996B00A22207 /* RNUnifiedContacts.swift in Sources */,
+				36A0F6181DF523AF003F79C0 /* RNUnifiedContacts.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -626,6 +628,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				HEADER_SEARCH_PATHS = (
@@ -641,6 +644,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = ExampleApp;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -650,6 +654,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
