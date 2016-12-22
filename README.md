@@ -28,21 +28,13 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
    ```
    _This will install the latest react-native-unified-contacts package and add it to your package.json file._
 
-  2. In Xcode, click the "Add Files to <your-project-name>":
+  2. Navigate to `<your-project-directory>/node_modules/react-native-unified-contacts/` and drag the `RNUnifiedContacts` directory into your project directory in Xcode. 
 
-  ![Add Files to Project](readme_assets/add_files_to_project.gif)
+    Ensure that you check `Copy items if needed`, select `Create groups` and that your project is selected for a target.
 
-  3. Navigate to `<your-project-directory>/node_modules/react-native-unified-contacts/RNUnifiedContacts`, select all three files and click Add:
+    ![Select files](readme_assets/drag_and_drop_library_to_sidebar.gif)
 
-  ![Select files](readme_assets/select_files.gif)
-
-  **It's very important that you don't just add the `RNUnifiedContacts` folder because it won't work. You HAVE to add the files separately as shown above.**
-  
-  4. Now to group these three files together to make it nice and tidy. Select all three files in the project tree and right click. Then select "New Group from Selection". Rename the new group to `RNUnifiedContacts` (or whatever you like).
-
-  ![New Group from Selection](readme_assets/new_group_from_selection.gif)
-
-  5. For iOS 10+, you need to add a `NSContactsUsageDescription` key to your `Info.plist` that provides a reason why your app needs to access private information:
+  3. For iOS 10+, you need to add a `NSContactsUsageDescription` key to your `Info.plist` that provides a reason why your app needs to access private information:
 
   ```
 <key>NSContactsUsageDescription</key>
@@ -51,7 +43,7 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
 
   If done through XCode UI, the key is named `Privacy - Contacts Usage Description`.
 
-  6. See the [Usage section](#usage) for how to require the library and make use of it.
+  4. See the [Usage section](#usage) for how to require the library and make use of it.
 
 
 ## Usage
@@ -349,11 +341,11 @@ var base64ImageUri = 'data:image/png;base64,' + contact.thumbnailImageData;
 
 # Troubleshooting
 
-If you run into trouble, take a look at:
+If you run into trouble, take a look at the following thread:
 
-1. The [ExampleApp directory](https://github.com/joshuapinter/react-native-unified-contacts/tree/master/ExampleApp) in this repository as a basic working iOS example that outputs your device's Contacts to the console on launch.
+https://github.com/joshuapinter/react-native-unified-contacts/issues/15
 
-2. [This comment](https://github.com/joshuapinter/react-native-unified-contacts/issues/12#issuecomment-253066009) that walks through step-by-step creating a brand new React Native (v0.35) app, installing Unified Contacts and accessing the User's Contacts - it's what I used to build the `ExampleApp`.
+You should also have the latest version of XCode (8.2+) and Swift (3+).
 
 If that doesn't help you, please [create an Issue](https://github.com/joshuapinter/react-native-unified-contacts/issues/new) and we'll figure it out together.
 
