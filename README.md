@@ -30,7 +30,7 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
 
   2. Navigate to `<your-project-directory>/node_modules/react-native-unified-contacts/` and drag the `RNUnifiedContacts` directory into your project directory in Xcode. 
 
-    Ensure that you check `Copy items if needed`, select `Create groups` and that your project is selected for a target.
+    Ensure that `Copy items if needed` is **not** checked, select `Create groups` and ensure your project is selected for a target.
 
     ![Select files](readme_assets/drag_and_drop_library_to_sidebar.gif)
 
