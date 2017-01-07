@@ -1,3 +1,8 @@
+package com.joshuapinter;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.provider.ContactsContract;
 import android.widget.Toast;
 
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -48,5 +53,21 @@ public class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void test1(String message, int duration) {
         Toast.makeText(getReactApplicationContext(), message, duration).show();
+    }
+
+    @ReactMethod
+    public void test2(String message, int duration) {
+        Toast.makeText(getReactApplicationContext(), message, duration).show();
+    }
+
+    @ReactMethod
+    public void selectContact() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+        Activity currentActivity = getCurrentActivity();
+
+        if (intent.resolveActivity(currentActivity.getPackageManager()) != null) {
+            currentActivity.startActivityForResult(intent, 1);
+        }
     }
 }
