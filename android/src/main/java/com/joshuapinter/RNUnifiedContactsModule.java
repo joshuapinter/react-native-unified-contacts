@@ -23,7 +23,7 @@ import com.facebook.react.bridge.ReactMethod;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
+class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
     private Promise mSelectContactPromise;
     private Callback mSuccessCallback;
