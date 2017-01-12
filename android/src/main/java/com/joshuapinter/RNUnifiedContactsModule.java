@@ -1,5 +1,6 @@
 package com.joshuapinter;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -29,6 +30,8 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     private Callback mSuccessCallback;
     private Callback mErrorCallback;
 
+
+
     public RNUnifiedContactsModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
@@ -53,7 +56,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
             int columnDisplayName = contactCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
             String contactDisplayName = contactCursor.getString(columnDisplayName);
 
-            Log.w("Test1", contactDisplayName);
+            Log.w("Test11", contactDisplayName);
             mSuccessCallback.invoke(contactDisplayName);
 
 //            String[] projection = new String[]{ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME};
@@ -149,6 +152,65 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     public void test2(String message, int duration) {
         Toast.makeText(getReactApplicationContext(), message, duration).show();
     }
+
+    @ReactMethod
+    public Boolean userCanAccessContacts(Callback successCallback) {
+        int userCanAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS );
+
+        if (userCanAccessContacts == PackageManager.PERMISSION_GRANTED) {
+            successCallback.invoke(true);
+            return true;
+        }
+        else {
+            successCallback.invoke(false);
+            return false;
+        }
+    }
+
+    @ReactMethod
+    public void requestAccessToContacts(Callback successCallback) {
+        if (userCanAccessContacts(successCallback)) {
+            successCallback.invoke(true);
+        }
+        else {
+            // Request access.
+            ActivityCompat.requestPermissions(getCurrentActivity(),
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    2);
+
+            // Return boolean to user based on response of request.
+        }
+    }
+
+
+
+
+//    @objc func requestAccessToContacts(_ callback: @escaping (Array<Bool>) -> ()) -> Void {
+//        userCanAccessContacts() { (userCanAccessContacts) in
+//
+//            if (userCanAccessContacts == [true]) {
+//                callback([true])
+//
+//                return
+//            }
+//
+//            CNContactStore().requestAccess(for: CNEntityType.contacts) { (userCanAccessContacts, error) in
+//
+//                if (userCanAccessContacts) {
+//                    callback([true])
+//                    return
+//                }
+//                else {
+//                    callback([false])
+//
+//                    return
+//                }
+//
+//            }
+//
+//        }
+//
+//    }
 
     @ReactMethod
     public void selectContact(Callback errorCallback, Callback successCallback) {
