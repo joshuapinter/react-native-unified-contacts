@@ -55,7 +55,7 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
 ## Require Library
 
 ```js
-var Contacts  = require('react-native-unified-contacts');
+import Contacts from 'react-native-unified-contacts';
 ```
 
 ## Getting Contacts
