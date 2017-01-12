@@ -143,73 +143,22 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 //        },
     }
 
-    @ReactMethod
-    public void test1(String message, int duration) {
-        Toast.makeText(getReactApplicationContext(), message, duration).show();
-    }
-
-    @ReactMethod
-    public void test2(String message, int duration) {
-        Toast.makeText(getReactApplicationContext(), message, duration).show();
-    }
-
-    @ReactMethod
-    public Boolean userCanAccessContacts(Callback successCallback) {
-        int userCanAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS );
-
-        if (userCanAccessContacts == PackageManager.PERMISSION_GRANTED) {
-            successCallback.invoke(true);
-            return true;
-        }
-        else {
-            successCallback.invoke(false);
-            return false;
-        }
-    }
-
-    @ReactMethod
-    public void requestAccessToContacts(Callback successCallback) {
-        if (userCanAccessContacts(successCallback)) {
-            successCallback.invoke(true);
-        }
-        else {
-            // Request access.
-            ActivityCompat.requestPermissions(getCurrentActivity(),
-                    new String[]{Manifest.permission.READ_CONTACTS},
-                    2);
-
-            // Return boolean to user based on response of request.
-        }
-    }
-
-
-
-
-//    @objc func requestAccessToContacts(_ callback: @escaping (Array<Bool>) -> ()) -> Void {
-//        userCanAccessContacts() { (userCanAccessContacts) in
+    // This is no longer necessary because React Native has a PermissionsAndroid library that allows
+    // us to just use Javascript for permissions management in Android. So in index.js you'll see
+    // it handled there.
+    //
+//    @ReactMethod
+//    public Boolean userCanAccessContacts(Callback successCallback) {
+//        int userCanAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS );
 //
-//            if (userCanAccessContacts == [true]) {
-//                callback([true])
-//
-//                return
-//            }
-//
-//            CNContactStore().requestAccess(for: CNEntityType.contacts) { (userCanAccessContacts, error) in
-//
-//                if (userCanAccessContacts) {
-//                    callback([true])
-//                    return
-//                }
-//                else {
-//                    callback([false])
-//
-//                    return
-//                }
-//
-//            }
-//
+//        if (userCanAccessContacts == PackageManager.PERMISSION_GRANTED) {
+//            successCallback.invoke(true);
+//            return true;
 //        }
-//
+//        else {
+//            successCallback.invoke(false);
+//            return false;
+//        }
 //    }
 
     @ReactMethod
@@ -256,5 +205,6 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
             // empty box, no SMS
         }
     }
+
 
 }
