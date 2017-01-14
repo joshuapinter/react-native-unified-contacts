@@ -110,6 +110,12 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
             WritableArray phoneNumbers = getPhoneNumbersFromContact(contactId);
             contactMap.putArray( "phoneNumbers", phoneNumbers );
 
+            WritableArray emailAddresses = getEmailAddressesFromContact(contactId);
+            contactMap.putArray( "emailAddresses", emailAddresses );
+
+            WritableArray postalAddresses = getPostalAddressesFromContact(contactId);
+            contactMap.putArray( "postalAddresses", postalAddresses );
+
             Log.w("Test13", contactMap.toString());
         }
         nameCur.close();
@@ -121,47 +127,139 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     private WritableArray getPhoneNumbersFromContact(String contactId) {
         WritableArray phoneNumbers = Arguments.createArray();
 
-        Cursor phoneNumberCursor = contentResolver.query(
+        Cursor phoneNumbersCursor = contentResolver.query(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null,
                 ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId,
                 null,
                 null);
 
-        while (phoneNumberCursor.moveToNext()) {
+        while (phoneNumbersCursor.moveToNext()) {
             WritableMap phoneNumber = Arguments.createMap();
 
-            String number = phoneNumberCursor.getString(phoneNumberCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            String normalizedNumber = phoneNumberCursor.getString(phoneNumberCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER));
+            String number           = getStringFromCursor( phoneNumbersCursor, ContactsContract.CommonDataKinds.Phone.NUMBER );
+            String normalizedNumber = getStringFromCursor( phoneNumbersCursor, ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER );
+            String label            = getStringFromCursor( phoneNumbersCursor, ContactsContract.CommonDataKinds.Phone.LABEL );
 
-            String label = phoneNumberCursor.getString(phoneNumberCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LABEL));
+            int typeInt = getIntFromCursor( phoneNumbersCursor, ContactsContract.CommonDataKinds.Phone.TYPE );
+            String type = String.valueOf(ContactsContract.CommonDataKinds.Phone.getTypeLabel(getCurrentActivity().getResources(), typeInt, ""));
+
+            // NOTE: label is only set for custom Types, so to keep things consistent between iOS and Android
+            // and to essentially give the user what they really want, which is the label, put type into label if it's null.
+            if (label == null) label = type;
 
             phoneNumber.putString("stringValue", number);
             phoneNumber.putString("digits", normalizedNumber);
             phoneNumber.putString("label", label);
-
-            int typeInt = phoneNumberCursor.getInt(phoneNumberCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-
-            String type = String.valueOf(ContactsContract.CommonDataKinds.Phone.getTypeLabel(getCurrentActivity().getResources(), typeInt, ""));
             phoneNumber.putString("type", type);
-
-//            switch (type) {
-//                case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
-//                    // do something with the Home number here...
-//                    break;
-//                case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
-//                    // do something with the Mobile number here...
-//                    break;
-//                case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
-//                    // do something with the Work number here...
-//                    break;
-//            }
 
             phoneNumbers.pushMap(phoneNumber);
         }
-        phoneNumberCursor.close();
+        phoneNumbersCursor.close();
         return phoneNumbers;
     }
+
+    @NonNull
+    private WritableArray getEmailAddressesFromContact(String contactId) {
+        WritableArray emailAddresses = Arguments.createArray();
+
+        Cursor emailAddressesCursor = contentResolver.query(
+                ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                null,
+                ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = " + contactId,
+                null,
+                null);
+
+        while (emailAddressesCursor.moveToNext()) {
+            WritableMap emailAddress = Arguments.createMap();
+
+            String value = getStringFromCursor( emailAddressesCursor, ContactsContract.CommonDataKinds.Email.ADDRESS );
+            String label = getStringFromCursor( emailAddressesCursor, ContactsContract.CommonDataKinds.Email.LABEL );
+
+            int typeInt = getIntFromCursor( emailAddressesCursor, ContactsContract.CommonDataKinds.Email.TYPE );
+            String type = String.valueOf(ContactsContract.CommonDataKinds.Email.getTypeLabel(getCurrentActivity().getResources(), typeInt, ""));
+
+            // NOTE: label is only set for custom Types, so to keep things consistent between iOS and Android
+            // and to essentially give the user what they really want, which is the label, put type into label if it's null.
+            if (label == null) label = type;
+
+            emailAddress.putString("value", value); // TODO: Consider standardizing on "address" instead of "value".
+            emailAddress.putString("address", value); // Added in case Android devs are used to accessing it like this.
+            emailAddress.putString("label", label);
+            emailAddress.putString("type", type);
+
+            emailAddresses.pushMap(emailAddress);
+        }
+        emailAddressesCursor.close();
+        return emailAddresses;
+    }
+
+    @NonNull
+    private WritableArray getPostalAddressesFromContact(String contactId) {
+        WritableArray postalAddresses = Arguments.createArray();
+
+        String   whereString = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+        String[] whereParams = new String[]{ contactId, ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE };
+
+        Cursor postalAddressesCursor = contentResolver.query(
+                ContactsContract.Data.CONTENT_URI,
+                null,
+                whereString,
+                whereParams,
+                null,
+                null);
+
+        while (postalAddressesCursor.moveToNext()) {
+            WritableMap postalAddress = Arguments.createMap();
+
+            String pobox            = getStringFromCursor( postalAddressesCursor, ContactsContract.CommonDataKinds.StructuredPostal.POBOX);
+            String street           = getStringFromCursor( postalAddressesCursor, ContactsContract.CommonDataKinds.StructuredPostal.STREET);
+            String neighborhood     = getStringFromCursor( postalAddressesCursor, ContactsContract.CommonDataKinds.StructuredPostal.NEIGHBORHOOD);
+            String city             = getStringFromCursor( postalAddressesCursor, ContactsContract.CommonDataKinds.StructuredPostal.CITY);
+            String region           = getStringFromCursor( postalAddressesCursor, ContactsContract.CommonDataKinds.StructuredPostal.REGION);
+            String postcode         = getStringFromCursor( postalAddressesCursor, ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE);
+            String country          = getStringFromCursor( postalAddressesCursor, ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY);
+            String formattedAddress = getStringFromCursor( postalAddressesCursor, ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS);
+
+            String label = getStringFromCursor( postalAddressesCursor, ContactsContract.CommonDataKinds.StructuredPostal.LABEL );
+
+            int typeInt = getIntFromCursor( postalAddressesCursor, ContactsContract.CommonDataKinds.StructuredPostal.TYPE );
+            String type = String.valueOf(ContactsContract.CommonDataKinds.StructuredPostal.getTypeLabel(getCurrentActivity().getResources(), typeInt, ""));
+
+            // NOTE: label is only set for custom Types, so to keep things consistent between iOS and Android
+            // and to essentially give the user what they really want, which is the label, put type into label if it's null.
+            if (label == null) label = type;
+
+            postalAddress.putString("pobox", pobox);
+            postalAddress.putString("street", street);
+            postalAddress.putString("neighborhood", neighborhood);
+            postalAddress.putString("city", city);
+            postalAddress.putString("state", region); // // TODO: Consider standardizing on "region" instead.
+            postalAddress.putString("region", region); // Added in case Android devs are used to accessing it like this.
+            postalAddress.putString("postalCode", postcode); // TODO: Consider standardizing on "postalCode" instead.
+            postalAddress.putString("postcode", postcode); // Added in case Android devs are used to accessing it like this.
+            postalAddress.putString("country", country);
+            postalAddress.putString("stringValue", formattedAddress); // TODO: Consider standardizing on "formattedString" instead.
+            postalAddress.putString("formattedAddress", formattedAddress); // Added in case Android devs are used to accessing it like this.
+            postalAddress.putString("label", label);
+            postalAddress.putString("type", type);
+
+            postalAddresses.pushMap(postalAddress);
+        }
+        postalAddressesCursor.close();
+        return postalAddresses;
+    }
+
+    private String getStringFromCursor(Cursor cursor, String column) {
+        int columnIndex = cursor.getColumnIndex(column);
+        return cursor.getString(columnIndex);
+    }
+
+    private int getIntFromCursor(Cursor cursor, String column) {
+        int columnIndex = cursor.getColumnIndex(column);
+        return cursor.getInt(columnIndex);
+    }
+
 
 
 //            // column index of the phone number
