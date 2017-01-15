@@ -48,6 +48,11 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         reactContext.addActivityEventListener(mActivityEventListener);
     }
 
+    @Override
+    public String getName() {
+        return "RNUnifiedContacts";
+    }
+
     private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
         @Override
         public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
@@ -77,11 +82,11 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         WritableMap names = getNamesFromContact(contactId);
         contactMap.merge( names );
 
-        WritableMap organization = getOrganizationFromContact(contactId);
-        contactMap.merge( organization );
-
         WritableMap thumbnail = getThumbnailFromContact(contactId);
         contactMap.merge( thumbnail );
+
+        WritableMap organization = getOrganizationFromContact(contactId);
+        contactMap.merge( organization );
 
         WritableArray phoneNumbers = getPhoneNumbersFromContact(contactId);
         contactMap.putArray( "phoneNumbers", phoneNumbers );
@@ -429,41 +434,6 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     }
 
 
-
-//            // column index of the phone number
-//            Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,
-//                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
-//                    new String[]{id}, null);
-//            while (pCur.moveToNext()) {
-//                String phone = pCur.getString(
-//                        pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//                txtTelefono.setText(phone);         //print data
-//            }
-//            pCur.close();
-//            // column index of the email
-//            Cursor emailCur = cr.query(
-//                    ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-//                    null,
-//                    ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-//                    new String[]{id}, null);
-//            while (emailCur.moveToNext()) {
-//                // This would allow you get several email addresses
-//                // if the email addresses were stored in an array
-//                String email = emailCur.getString(
-//                        emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
-//                txtMailContacto.setText(email);         //print data
-//            }
-//            emailCur.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-
-    @Override
-    public String getName() {
-        return "RNUnifiedContacts";
-    }
 
     @Override
     public Map<String, Object> getConstants() {
