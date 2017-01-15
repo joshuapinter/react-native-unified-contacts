@@ -274,6 +274,7 @@ The returned Contact object(s) will look something like this:
   givenName:  "Donald",
   identifier: "A7806266-6574-4731-82E1-C54946F63E1C",
   imageDataAvailable: false,
+  thumbnailImageData: ...Base64 String...,
   phoneNumbers: [
     {
       countryCode: "us",
