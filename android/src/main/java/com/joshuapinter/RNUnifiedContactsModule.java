@@ -10,6 +10,7 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -23,6 +24,9 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -108,7 +112,9 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         WritableArray postalAddresses = getPostalAddressesFromContact(contactId);
         contactMap.putArray( "postalAddresses", postalAddresses );
 
-        // TODO: Birthday.
+        WritableMap birthday = getBirthdayFromContact(contactId);
+        contactMap.putMap( "birthday", birthday );
+
         // TODO: Anything else?
 
         String note = getNoteFromContact(contactId);
@@ -280,6 +286,48 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         }
         postalAddressesCursor.close();
         return postalAddresses;
+    }
+
+    @NonNull
+    private WritableMap getBirthdayFromContact(String contactId) {
+        WritableMap birthday = Arguments.createMap();
+
+        String   whereString = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.CommonDataKinds.Event.TYPE + " = ? AND " + ContactsContract.CommonDataKinds.Event.MIMETYPE + " = ?" ;
+        String[] whereParams = new String[]{ contactId, String.valueOf(ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY), ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE };
+
+        Cursor birthdayCursor = contentResolver.query(
+                ContactsContract.Data.CONTENT_URI,
+                null,
+                whereString,
+                whereParams,
+                null,
+                null);
+
+        birthdayCursor.moveToNext();
+
+        String stringValue = getStringFromCursor( birthdayCursor, ContactsContract.CommonDataKinds.Event.START_DATE );
+
+        birthday.putString( "stringValue", stringValue ); // This will always be returned but day/month/year might not be if it's not available.
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD");
+        try {
+            Date birthdayDate = dateFormat.parse(stringValue);
+
+            String day   = (String) DateFormat.format("dd",   birthdayDate);
+            String month = (String) DateFormat.format("MM",   birthdayDate);
+            String year  = (String) DateFormat.format("yyyy", birthdayDate);
+
+            birthday.putString( "day", day );
+            birthday.putString( "month", month );
+            birthday.putString( "year", year );
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        birthdayCursor.close();
+
+        return birthday;
     }
 
     @NonNull
