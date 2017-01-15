@@ -61,36 +61,8 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
             WritableMap contactMap = getContactDetailsFromContactId(contactId);
 
-//            int columnDisplayName = contactCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
-//            String contactDisplayName = contactCursor.getString(columnDisplayName);
-
-//            String family_name =       contactCursor.getString(contactCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME));
-
-
-//            int columnStructredName = contactCursor.getColumnCount(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME);
-
             Log.w("Test12", contactMap.toString());
             mSuccessCallback.invoke(contactMap);
-
-//            String[] projection = new String[]{ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME};
-//            Cursor cursor = activity.getContentResolver().query(contactUri, projection,
-//                    null, null, null);
-
-
-
-//            // If the cursor returned is valid, get the phone number
-//            if (cursor != null && cursor.moveToFirst()) {
-//                int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME);
-//                String name = cursor.getString(nameIndex);
-//
-//                Log.w("Test1", "name:");
-//                Log.w("Test1", name);
-//                // Do something with the phone number
-//                mSuccessCallback.invoke(name);
-//            }
-//
-//            Log.w("Test1", "onActivityResult after");
-//            mSelectContactPromise.resolve("Resolve1");
         }
     };
 
