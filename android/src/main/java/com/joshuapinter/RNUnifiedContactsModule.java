@@ -103,6 +103,9 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         WritableMap names = getNamesFromContact(contactId);
         contactMap.merge( names );
 
+        WritableMap organization = getOrganizationFromContact(contactId);
+        contactMap.merge( organization );
+
         WritableArray phoneNumbers = getPhoneNumbersFromContact(contactId);
         contactMap.putArray( "phoneNumbers", phoneNumbers );
 
@@ -159,6 +162,56 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         namesCursor.close();
 
         return names;
+    }
+
+    @NonNull
+    private WritableMap getOrganizationFromContact(String contactId) {
+        WritableMap organization = Arguments.createMap();
+
+        String   whereString = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+        String[] whereParams = new String[]{ contactId, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE };
+
+        Cursor organizationCursor = contentResolver.query(
+                ContactsContract.Data.CONTENT_URI,
+                null,
+                whereString,
+                whereParams,
+                null,
+                null);
+
+        organizationCursor.moveToNext();
+
+        String company        = getStringFromCursor( organizationCursor, ContactsContract.CommonDataKinds.Organization.COMPANY );
+        String department     = getStringFromCursor( organizationCursor, ContactsContract.CommonDataKinds.Organization.DEPARTMENT );
+        String jobDescription = getStringFromCursor( organizationCursor, ContactsContract.CommonDataKinds.Organization.JOB_DESCRIPTION );
+        String officeLocation = getStringFromCursor( organizationCursor, ContactsContract.CommonDataKinds.Organization.OFFICE_LOCATION );
+        String symbol         = getStringFromCursor( organizationCursor, ContactsContract.CommonDataKinds.Organization.SYMBOL );
+        String title          = getStringFromCursor( organizationCursor, ContactsContract.CommonDataKinds.Organization.TITLE );
+        String label          = getStringFromCursor( organizationCursor, ContactsContract.CommonDataKinds.Organization.LABEL );
+
+        int typeInt = getIntFromCursor( organizationCursor, ContactsContract.CommonDataKinds.Organization.TYPE );
+        String type = String.valueOf(ContactsContract.CommonDataKinds.Organization.getTypeLabel(getCurrentActivity().getResources(), typeInt, ""));
+
+        // NOTE: label is only set for custom Types, so to keep things consistent between iOS and Android
+        // and to essentially give the user what they really want, which is the label, put type into label if it's null.
+        if (label == null) label = type;
+
+        organization.putString( "company",        company );
+        organization.putString( "title",          title );
+
+        // NOTE: Below are hidden because based on current Android Contacts only company and title can be entered.
+        //   Additionally, it would be good to handle this as an array if we really want to do it correct. For example,
+        //   somebody could be the chairman or on the board of multiple companies and that would be important to capture.
+//        organization.putString( "department",     department );
+//        organization.putString( "jobDescription", jobDescription );
+//        organization.putString( "officeLocation", officeLocation );
+//        organization.putString( "symbol",         symbol );
+//        organization.putString( "label",          label );
+//        organization.putString( "type",           type );
+
+        organizationCursor.close();
+
+        return organization;
     }
 
     @NonNull
