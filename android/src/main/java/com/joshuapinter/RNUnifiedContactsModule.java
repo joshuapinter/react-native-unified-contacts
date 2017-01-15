@@ -2,15 +2,19 @@ package com.joshuapinter;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.format.DateFormat;
+import android.util.Base64;
 import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -24,6 +28,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
+import java.io.ByteArrayInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -50,14 +55,11 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
             contentResolver = activity.getContentResolver();
 
-//            String[] projection = {ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME};
-
             Cursor contactCursor = contentResolver.query(contactUri, null, null, null, null);
 
             contactCursor.moveToFirst();
 
-            int columnId = contactCursor.getColumnIndex(ContactsContract.Contacts._ID);
-            String contactId = contactCursor.getString(columnId);
+            int contactId = getIntFromCursor( contactCursor, ContactsContract.Contacts._ID );
 
             WritableMap contactMap = getContactDetailsFromContactId(contactId);
 
@@ -66,17 +68,20 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         }
     };
 
-    private WritableMap getContactDetailsFromContactId(String contactId) {
+    private WritableMap getContactDetailsFromContactId(int contactId) {
         WritableMap contactMap = Arguments.createMap();
 
-        contactMap.putString( "identifier", contactId ); // TODO: Consider standardizing on "id" instead.
-        contactMap.putString( "id",         contactId ); // Provided for Android devs used to getting it like this. Maybe _ID is necessary as well.
+        contactMap.putInt( "identifier", contactId ); // TODO: Consider standardizing on "id" instead.
+        contactMap.putInt( "id",         contactId ); // Provided for Android devs used to getting it like this. Maybe _ID is necessary as well.
 
         WritableMap names = getNamesFromContact(contactId);
         contactMap.merge( names );
 
         WritableMap organization = getOrganizationFromContact(contactId);
         contactMap.merge( organization );
+
+        WritableMap thumbnail = getThumbnailFromContact(contactId);
+        contactMap.merge( thumbnail );
 
         WritableArray phoneNumbers = getPhoneNumbersFromContact(contactId);
         contactMap.putArray( "phoneNumbers", phoneNumbers );
@@ -90,7 +95,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         WritableMap birthday = getBirthdayFromContact(contactId);
         contactMap.putMap( "birthday", birthday );
 
-        // TODO: Anything else?
+        // TODO: Instant Messenger entries.
 
         String note = getNoteFromContact(contactId);
         contactMap.putString( "note", note );
@@ -101,11 +106,11 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     }
 
     @NonNull
-    private WritableMap getNamesFromContact(String contactId) {
+    private WritableMap getNamesFromContact(int contactId) {
         WritableMap names = Arguments.createMap();
 
         String   whereString = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-        String[] whereParams = new String[]{ contactId, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE };
+        String[] whereParams = new String[]{String.valueOf(contactId), ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE };
 
         Cursor namesCursor = contentResolver.query(
                 ContactsContract.Data.CONTENT_URI,
@@ -137,11 +142,48 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     }
 
     @NonNull
-    private WritableMap getOrganizationFromContact(String contactId) {
+    private WritableMap getThumbnailFromContact(int contactId) {
+        WritableMap thumbnail = Arguments.createMap();
+
+        Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
+        Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+
+        Cursor photoCursor = contentResolver.query(
+                photoUri,
+                new String[] {ContactsContract.Contacts.Photo.PHOTO},
+                null,
+                null,
+                null,
+                null);
+
+        photoCursor.moveToNext();
+
+        byte[] data = photoCursor.getBlob(0);
+
+        if (data != null) {
+            thumbnail.putBoolean( "imageDataAvailable", true );
+
+            String base64Thumbnail = Base64.encodeToString(data, Base64.DEFAULT);
+
+            thumbnail.putString( "thumbnailImageData", base64Thumbnail );
+        }
+        else {
+            thumbnail.putBoolean( "imageDataAvailable", false );
+        }
+
+        photoCursor.close();
+
+        return thumbnail;
+    }
+
+
+
+    @NonNull
+    private WritableMap getOrganizationFromContact(int contactId) {
         WritableMap organization = Arguments.createMap();
 
         String   whereString = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-        String[] whereParams = new String[]{ contactId, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE };
+        String[] whereParams = new String[]{String.valueOf(contactId), ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE };
 
         Cursor organizationCursor = contentResolver.query(
                 ContactsContract.Data.CONTENT_URI,
@@ -187,7 +229,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     }
 
     @NonNull
-    private WritableArray getPhoneNumbersFromContact(String contactId) {
+    private WritableArray getPhoneNumbersFromContact(int contactId) {
         WritableArray phoneNumbers = Arguments.createArray();
 
         Cursor phoneNumbersCursor = contentResolver.query(
@@ -223,7 +265,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     }
 
     @NonNull
-    private WritableArray getEmailAddressesFromContact(String contactId) {
+    private WritableArray getEmailAddressesFromContact(int contactId) {
         WritableArray emailAddresses = Arguments.createArray();
 
         Cursor emailAddressesCursor = contentResolver.query(
@@ -258,11 +300,11 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     }
 
     @NonNull
-    private WritableArray getPostalAddressesFromContact(String contactId) {
+    private WritableArray getPostalAddressesFromContact(int contactId) {
         WritableArray postalAddresses = Arguments.createArray();
 
         String   whereString = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-        String[] whereParams = new String[]{ contactId, ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE };
+        String[] whereParams = new String[]{String.valueOf(contactId), ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE };
 
         Cursor postalAddressesCursor = contentResolver.query(
                 ContactsContract.Data.CONTENT_URI,
@@ -314,11 +356,11 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     }
 
     @NonNull
-    private WritableMap getBirthdayFromContact(String contactId) {
+    private WritableMap getBirthdayFromContact(int contactId) {
         WritableMap birthday = Arguments.createMap();
 
         String   whereString = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.CommonDataKinds.Event.TYPE + " = ? AND " + ContactsContract.CommonDataKinds.Event.MIMETYPE + " = ?" ;
-        String[] whereParams = new String[]{ contactId, String.valueOf(ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY), ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE };
+        String[] whereParams = new String[]{String.valueOf(contactId), String.valueOf(ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY), ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE };
 
         Cursor birthdayCursor = contentResolver.query(
                 ContactsContract.Data.CONTENT_URI,
@@ -356,9 +398,9 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     }
 
     @NonNull
-    private String getNoteFromContact(String contactId) {
+    private String getNoteFromContact(int contactId) {
         String   whereString = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-        String[] whereParams = new String[]{ contactId, ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE };
+        String[] whereParams = new String[]{String.valueOf(contactId), ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE };
 
         Cursor noteCursor = contentResolver.query(
                 ContactsContract.Data.CONTENT_URI,
