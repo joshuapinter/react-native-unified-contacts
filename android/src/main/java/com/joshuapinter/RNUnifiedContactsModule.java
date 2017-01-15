@@ -93,39 +93,66 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     private WritableMap getContactDetailsFromContactId(String contactId) {
         WritableMap contactMap = Arguments.createMap();
 
-        String whereName = ContactsContract.Data.MIMETYPE + " = ? AND " + ContactsContract.CommonDataKinds.StructuredName.CONTACT_ID + " = ?";
-        String[] whereNameParams = new String[] { ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE, contactId };
-        Cursor nameCur = contentResolver.query(ContactsContract.Data.CONTENT_URI, null, whereName, whereNameParams, ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME);
-        while (nameCur.moveToNext()) {
-            String given = nameCur.getString(nameCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME));
-            String family = nameCur.getString(nameCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME));
-//            String display = nameCur.getString(nameCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME));
-            String middle = nameCur.getString(nameCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.MIDDLE_NAME));
+        contactMap.putString( "identifier", contactId ); // TODO: Consider standardizing on "id" instead.
+        contactMap.putString( "id",         contactId ); // Provided for Android devs used to getting it like this. Maybe _ID is necessary as well.
 
-            contactMap.putString( "identifier", contactId );
-            contactMap.putString( "familyName", family );
-            contactMap.putString( "middleName", middle );
-            contactMap.putString( "givenName", given );
+        WritableMap names = getNamesFromContact(contactId);
+        contactMap.merge( names );
 
-            WritableArray phoneNumbers = getPhoneNumbersFromContact(contactId);
-            contactMap.putArray( "phoneNumbers", phoneNumbers );
+        WritableArray phoneNumbers = getPhoneNumbersFromContact(contactId);
+        contactMap.putArray( "phoneNumbers", phoneNumbers );
 
-            WritableArray emailAddresses = getEmailAddressesFromContact(contactId);
-            contactMap.putArray( "emailAddresses", emailAddresses );
+        WritableArray emailAddresses = getEmailAddressesFromContact(contactId);
+        contactMap.putArray( "emailAddresses", emailAddresses );
 
-            WritableArray postalAddresses = getPostalAddressesFromContact(contactId);
-            contactMap.putArray( "postalAddresses", postalAddresses );
+        WritableArray postalAddresses = getPostalAddressesFromContact(contactId);
+        contactMap.putArray( "postalAddresses", postalAddresses );
 
+        // TODO: Birthday.
+        // TODO: Anything else?
 
+        String note = getNoteFromContact(contactId);
+        contactMap.putString( "note", note );
 
-            String note = getNoteFromContact(contactId);
-            contactMap.putString( "note", note );
-
-            Log.w("Test13", contactMap.toString());
-        }
-        nameCur.close();
+        Log.w("Test13", contactMap.toString());
 
         return contactMap;
+    }
+
+    @NonNull
+    private WritableMap getNamesFromContact(String contactId) {
+        WritableMap names = Arguments.createMap();
+
+        String   whereString = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+        String[] whereParams = new String[]{ contactId, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE };
+
+        Cursor namesCursor = contentResolver.query(
+                ContactsContract.Data.CONTENT_URI,
+                null,
+                whereString,
+                whereParams,
+                null,
+                null);
+
+        namesCursor.moveToNext();
+
+        String prefix      = getStringFromCursor( namesCursor, ContactsContract.CommonDataKinds.StructuredName.PREFIX );
+        String givenName   = getStringFromCursor( namesCursor, ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME );
+        String middleName  = getStringFromCursor( namesCursor, ContactsContract.CommonDataKinds.StructuredName.MIDDLE_NAME );
+        String familyName  = getStringFromCursor( namesCursor, ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME );
+        String suffix      = getStringFromCursor( namesCursor, ContactsContract.CommonDataKinds.StructuredName.SUFFIX );
+        String displayName = getStringFromCursor( namesCursor, ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME );
+
+        names.putString( "prefix",      prefix );
+        names.putString( "givenName",   givenName );
+        names.putString( "middleName",  middleName );
+        names.putString( "familyName",  familyName );
+        names.putString( "suffix",      suffix );
+        names.putString( "displayName", displayName );
+
+        namesCursor.close();
+
+        return names;
     }
 
     @NonNull
