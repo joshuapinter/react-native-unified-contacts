@@ -116,6 +116,11 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
             WritableArray postalAddresses = getPostalAddressesFromContact(contactId);
             contactMap.putArray( "postalAddresses", postalAddresses );
 
+
+
+            String note = getNoteFromContact(contactId);
+            contactMap.putString( "note", note );
+
             Log.w("Test13", contactMap.toString());
         }
         nameCur.close();
@@ -248,6 +253,28 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         }
         postalAddressesCursor.close();
         return postalAddresses;
+    }
+
+    @NonNull
+    private String getNoteFromContact(String contactId) {
+        String   whereString = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+        String[] whereParams = new String[]{ contactId, ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE };
+
+        Cursor noteCursor = contentResolver.query(
+                ContactsContract.Data.CONTENT_URI,
+                null,
+                whereString,
+                whereParams,
+                null,
+                null);
+
+        noteCursor.moveToNext();
+
+        String note = getStringFromCursor( noteCursor, ContactsContract.CommonDataKinds.Note.NOTE );
+
+        noteCursor.close();
+
+        return note;
     }
 
     private String getStringFromCursor(Cursor cursor, String column) {
