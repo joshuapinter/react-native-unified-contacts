@@ -120,7 +120,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
                 null,
                 null);
 
-        namesCursor.moveToNext();
+        if ( !namesCursor.moveToFirst() ) return names;
 
         String prefix      = getStringFromCursor( namesCursor, ContactsContract.CommonDataKinds.StructuredName.PREFIX );
         String givenName   = getStringFromCursor( namesCursor, ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME );
@@ -156,7 +156,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
                 null,
                 null);
 
-        photoCursor.moveToNext();
+        if ( !photoCursor.moveToFirst() ) return thumbnail;
 
         byte[] data = photoCursor.getBlob(0);
 
@@ -193,7 +193,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
                 null,
                 null);
 
-        organizationCursor.moveToNext();
+        if ( !organizationCursor.moveToFirst() ) return organization;
 
         String company        = getStringFromCursor( organizationCursor, ContactsContract.CommonDataKinds.Organization.COMPANY );
         String department     = getStringFromCursor( organizationCursor, ContactsContract.CommonDataKinds.Organization.DEPARTMENT );
@@ -355,7 +355,6 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         return postalAddresses;
     }
 
-    @NonNull
     private WritableMap getBirthdayFromContact(int contactId) {
         WritableMap birthday = Arguments.createMap();
 
@@ -370,13 +369,14 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
                 null,
                 null);
 
-        birthdayCursor.moveToNext();
+        if ( !birthdayCursor.moveToFirst() ) return null;
 
         String stringValue = getStringFromCursor( birthdayCursor, ContactsContract.CommonDataKinds.Event.START_DATE );
 
         birthday.putString( "stringValue", stringValue ); // This will always be returned but day/month/year might not be if it's not available.
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD");
+
         try {
             Date birthdayDate = dateFormat.parse(stringValue);
 
@@ -397,7 +397,6 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         return birthday;
     }
 
-    @NonNull
     private String getNoteFromContact(int contactId) {
         String   whereString = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
         String[] whereParams = new String[]{String.valueOf(contactId), ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE };
@@ -410,7 +409,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
                 null,
                 null);
 
-        noteCursor.moveToNext();
+        if ( !noteCursor.moveToFirst() ) return null;
 
         String note = getStringFromCursor( noteCursor, ContactsContract.CommonDataKinds.Note.NOTE );
 
