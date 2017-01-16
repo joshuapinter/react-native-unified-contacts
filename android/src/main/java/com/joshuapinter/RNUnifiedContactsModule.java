@@ -53,6 +53,70 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         return "RNUnifiedContacts";
     }
 
+    @Override
+    public Map<String, Object> getConstants() {
+        final Map<String, Object> constants = new HashMap<>();
+//        constants.put(DURATION_SHORT_KEY, Toast.LENGTH_SHORT);
+//        constants.put(DURATION_LONG_KEY, Toast.LENGTH_LONG);
+        return constants;
+
+//        @"phoneNumberLabel": @{
+//            @"HOME"     : @"home",
+//            @"WORK"     : @"work",
+//            @"MOBILE"   : @"mobile",
+//            @"IPHONE"   : @"iPhone",
+//            @"MAIN"     : @"main",
+//            @"HOME_FAX" : @"home fax",
+//            @"WORK_FAX" : @"work fax",
+//            @"PAGER"    : @"pager",
+//            @"OTHER"    : @"other",
+//        },
+//        @"emailAddressLabel": @{
+//            @"HOME"     : @"home",
+//            @"WORK"     : @"work",
+//            @"ICLOUD"   : @"iCloud",
+//            @"OTHER"    : @"other",
+//        },
+    }
+
+    @ReactMethod
+    public void getContacts( Callback errorCallback, Callback successCallback ) {
+        WritableArray contacts = Arguments.createArray();
+
+        contentResolver = getCurrentActivity().getContentResolver();
+
+        Cursor contactCursor = contentResolver.query(
+                ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null);
+
+        while( contactCursor.moveToNext() ) {
+
+            int contactId = getIntFromCursor( contactCursor, ContactsContract.Contacts._ID );
+
+            WritableMap contact = getContactDetailsFromContactId(contactId);
+
+            contacts.pushMap(contact);
+        }
+
+        contactCursor.close();
+
+        successCallback.invoke(contacts);
+    }
+
+    @ReactMethod
+    public void selectContact(Callback errorCallback, Callback successCallback) {
+        mErrorCallback = errorCallback;
+        mSuccessCallback = successCallback;
+
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+        Activity currentActivity = getCurrentActivity();
+
+        if (intent.resolveActivity(currentActivity.getPackageManager()) != null) {
+            currentActivity.startActivityForResult(intent, 1);
+        }
+    }
+
     private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
         @Override
         public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
@@ -149,6 +213,8 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     @NonNull
     private WritableMap getThumbnailFromContact(int contactId) {
         WritableMap thumbnail = Arguments.createMap();
+
+        // NOTE: See this for getting the high-res image: https://developer.android.com/reference/android/provider/ContactsContract.Contacts.Photo.html
 
         Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
         Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
@@ -435,31 +501,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
 
 
-    @Override
-    public Map<String, Object> getConstants() {
-        final Map<String, Object> constants = new HashMap<>();
-//        constants.put(DURATION_SHORT_KEY, Toast.LENGTH_SHORT);
-//        constants.put(DURATION_LONG_KEY, Toast.LENGTH_LONG);
-        return constants;
 
-//        @"phoneNumberLabel": @{
-//            @"HOME"     : @"home",
-//            @"WORK"     : @"work",
-//            @"MOBILE"   : @"mobile",
-//            @"IPHONE"   : @"iPhone",
-//            @"MAIN"     : @"main",
-//            @"HOME_FAX" : @"home fax",
-//            @"WORK_FAX" : @"work fax",
-//            @"PAGER"    : @"pager",
-//            @"OTHER"    : @"other",
-//        },
-//        @"emailAddressLabel": @{
-//            @"HOME"     : @"home",
-//            @"WORK"     : @"work",
-//            @"ICLOUD"   : @"iCloud",
-//            @"OTHER"    : @"other",
-//        },
-    }
 
     // This is no longer necessary because React Native has a PermissionsAndroid library that allows
     // us to just use Javascript for permissions management in Android. So in index.js you'll see
@@ -479,19 +521,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 //        }
 //    }
 
-    @ReactMethod
-    public void selectContact(Callback errorCallback, Callback successCallback) {
-        mErrorCallback = errorCallback;
-        mSuccessCallback = successCallback;
 
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
-        Activity currentActivity = getCurrentActivity();
-
-        if (intent.resolveActivity(currentActivity.getPackageManager()) != null) {
-            currentActivity.startActivityForResult(intent, 1);
-        }
-    }
 
     @ReactMethod
     public void getMessages() {

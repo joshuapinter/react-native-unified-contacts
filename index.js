@@ -25,6 +25,27 @@ exports.requestAccessToContacts = function() {
   return promise;
 }
 
+exports.getContacts = function() {
+  var promise = new Promise( function ( resolve, reject ) {
+
+    exports.requestAccessToContacts()
+      .then( granted => {
+        if (granted) {
+          RNUnifiedContacts.getContacts(
+            function(error) { console.log(error); reject(error); },
+            function(contacts) { resolve(contacts) } 
+          );
+        }
+        else {
+          reject ("No access to Contacts.");
+        }
+      })
+      .catch( result => reject(result) );
+  });
+
+  return promise;
+}
+
 exports.selectContact = function() {
   var promise = new Promise( function( resolve, reject ) {
      
@@ -33,7 +54,8 @@ exports.selectContact = function() {
         if (granted) {
           RNUnifiedContacts.selectContact( 
             function(error) { console.log(error); reject(error); }, 
-            function(contact) { resolve(contact) } );
+            function(contact) { resolve(contact) } 
+          );
         }
         else {
           reject("No access to Contacts.");
