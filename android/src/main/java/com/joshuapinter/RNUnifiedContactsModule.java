@@ -140,8 +140,8 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     private WritableMap getContactDetailsFromContactId(int contactId) {
         WritableMap contactMap = Arguments.createMap();
 
-        contactMap.putInt( "identifier", contactId ); // TODO: Consider standardizing on "id" instead.
-        contactMap.putInt( "id",         contactId ); // Provided for Android devs used to getting it like this. Maybe _ID is necessary as well.
+        contactMap.putInt(    "id",         contactId ); // Provided for Android devs used to getting it like this. Maybe _ID is necessary as well.
+        contactMap.putString( "identifier", String.valueOf(contactId) ); // TODO: Consider standardizing on "id" instead.
 
         WritableMap names = getNamesFromContact(contactId);
         contactMap.merge( names );
