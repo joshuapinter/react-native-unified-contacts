@@ -53,3 +53,4 @@ fastlane/screenshots
 node_modules/**/*
 sources
 .DS_Store
+/android/react-native-unified-contacts.iml
