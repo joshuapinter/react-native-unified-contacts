@@ -132,7 +132,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
             WritableMap contactMap = getContactDetailsFromContactId(contactId);
 
-            Log.w("Test12", contactMap.toString());
+//            Log.w("Test12", contactMap.toString());
             mSuccessCallback.invoke(contactMap);
         }
     };
