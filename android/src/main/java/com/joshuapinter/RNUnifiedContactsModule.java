@@ -169,7 +169,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         String note = getNoteFromContact(contactId);
         contactMap.putString( "note", note );
 
-        Log.w("Test13", contactMap.toString());
+//        Log.w("Test13", contactMap.toString());
 
         return contactMap;
     }
