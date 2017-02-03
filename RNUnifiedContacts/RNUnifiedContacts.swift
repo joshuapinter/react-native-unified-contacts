@@ -459,7 +459,7 @@ class RNUnifiedContacts: NSObject {
         dict["postalCode"]  = item.value.postalCode
         dict["country"]     = item.value.country
         dict["isoCountryCode"]     = item.value.isoCountryCode
-        dict["stringValue"] = CNPostalAddressFormatter.string(from: item.value, style: .mailingAddress)
+        dict["mailingAddress"] = CNPostalAddressFormatter.string(from: item.value, style: .mailingAddress)
         return dict
         } as AnyObject?
     }
