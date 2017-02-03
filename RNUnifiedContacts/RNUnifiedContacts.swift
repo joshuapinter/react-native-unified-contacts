@@ -341,38 +341,41 @@ class RNUnifiedContacts: NSObject {
     dict["identifier"] = item.identifier
     if let label = item.label {
       if label.hasPrefix("_$!<") && label.hasSuffix(">!$_") {
-        dict["label"] = label.substring(with: label.index(label.startIndex, offsetBy: 4)..<label.index(label.endIndex, offsetBy: -4))
+        addString(dict: &dict, key: "label", value: label.substring(with: label.index(label.startIndex, offsetBy: 4)..<label.index(label.endIndex, offsetBy: -4)))
       } else {
-        dict["label"] = item.label
+        addString(dict: &dict, key: "label", value: item.label)
       }
     }
-    dict["localizedLabel"] = item.label == nil ? nil : CNLabeledValue<T>.localizedString(forLabel: item.label!)
+    addString(dict: &dict, key: "localizedLabel", value: item.label == nil ? nil : CNLabeledValue<T>.localizedString(forLabel: item.label!))
     return dict
   }
   
-  func addString(dict: inout [String: AnyObject], key: String, value: String?) {
+  func addString(dict: inout [String: Any], key: String, value: String?) {
     if let value = value, !value.isEmpty {
-      dict[key] = value as AnyObject?
+      let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+      if (!trimmed.isEmpty) {
+        dict[key] = value
+      }
     }
   }
 
   func convertCNContactToDictionary(_ cNContact: CNContact) -> NSDictionary {
-    var contact = [String: AnyObject]()
+    var contact = [String: Any]()
     
     if let birthday = cNContact.birthday {
       var date = [String: Int]()
       date["year"] = birthday.year == NSDateComponentUndefined ? nil : birthday.year
       date["month"] = birthday.month == NSDateComponentUndefined ? nil : birthday.month
       date["day"] = birthday.day == NSDateComponentUndefined ? nil : birthday.day
-      contact["birthday"] = date as AnyObject?
+      contact["birthday"] = date
     }
     
     if cNContact.contactRelations.count > 0 {
       contact["contactRelations"] = cNContact.contactRelations.map { (item) -> [String: Any] in
         var dict = getLabeledDict(item)
-        dict["name"] = item.value.name
+        addString(dict: &dict, key: "name", value: item.value.name)
         return dict
-        } as AnyObject?
+        }
     }
     
     addString(dict: &contact, key: "contactType", value: cNContact.contactType == CNContactType.person ? "person" : "organization")
@@ -384,7 +387,7 @@ class RNUnifiedContacts: NSObject {
         dict["month"] = item.value.month == NSDateComponentUndefined ? nil : item.value.month
         dict["day"] = item.value.day == NSDateComponentUndefined ? nil : item.value.day
         return dict
-        } as AnyObject?
+        }
     }
     
     addString(dict: &contact, key: "departmentName", value: cNContact.departmentName)
@@ -392,25 +395,25 @@ class RNUnifiedContacts: NSObject {
     if cNContact.emailAddresses.count > 0 {
       contact["emailAddresses"] = cNContact.emailAddresses.map { (item) -> [String: Any] in
         var dict = getLabeledDict(item)
-        dict["value"] = item.value
+        addString(dict: &dict, key: "value", value: item.value as String)
         return dict
-        } as AnyObject?
+        }
     }
     
     addString(dict: &contact, key: "familyName", value: cNContact.familyName)
     addString(dict: &contact, key: "givenName", value: cNContact.givenName)
     addString(dict: &contact, key: "identifier", value: cNContact.identifier)
     
-    contact["imageDataAvailable"] = cNContact.imageDataAvailable as AnyObject?
+    contact["imageDataAvailable"] = cNContact.imageDataAvailable
     
     if cNContact.instantMessageAddresses.count > 0 {
       contact["instantMessageAddresses"] = cNContact.instantMessageAddresses.map { (item) -> [String: Any] in
         var dict = getLabeledDict(item)
-        dict["service"] = item.value.service
-        dict["localizedService"] = CNInstantMessageAddress.localizedString(forService: item.value.service)
-        dict["username"] = item.value.username
+        addString(dict: &dict, key: "service", value: item.value.service)
+        addString(dict: &dict, key: "localizedService", value: CNInstantMessageAddress.localizedString(forService: item.value.service))
+        addString(dict: &dict, key: "username", value: item.value.username)
         return dict
-        } as AnyObject?
+        }
     }
     
     addString(dict: &contact, key: "jobTitle", value: cNContact.jobTitle)
@@ -424,7 +427,7 @@ class RNUnifiedContacts: NSObject {
       date["year"] = nonGregorianBirthday.year == NSDateComponentUndefined ? nil : nonGregorianBirthday.year
       date["month"] = nonGregorianBirthday.month == NSDateComponentUndefined ? nil : nonGregorianBirthday.month
       date["day"] = nonGregorianBirthday.day == NSDateComponentUndefined ? nil : nonGregorianBirthday.day
-      contact["nonGregorianBirthday"] = date as AnyObject?
+      contact["nonGregorianBirthday"] = date
     }
     
     addString(dict: &contact, key: "note", value: cNContact.note)
@@ -433,11 +436,11 @@ class RNUnifiedContacts: NSObject {
     if cNContact.phoneNumbers.count > 0 {
       contact["phoneNumbers"] = cNContact.phoneNumbers.map { (item) -> [String: Any] in
         var dict = getLabeledDict(item)
-        dict["stringValue"] = item.value.stringValue
-        dict["countryCode"] = item.value.value(forKey: "countryCode") as? String
-        dict["digits"]      = item.value.value(forKey: "digits") as? String
+        addString(dict: &dict, key: "stringValue", value: item.value.stringValue)
+        addString(dict: &dict, key: "countryCode", value: item.value.value(forKey: "countryCode") as? String)
+        addString(dict: &dict, key: "digits", value: item.value.value(forKey: "digits") as? String)
         return dict
-        } as AnyObject?
+        }
     }
     
     addString(dict: &contact, key: "phoneticFamilyName", value: cNContact.phoneticFamilyName)
@@ -445,7 +448,7 @@ class RNUnifiedContacts: NSObject {
     addString(dict: &contact, key: "phoneticMiddleName", value: cNContact.phoneticMiddleName)
     
     // if #available(iOS 10.0, *) {
-    //   contact["phoneticOrganizationName"]   = cNContact.phoneticOrganizationName as AnyObject?
+    //   contact["phoneticOrganizationName"]   = cNContact.phoneticOrganizationName
     // } else {
     //   // Fallback on earlier versions
     // }
@@ -453,15 +456,15 @@ class RNUnifiedContacts: NSObject {
     if cNContact.postalAddresses.count > 0 {
       contact["postalAddresses"] = cNContact.postalAddresses.map { (item) -> [String: Any] in
         var dict = getLabeledDict(item)
-        dict["street"]      = item.value.street
-        dict["city"]        = item.value.city
-        dict["state"]       = item.value.state
-        dict["postalCode"]  = item.value.postalCode
-        dict["country"]     = item.value.country
-        dict["isoCountryCode"]     = item.value.isoCountryCode
-        dict["mailingAddress"] = CNPostalAddressFormatter.string(from: item.value, style: .mailingAddress)
+        addString(dict: &dict, key: "street", value: item.value.street)
+        addString(dict: &dict, key: "city", value: item.value.city)
+        addString(dict: &dict, key: "state", value: item.value.state)
+        addString(dict: &dict, key: "postalCode", value: item.value.postalCode)
+        addString(dict: &dict, key: "country", value: item.value.country)
+        addString(dict: &dict, key: "isoCountryCode", value: item.value.isoCountryCode)
+        addString(dict: &dict, key: "mailingAddress", value: CNPostalAddressFormatter.string(from: item.value, style: .mailingAddress))
         return dict
-        } as AnyObject?
+        }
     }
     
     addString(dict: &contact, key: "previousFamilyName", value: cNContact.previousFamilyName)
@@ -469,13 +472,13 @@ class RNUnifiedContacts: NSObject {
     if cNContact.socialProfiles.count > 0 {
       contact["socialProfiles"] = cNContact.socialProfiles.map { (item) -> [String: Any] in
         var dict = getLabeledDict(item)
-        dict["urlString"] = item.value.urlString
-        dict["username"] = item.value.username
-        dict["userIdentifier"] = item.value.userIdentifier
-        dict["service"] = item.value.service
-        dict["localizedService"] = CNSocialProfile.localizedString(forService: item.value.service)
+        addString(dict: &dict, key: "urlString", value: item.value.urlString)
+        addString(dict: &dict, key: "username", value: item.value.username)
+        addString(dict: &dict, key: "userIdentifier", value: item.value.userIdentifier)
+        addString(dict: &dict, key: "service", value: item.value.service)
+        addString(dict: &dict, key: "localizedService", value: CNSocialProfile.localizedString(forService: item.value.service))
         return dict
-        } as AnyObject?
+        }
     }
     
     if let thumbnailImageData = cNContact.thumbnailImageData {
@@ -485,9 +488,9 @@ class RNUnifiedContacts: NSObject {
     if cNContact.urlAddresses.count > 0 {
       contact["urlAddresses"] = cNContact.urlAddresses.map { (item) -> [String: Any] in
         var dict = getLabeledDict(item)
-        dict["value"] = item.value
+        addString(dict: &dict, key: "value", value: item.value as String)
         return dict
-        } as AnyObject?
+        }
     }
     
     addString(dict: &contact, key: "fullName", value: CNContactFormatter.string( from: cNContact, style: .fullName ))
