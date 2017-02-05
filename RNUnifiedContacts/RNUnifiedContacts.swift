@@ -63,45 +63,32 @@ class RNUnifiedContacts: NSObject {
 
   @objc func requestAccessToContacts(_ callback: @escaping (Array<Bool>) -> ()) -> Void {
     userCanAccessContacts() { (userCanAccessContacts) in
-
       if (userCanAccessContacts == [true]) {
         callback([true])
-
         return
       }
 
       CNContactStore().requestAccess(for: CNEntityType.contacts) { (userCanAccessContacts, error) in
-
         if (userCanAccessContacts) {
           callback([true])
           return
-        }
-        else {
+        } else {
           callback([false])
-
           return
         }
-
       }
-
     }
-
   }
   
   @objc func getContact(_ identifier: String, callback: (NSArray) -> () ) -> Void {
-      
     let cNContact = getCNContact( identifier, keysToFetch: keysToFetch as [CNKeyDescriptor] )
-    
     if ( cNContact == nil ) {
       callback( ["Could not find a contact with the identifier ".appending(identifier), NSNull()] )
-      
       return
     }
-    
-    let contactAsDictionary = convertCNContactToDictionary( cNContact! )
-    
-    callback( [NSNull(), contactAsDictionary] )
 
+    let contactAsDictionary = convertCNContactToDictionary( cNContact! )
+    callback( [NSNull(), contactAsDictionary] )
   }
 
   // Pseudo overloads getContacts but with no searchText.
@@ -117,11 +104,8 @@ class RNUnifiedContacts: NSObject {
   }
 
   @objc func searchContacts(_ searchText: String?, callback: (NSArray) -> ()) -> Void {
-
     let contactStore = CNContactStore()
-
     do {
-
       var cNContacts = [CNContact]()
 
       let fetchRequest = CNContactFetchRequest(keysToFetch: keysToFetch as [CNKeyDescriptor])
@@ -129,31 +113,24 @@ class RNUnifiedContacts: NSObject {
       fetchRequest.sortOrder = CNContactSortOrder.givenName
 
       try contactStore.enumerateContacts(with: fetchRequest) { (cNContact, pointer) -> Void in
-
-        if !cNContact.givenName.isEmpty {  // Ignore any Contacts that don't have a Given Name. Garbage Contact.
-
-          if searchText == nil {
-            // Add all Contacts if no searchText is provided.
+        if searchText == nil {
+          // Add all Contacts if no searchText is provided.
+          cNContacts.append(cNContact)
+        } else {
+          // If the Contact contains the search string then add it.
+          if self.contactContainsText( cNContact, searchText: searchText! ) {
             cNContacts.append(cNContact)
-          }
-          else {
-            // If the Contact contains the search string then add it.
-            if self.contactContainsText( cNContact, searchText: searchText! ) {
-              cNContacts.append(cNContact)
-            }
           }
         }
       }
 
       var contacts = [NSDictionary]();
-
       for cNContact in cNContacts {
         contacts.append( convertCNContactToDictionary(cNContact) )
       }
 
       callback([NSNull(), contacts])
-    }
-    catch let error as NSError {
+    } catch let error as NSError {
       NSLog("Problem getting Contacts.")
       NSLog(error.localizedDescription)
 
@@ -310,17 +287,12 @@ class RNUnifiedContacts: NSObject {
   func getCNContact( _ identifier: String, keysToFetch: [CNKeyDescriptor] ) -> CNContact? {
     let contactStore = CNContactStore()
     do {
-      
       let cNContact = try contactStore.unifiedContact( withIdentifier: identifier, keysToFetch: keysToFetch )
       return cNContact
-      
-    }
-    catch let error as NSError {
-      
+    } catch let error as NSError {
       NSLog("Problem getting unified Contact with identifier: " + identifier)
       NSLog(error.localizedDescription)
       return nil
-      
     }
   }
   
@@ -330,8 +302,7 @@ class RNUnifiedContacts: NSObject {
 
     if searchText.isEmpty || textToSearch.contains(searchText) {
       return true
-    }
-    else {
+    } else {
       return false
     }
   }
