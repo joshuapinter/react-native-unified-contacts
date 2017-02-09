@@ -270,59 +270,113 @@ The returned Contact object(s) will look something like this:
 
 ```js
 {
-  familyName: "Draper",
-  givenName:  "Donald",
-  identifier: "A7806266-6574-4731-82E1-C54946F63E1C",
-  imageDataAvailable: false,
-  thumbnailImageData: ...Base64 String...,
-  phoneNumbers: [
+  "contactRelations": [
     {
-      countryCode: "us",
-      digits:      "4032694148",
-      identifier:  "9CDE4C1B-412F-4974-BE8D-80C951004694",
-      label:       "work",
-      stringValue: "(403) 269-4147"  
-    },
-    {
-      countryCode: "us",
-      digits:      "4036071713",
-      identifier:  "40477249-B50B-46A8-BF35-0A62B895A15A",
-      label:       "mobile",
-      stringValue: "(403) 607-1713"  
-    }  
-  ],
-  emailAddresses: [
-    {
-      identifier: "9CDE4C1B-412F-4974-BE8D-80C951004694",
-      label:      "work",
-      value:      "don.draper@scdp.com"
-    },
-    {
-      identifier: "9CDE4C1B-412F-4974-BE8D-80C951004694",
-      label:      "home",
-      value:      "theonedon@gmail.com"
+      "label": "Mother",
+      "identifier": "2D103009-45E2-4CA5-A2D5-50642EE7430C",
+      "name": "Mother Name",
+      "localizedLabel": "mother"
     }
   ],
-  postalAddresses: [
+  "middleName": "Middle Name",
+  "phoneticGivenName": "Phonetic Given Name",
+  "phoneticMiddleName": "Phonetic Middle Name",
+  "nickname": "Nickname",
+  "phoneticFamilyName": "Phonetic Family Name",
+  "previousFamilyName": "Previous Family Name",
+  "familyName": "Family Name",
+  "phoneNumbers": [
     {
-      city:        "Menlo Park",
-      country:     "United States",
-      identifier:  "7481D15D-C27C-4805-876F-D2C0D413CEBD",
-      label:       "work",
-      postalCode:  "94025",
-      state:       "CA",
-      street:      "3000 Sand Hill Road, 3-290"
-      stringValue: "3000 Sand Hill Road, 3-290.↵Menlo Park CA 94025↵"
+      "label": "Home",
+      "identifier": "73A0E4B6-86F6-4FAF-A7C3-D55705CA1DFF",
+      "stringValue": "1 (234) 567-8901",
+      "countryCode": "us",
+      "digits": "12345678901",
+      "localizedLabel": "home"
     }
   ],
-  birthday: [
+  "identifier": "D296E8E2-982F-4C39-9845-B75808B9CF96:ABPerson",
+  "givenName": "Given Name",
+  "dates": [
     {
-      day:   "15",
-      month: "4",
-      year:  "1985"
+      "label": "Anniversary",
+      "identifier": "FB73491F-E505-4864-8B68-F5F17C5AC4D7",
+      "year": 2016,
+      "month": 1,
+      "day": 30,
+      "localizedLabel": "anniversary"
     }
   ],
-  note: "What you call love was invented by guys like me … to sell nylons."
+  "fullName": "Full Name",
+  "nonGregorianBirthday": {
+    "year": 33,
+    "month": 1,
+    "day": 3
+  },
+  "departmentName": "Department Name",
+  "socialProfiles": [
+    {
+      "label": "twitter",
+      "localizedLabel": "twitter",
+      "service": "Twitter",
+      "localizedService": "Twitter",
+      "urlString": "http://twitter.com/12345",
+      "userIdentifier": "",
+      "username": "12345",
+      "identifier": "53698CFA-0125-48FE-84D7-E8372CD99ECD"
+    }
+  ],
+  "emailAddresses": [
+    {
+      "label": "Home",
+      "identifier": "8AE516A9-A531-4BBA-B890-BFA59E47A4C7",
+      "value": "person@example.com",
+      "localizedLabel": "home"
+    }
+  ],
+  "instantMessageAddresses": [
+    {
+      "label": "Skype",
+      "identifier": "82200A8E-4F19-4F5A-A7AF-FA9F8C43B01A",
+      "service": "Skype",
+      "localizedService": "Skype",
+      "username": "12345",
+      "localizedLabel": "Skype"
+    }
+  ],
+  "note": "Note",
+  "postalAddresses": [
+    {
+      "label": "Home",
+      "city": "City",
+      "state": "CA",
+      "localizedLabel": "home",
+      "postalCode": "98765",
+      "country": "United States",
+      "isoCountryCode": "",
+      "stringValue": "123 St\nCity CA 98765\nUnited States",
+      "street": "123 St",
+      "identifier": "7A472311-AB4F-46F4-B046-B60143DBC858"
+    }
+  ],
+  "urlAddresses": [
+    {
+      "label": "HomePage",
+      "identifier": "13F46F96-E5EE-4B6F-A8A6-EBC3C459E314",
+      "value": "www.example.com",
+      "localizedLabel": "homepage"
+    }
+  ],
+  "organizationName": "Organization Name",
+  "birthday": {
+    "month": 1,
+    "day": 30
+  },
+  "nameSuffix": "Name Suffix",
+  "imageDataAvailable": false,
+  "contactType": "person",
+  "namePrefix": "Name Prefix",
+  "jobTitle": "Job Title"
 }
 ```
 
