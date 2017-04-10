@@ -5,7 +5,7 @@
 
 **Your best friend when working with the latest and greatest [Contacts Framework][apple-contacts-framework] in iOS 9+.**
 
-### **Requires iOS 9+**
+### **Requires iOS 9+ and Swift 3.1**
 
 Apple recently did a complete overhaul of their Contacts Framework that does a number of things, including:
 
@@ -28,7 +28,7 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
    ```
    _This will install the latest react-native-unified-contacts package and add it to your package.json file._
 
-  2. Navigate to `<your-project-directory>/node_modules/react-native-unified-contacts/` and drag the `RNUnifiedContacts` directory into your project directory in Xcode. 
+  2. Navigate to `<your-project-directory>/node_modules/react-native-unified-contacts/` and drag the `RNUnifiedContacts` directory into your project directory in Xcode.
 
     Ensure that `Copy items if needed` is **not** checked, select `Create groups` and ensure your project is selected for a target.
 
