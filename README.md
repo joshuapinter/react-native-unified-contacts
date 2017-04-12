@@ -60,7 +60,7 @@ var Contacts  = require('react-native-unified-contacts');
 
 ## Getting Contacts
 
-### Get a Single Contact
+### Get a single contact
 
 ```js
 let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
@@ -104,7 +104,7 @@ _This will search the given (first) and family (last) name of all of the Contact
 
 ## Adding Contacts
 
-### Add a Single Contact
+### Add a single contact
 
 ```js
 let contactData = {
@@ -133,7 +133,7 @@ Contacts.addContact( contactData, (error, success) => {
 
 ## Updating Contacts
 
-### Update a Single Contact
+### Update a single contact
 
 ```js
 let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
@@ -167,7 +167,7 @@ _NOTE: If your `contactData` includes the keys `phoneNumbers` or `emailAddresses
 
 ## Deleting Contacts
 
-### Delete a Single Contact
+### Delete a single contact
 
 ```js
 let contactIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
@@ -182,6 +182,85 @@ Contacts.deleteContact( contactIdentifier, (error, success) => {
 }
 ```
 
+## Getting Groups
+
+### Get all Groups
+
+```js
+Contacts.getGroups( (error, groups) =>  {
+  if (error) {
+    console.error(error);
+  }
+  else {
+    console.log(groups);
+  }
+});
+```
+
+### Get contacts in group
+
+```js
+let groupIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
+
+Contacts.contactsInGroup(groupIdentifier, (error, contacts) =>  {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log(contacts);
+  }
+});
+```
+
+## Add a group
+
+```js
+let groupData = {
+  'name': 'Friends'
+}
+
+Contacts.addGroup(groupData, (error, success) => {
+  if (error) {
+    console.log(error);
+  }
+  else {
+    console.log(success);
+  }
+});
+```
+
+## Update a group
+
+```js
+let groupIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
+
+let groupData = {
+  'name': 'Friends'
+}
+
+Contacts.updateGroup(groupIdentifier, groupData, (error, success) => {
+  if (error) {
+    console.log(error);
+  }
+  else {
+    console.log(success);
+  }
+});
+```
+
+## Delete a group
+
+```js
+let groupIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
+
+Contacts.deleteGroup(groupIdentifier, (error, success) => {
+  if (error) {
+    console.log(error);
+  }
+  else {
+    console.log(success);
+  }
+});
+```
 
 ## Accessing the User's Contacts
 
