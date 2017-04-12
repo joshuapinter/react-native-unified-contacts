@@ -58,7 +58,9 @@ RCT_EXTERN_METHOD(contactsInGroup:(NSString *)identifier callback:(RCTResponseSe
 
 RCT_EXTERN_METHOD(addGroup:(NSDictionary *)groupData callback:(RCTResponseSenderBlock)callback);
 
-RCT_EXTERN_METHOD(updateGroup:(NSString *)identifier groupData:(NSDictionary *)groupData callback:(RCTResponseSenderBlock)callback);
+RCT_EXTERN_METHOD(updateGroup:(NSString *)identifier groupData:(NSDictionary *)contactData callback:(RCTResponseSenderBlock)callback);
+
+RCT_EXTERN_METHOD(deleteGroup:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
 
 // Generic
 RCT_EXTERN_METHOD(userCanAccessContacts:(RCTResponseSenderBlock)callback);
@@ -68,7 +70,5 @@ RCT_EXTERN_METHOD(requestAccessToContacts:(RCTResponseSenderBlock)callback);
 RCT_EXPORT_METHOD(openPrivacySettings) {
   [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 }
-
-
 
 @end

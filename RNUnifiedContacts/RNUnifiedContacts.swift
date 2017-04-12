@@ -376,7 +376,7 @@ class RNUnifiedContacts: NSObject {
         }
         catch let error as NSError {
 
-            NSLog("Problem deleting unified Contact with indentifier: " + identifier)
+            NSLog("Problem deleting unified contact with identifier: " + identifier)
             NSLog(error.localizedDescription)
 
             callback( [error.localizedDescription, false] )
@@ -384,7 +384,30 @@ class RNUnifiedContacts: NSObject {
 
     }
 
+    @objc func deleteGroup(_ identifier: String, callback: (NSArray) -> () ) -> Void {
 
+      let contactStore = CNContactStore()
+
+      let cNGroup = getCNGroup(identifier)
+
+      let saveRequest = CNSaveRequest()
+
+      let mutableGroup = cNGroup!.mutableCopy() as! CNMutableGroup
+
+      saveRequest.delete(mutableGroup)
+
+      do {
+        try contactStore.execute(saveRequest)
+        callback( [NSNull(), true] )
+      }
+      catch let error as NSError {
+        NSLog("Problem deleting group with identifier: " + identifier)
+        NSLog(error.localizedDescription)
+
+        callback( [error.localizedDescription, false] )
+      }
+
+    }
 
     /////////////
     // PRIVATE //
