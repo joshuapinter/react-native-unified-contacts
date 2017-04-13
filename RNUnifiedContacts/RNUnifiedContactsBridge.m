@@ -58,7 +58,7 @@ RCT_EXTERN_METHOD(contactsInGroup:(NSString *)identifier callback:(RCTResponseSe
 
 RCT_EXTERN_METHOD(addGroup:(NSDictionary *)groupData callback:(RCTResponseSenderBlock)callback);
 
-RCT_EXTERN_METHOD(updateGroup:(NSString *)identifier groupData:(NSDictionary *)contactData callback:(RCTResponseSenderBlock)callback);
+RCT_EXTERN_METHOD(updateGroup:(NSString *)identifier groupData:(NSDictionary *)groupData callback:(RCTResponseSenderBlock)callback);
 
 RCT_EXTERN_METHOD(deleteGroup:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
 
