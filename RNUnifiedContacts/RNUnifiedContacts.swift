@@ -91,6 +91,17 @@ class RNUnifiedContacts: NSObject {
         callback( [NSNull(), contactAsDictionary] )
     }
 
+    @objc func getGroup(_ identifier: String, callback: (NSArray) -> () ) -> Void {
+        let cNGroup = getCNGroup( identifier )
+        if ( cNGroup == nil ) {
+          callback( ["Could not find a group with the identifier ".appending(identifier), NSNull()] )
+          return
+        }
+
+        let groupAsDictionary = convertCNGroupToDictionary( cNGroup! )
+        callback( [NSNull(), groupAsDictionary] )
+    }
+
     // Pseudo overloads getContacts but with no searchText.
     // Makes it easy to get all the Contacts with not passing anything.
     // NOTE: I tried calling the two methods the same but it barfed. It should be

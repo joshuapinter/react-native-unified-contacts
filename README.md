@@ -184,6 +184,20 @@ Contacts.deleteContact( contactIdentifier, (error, success) => {
 
 ## Getting Groups
 
+### Get a single group
+
+```js
+let groupIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
+
+Contacts.getGroup( groupIdentifier, (error, group) =>  {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log(group);
+  }
+});
+```
+
 ### Get all Groups
 
 ```js
