@@ -409,6 +409,56 @@ class RNUnifiedContacts: NSObject {
 
     }
 
+    @objc func addContactsToGroup(_ identifier: String, contactIdentifiers: [NSString], callback: (NSArray) -> () ) -> Void {
+      let contactStore = CNContactStore()
+      let cNGroup = getCNGroup(identifier)
+      let saveRequest = CNSaveRequest()
+      let mutableGroup = cNGroup!.mutableCopy() as! CNMutableGroup
+
+      do {
+        for contactIdentifier in contactIdentifiers {
+          let cNContact = getCNContact(contactIdentifier as String, keysToFetch: keysToFetch as [CNKeyDescriptor])
+          let mutableContact = cNContact!.mutableCopy() as! CNMutableContact
+
+          saveRequest.addMember(mutableContact, to: mutableGroup)
+        }
+
+        try contactStore.execute(saveRequest)
+        callback( [NSNull(), true] )
+      }
+      catch let error as NSError {
+        NSLog("Problem adding contacts to group with identifier: " + identifier)
+        NSLog(error.localizedDescription)
+
+        callback( [error.localizedDescription, false] )
+      }
+    }
+
+    @objc func removeContactsFromGroup(_ identifier: String, contactIdentifiers: [NSString], callback: (NSArray) -> () ) -> Void {
+      let contactStore = CNContactStore()
+      let cNGroup = getCNGroup(identifier)
+      let saveRequest = CNSaveRequest()
+      let mutableGroup = cNGroup!.mutableCopy() as! CNMutableGroup
+
+      do {
+        for contactIdentifier in contactIdentifiers {
+          let cNContact = getCNContact(contactIdentifier as String, keysToFetch: keysToFetch as [CNKeyDescriptor])
+          let mutableContact = cNContact!.mutableCopy() as! CNMutableContact
+
+          saveRequest.removeMember(mutableContact, from: mutableGroup)
+        }
+
+        try contactStore.execute(saveRequest)
+        callback( [NSNull(), true] )
+      }
+      catch let error as NSError {
+        NSLog("Problem removing contacts from group with identifier: " + identifier)
+        NSLog(error.localizedDescription)
+
+        callback( [error.localizedDescription, false] )
+      }
+    }
+
     /////////////
     // PRIVATE //
 
