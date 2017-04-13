@@ -500,7 +500,7 @@ class RNUnifiedContacts: NSObject {
 
     func contactContainsText( _ cNContact: CNContact, searchText: String ) -> Bool {
         let searchText   = searchText.lowercased();
-        let textToSearch = cNContact.givenName.lowercased() + " " + cNContact.familyName.lowercased()
+        let textToSearch = cNContact.givenName.lowercased() + " " + cNContact.familyName.lowercased() + cNContact.nickname.lowercased()
 
         if searchText.isEmpty || textToSearch.contains(searchText) {
             return true
