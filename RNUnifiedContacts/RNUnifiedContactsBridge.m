@@ -52,13 +52,15 @@ RCT_EXTERN_METHOD(updateContact:(NSString *)identifier contactData:(NSDictionary
 RCT_EXTERN_METHOD(deleteContact:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
 
 // Groups
+RCT_EXTERN_METHOD(getGroup:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
+
 RCT_EXTERN_METHOD(getGroups:(RCTResponseSenderBlock)callback);
 
 RCT_EXTERN_METHOD(contactsInGroup:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
 
 RCT_EXTERN_METHOD(addGroup:(NSDictionary *)groupData callback:(RCTResponseSenderBlock)callback);
 
-RCT_EXTERN_METHOD(updateGroup:(NSString *)identifier groupData:(NSDictionary *)contactData callback:(RCTResponseSenderBlock)callback);
+RCT_EXTERN_METHOD(updateGroup:(NSString *)identifier groupData:(NSDictionary *)groupData callback:(RCTResponseSenderBlock)callback);
 
 RCT_EXTERN_METHOD(deleteGroup:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
 
