@@ -276,6 +276,46 @@ Contacts.deleteGroup(groupIdentifier, (error, success) => {
 });
 ```
 
+## Add contacts to a group
+
+```js
+let groupIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
+
+let contactIdentifiers = [
+  '4E5R6TGH-2EWQ-SAD2-SADS-2344EWFSDCSA',
+  '8GFK43JK-2E3F-U6HF-UYTB-23R4TGTHYRDF',
+  '5FTGYUHG-DSFD-4T5H-43TR-0IOJUVBHJNVG'
+]
+
+Contacts.addContactsToGroup(groupIdentifier, contactIdentifiers, (error, success) => {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log(success);
+  }
+});
+```
+
+## Remove contacts from a group
+
+```js
+let groupIdentifier = 'A7806266-6574-4731-82E1-C54946F63E1C';
+
+let contactIdentifiers = [
+  '4E5R6TGH-2EWQ-SAD2-SADS-2344EWFSDCSA',
+  '8GFK43JK-2E3F-U6HF-UYTB-23R4TGTHYRDF',
+  '5FTGYUHG-DSFD-4T5H-43TR-0IOJUVBHJNVG'
+]
+
+Contacts.removeContactsFromGroup(groupIdentifier, contactIdentifiers, (error, success) => {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log(success);
+  }
+});
+```
+
 ## Accessing the User's Contacts
 
 ### Can The User Access Contacts?
