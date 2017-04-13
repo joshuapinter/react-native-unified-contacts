@@ -92,7 +92,7 @@ class RNUnifiedContacts: NSObject {
     }
 
     @objc func getGroup(_ identifier: String, callback: (NSArray) -> () ) -> Void {
-        let cNGroup = getCNGroup( identifier, keysToFetch: keysToFetch as [CNKeyDescriptor] )
+        let cNGroup = getCNGroup( identifier )
         if ( cNGroup == nil ) {
           callback( ["Could not find a group with the identifier ".appending(identifier), NSNull()] )
           return
