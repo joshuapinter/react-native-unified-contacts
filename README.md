@@ -541,6 +541,7 @@ If that doesn't help you, please [create an Issue](https://github.com/joshuapint
 
 * My friend **[Smixx][smixx]** for working through adding a Swift library to a React Native project over his lunch hour.
 * **[Ismail Pelaseyed (homanp)][homanp]** for adding a couple of [huge PRs][homanp-prs] for Creating, Updating and Deleting Contacts.
+* **[Chris Edwards (chrise86)][chrise86]** for adding a tonne of [big PRs][chrise86-prs] for Adding, Updating and Deleting Groups.
 
 # TODO
 
@@ -563,3 +564,5 @@ Copyright 2016 - `Time.now()` by [Joshua Pinter][joshuapinter]
 [joshuapinter]:             https://twitter.com/joshuapinter
 [homanp]:                   https://twitter.com/pelaseyed
 [homanp-prs]:               https://github.com/joshuapinter/react-native-unified-contacts/pulls?utf8=%E2%9C%93&q=is%3Apr+author%3Ahomanp+
+[chrise86]:                 https://github.com/chrise86
+[chrise86-prs]:             https://github.com/joshuapinter/react-native-unified-contacts/pulls?utf8=%E2%9C%93&q=is%3Apr%20author%3Achrise86
