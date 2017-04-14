@@ -100,7 +100,7 @@ Contacts.searchContacts( 'Don Draper', (error, contacts) =>  {
   }
 });
 ```
-_This will search the given (first) and family (last) name of all of the Contacts for the provided string. Future versions will allow you to search other fields as well, like phone or email._
+_This will search the given (first), family (last) and nick names of all of the contacts for the provided string. Future versions will allow you to search other fields as well, like phone or email._
 
 ## Adding Contacts
 
