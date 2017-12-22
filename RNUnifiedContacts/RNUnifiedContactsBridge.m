@@ -17,28 +17,32 @@
 // Label constants for phone numbers and emails
 - (NSDictionary *)constantsToExport
 {
-  return @{
-          @"phoneNumberLabel": @{
-              @"HOME"     : @"home",
-              @"WORK"     : @"work",
-              @"MOBILE"   : @"mobile",
-              @"IPHONE"   : @"iPhone",
-              @"MAIN"     : @"main",
-              @"HOME_FAX" : @"home fax",
-              @"WORK_FAX" : @"work fax",
-              @"PAGER"    : @"pager",
-              @"OTHER"    : @"other",
-              },
-          @"emailAddressLabel": @{
-              @"HOME"     : @"home",
-              @"WORK"     : @"work",
-              @"ICLOUD"   : @"iCloud",
-              @"OTHER"    : @"other",
-              },
-         };
+    return @{
+             @"phoneNumberLabel": @{
+                     @"HOME"     : @"home",
+                     @"WORK"     : @"work",
+                     @"MOBILE"   : @"mobile",
+                     @"IPHONE"   : @"iPhone",
+                     @"MAIN"     : @"main",
+                     @"HOME_FAX" : @"home fax",
+                     @"WORK_FAX" : @"work fax",
+                     @"PAGER"    : @"pager",
+                     @"OTHER"    : @"other",
+                     },
+             @"emailAddressLabel": @{
+                     @"HOME"     : @"home",
+                     @"WORK"     : @"work",
+                     @"ICLOUD"   : @"iCloud",
+                     @"OTHER"    : @"other",
+                     },
+             };
 }
 
 // Contacts
+RCT_EXTERN_METHOD(getContactsWithFields:(NSArray *)fields callback:(RCTResponseSenderBlock)callback);
+
+RCT_EXTERN_METHOD(getContactImage:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
+
 RCT_EXTERN_METHOD(getContact:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
 
 RCT_EXTERN_METHOD(getContacts:(RCTResponseSenderBlock)callback);
@@ -74,7 +78,7 @@ RCT_EXTERN_METHOD(userCanAccessContacts:(RCTResponseSenderBlock)callback);
 RCT_EXTERN_METHOD(requestAccessToContacts:(RCTResponseSenderBlock)callback);
 
 RCT_EXPORT_METHOD(openPrivacySettings) {
-  [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 }
 
 @end
