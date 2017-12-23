@@ -41,7 +41,7 @@
 // Contacts
 RCT_EXTERN_METHOD(getContactsWithFields:(NSArray *)fields callback:(RCTResponseSenderBlock)callback);
 
-RCT_EXTERN_METHOD(getContactImage:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
+RCT_EXTERN_METHOD(getContactImage:(NSString *)identifier thumbnail:(BOOL)thumbnail callback:(RCTResponseSenderBlock)callback);
 
 RCT_EXTERN_METHOD(getContact:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
 
@@ -82,3 +82,4 @@ RCT_EXPORT_METHOD(openPrivacySettings) {
 }
 
 @end
+

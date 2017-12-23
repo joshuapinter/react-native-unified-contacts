@@ -13,6 +13,15 @@ import Foundation
 @objc(RNUnifiedContacts)
 class RNUnifiedContacts: NSObject {
     
+    let thumbnailCache = NSCache<NSString, NSDictionary>()
+    let fullImageCache = NSCache<NSString, NSDictionary>()
+    
+    override init() {
+        super.init()
+        thumbnailCache.countLimit = 100;
+        fullImageCache.countLimit = 20;
+    }
+    
     //  iOS Reference: https://developer.apple.com/library/ios/documentation/Contacts/Reference/CNContact_Class/#//apple_ref/doc/constant_group/Metadata_Keys
     
     let keysToFetch = [
@@ -81,6 +90,16 @@ class RNUnifiedContacts: NSObject {
         "UrlAddresses":CNContactUrlAddressesKey
     ]
     
+    let requiredFullNameKeys = [
+        CNContactFamilyNameKey,
+        CNContactGivenNameKey,
+        CNContactMiddleNameKey,
+        CNContactNamePrefixKey,
+        CNContactNameSuffixKey,
+        CNContactNicknameKey,
+        CNContactOrganizationNameKey,
+        CNContactTypeKey]
+    
     func getKeys(_ fields:[String]) -> [String] {
         var keys : [String] = []
         for field in fields {
@@ -91,33 +110,48 @@ class RNUnifiedContacts: NSObject {
         return keys
     }
     
-    @objc func getContactImage(_ identifier:String, _ thumbnail:Bool, _ callback: (NSArray) -> ()) -> Void {
-        let contactStore = CNContactStore()
-        do {
-            var cNContacts = [CNContact]()
+    @objc func getContactImage(_ identifier:String, thumbnail:Bool, callback: (NSArray) -> ()) -> Void {
+        let cache : NSCache<NSString, NSDictionary> = thumbnail ? thumbnailCache : fullImageCache
+        var contactAsDictionary : NSDictionary!
+        if let cachedDictionary = cache.object(forKey: identifier as NSString) {
+            // use the cached version
+            contactAsDictionary = cachedDictionary
+        } else {
             let keysToFetch = thumbnail ? [CNContactThumbnailImageDataKey] : [CNContactImageDataKey]
-            let fetchRequest = CNContactFetchRequest(keysToFetch: keysToFetch as [CNKeyDescriptor])
-            fetchRequest.predicate = CNContact .predicateForContacts(withIdentifiers: [identifier])
-            try contactStore.enumerateContacts(with: fetchRequest) { (cNContact, pointer) -> Void in
-                cNContacts.append(cNContact)
+            let cNContact = getCNContact( identifier, keysToFetch: keysToFetch as [CNKeyDescriptor] )
+            if ( cNContact == nil ) {
+                callback( ["Could not find a contact with the identifier ".appending(identifier), NSNull()] )
+                return
             }
-            
-            var contacts = [NSDictionary]();
-            for cNContact in cNContacts {
-                contacts.append( convertCNContactToDictionary(cNContact) )
-            }
-            
-            callback([NSNull(), contacts])
-        } catch let error as NSError {
-            NSLog("Problem getting contacts.")
-            NSLog(error.localizedDescription)
-            
-            callback([error.localizedDescription, NSNull()])
+            contactAsDictionary = convertCNContactToDictionary( cNContact! )
+            cache.setObject(contactAsDictionary, forKey: identifier as NSString)
         }
+        callback( [NSNull(), contactAsDictionary] )
     }
     
-    @objc func getContactsWithFields(_ fields: [String], _ callback: (NSArray) -> ()) -> Void {
-        searchContactsWithKeys(nil, keysToFetch:self.getKeys(fields) , callback: callback)
+    @objc func getContactWithFields(_ identifier: String, _ keysToFetch: [String], callback: (NSArray) -> () ) -> Void {
+        let cNContact = getCNContact( identifier, keysToFetch: keysToFetch as [CNKeyDescriptor] )
+        if ( cNContact == nil ) {
+            callback( ["Could not find a contact with the identifier ".appending(identifier), NSNull()] )
+            return
+        }
+        
+        let contactAsDictionary = convertCNContactToDictionary( cNContact! )
+        callback( [NSNull(), contactAsDictionary] )
+    }
+    
+    @objc func getContactsWithFields(_ fields: [String], callback: (NSArray) -> ()) -> Void {
+        var keys = keysToFetch
+        var filterKeys : [String]? = []
+        if fields.contains("RNFullName") {
+            let baseKeys = self.getKeys(fields)
+            let keysSet = NSMutableSet(array: baseKeys)
+            keysSet.addObjects(from: requiredFullNameKeys)
+            keys = keysSet.allObjects as! [String]
+            filterKeys = baseKeys // we only want these keys to come back
+            filterKeys?.append("fullName") // add special case for fullName
+        }
+        searchContactsWithKeys(nil, keys, filterKeys, callback: callback)
     }
     
     @objc func userCanAccessContacts(_ callback: (Array<Bool>) -> ()) -> Void {
@@ -132,7 +166,11 @@ class RNUnifiedContacts: NSObject {
         }
     }
     
-    @objc func searchContactsWithKeys(_ searchText: String?, keysToFetch : [String], callback: (NSArray) -> ()) -> Void {
+    @objc func searchContactsWithKeys(_ searchText: String?, callback: (NSArray) -> ()) -> Void {
+        searchContactsWithKeys(searchText, keysToFetch, nil, callback: callback)
+    }
+    
+    @objc func searchContactsWithKeys(_ searchText: String?, _ keysToFetch : [String], _ filterKeys:[String]?, callback: (NSArray) -> ()) -> Void {
         let contactStore = CNContactStore()
         do {
             var cNContacts = [CNContact]()
@@ -155,7 +193,7 @@ class RNUnifiedContacts: NSObject {
             
             var contacts = [NSDictionary]();
             for cNContact in cNContacts {
-                contacts.append( convertCNContactToDictionary(cNContact) )
+                contacts.append( convertCNContactToDictionary(cNContact, filterKeys) )
             }
             
             callback([NSNull(), contacts])
@@ -272,7 +310,7 @@ class RNUnifiedContacts: NSObject {
     }
     
     @objc func searchContacts(_ searchText: String?, callback: (NSArray) -> ()) -> Void {
-        self.searchContactsWithKeys(searchText, keysToFetch: keysToFetch, callback: callback)
+        self.searchContactsWithKeys(searchText, keysToFetch, nil, callback: callback)
     }
     
     @objc func addContact(_ contactData: NSDictionary, callback: (NSArray) -> () ) -> Void {
@@ -617,93 +655,148 @@ class RNUnifiedContacts: NSObject {
         return group as NSDictionary
     }
     
-    func convertCNContactToDictionary(_ cNContact: CNContact) -> NSDictionary {
+    func convertCNContactToDictionary(_ cNContact: CNContact, _ filterKeys:[String]? = nil) -> NSDictionary {
         var contact = [String: Any]()
         
-        if let birthday = cNContact.birthday {
-            var date = [String: Int]()
-            date["year"] = birthday.year == NSDateComponentUndefined ? nil : birthday.year
-            date["month"] = birthday.month == NSDateComponentUndefined ? nil : birthday.month
-            date["day"] = birthday.day == NSDateComponentUndefined ? nil : birthday.day
-            contact["birthday"] = date
+        func shouldInclude(_ key:String) -> Bool {
+            if let keys = filterKeys {
+                if !keys.contains(key) {
+                    return false
+                }
+            }
+            return cNContact.isKeyAvailable(key)
         }
         
-        if cNContact.contactRelations.count > 0 {
-            contact["contactRelations"] = cNContact.contactRelations.map { (item) -> [String: Any] in
-                var dict = getLabeledDict(item)
-                addString(&dict, key: "name", value: item.value.name)
-                return dict
+        if (shouldInclude("birthday")) {
+            if let birthday = cNContact.birthday {
+                var date = [String: Int]()
+                date["year"] = birthday.year == NSDateComponentUndefined ? nil : birthday.year
+                date["month"] = birthday.month == NSDateComponentUndefined ? nil : birthday.month
+                date["day"] = birthday.day == NSDateComponentUndefined ? nil : birthday.day
+                contact["birthday"] = date
             }
         }
         
-        addString(&contact, key: "contactType", value: cNContact.contactType == CNContactType.person ? "person" : "organization")
-        
-        if cNContact.dates.count > 0 {
-            contact["dates"] = cNContact.dates.map { (item) -> [String: Any] in
-                var dict = getLabeledDict(item)
-                dict["year"] = item.value.year == NSDateComponentUndefined ? nil : item.value.year
-                dict["month"] = item.value.month == NSDateComponentUndefined ? nil : item.value.month
-                dict["day"] = item.value.day == NSDateComponentUndefined ? nil : item.value.day
-                return dict
+        if (shouldInclude("contactRelations")) {
+            if cNContact.contactRelations.count > 0 {
+                contact["contactRelations"] = cNContact.contactRelations.map { (item) -> [String: Any] in
+                    var dict = getLabeledDict(item)
+                    addString(&dict, key: "name", value: item.value.name)
+                    return dict
+                }
             }
         }
         
-        addString(&contact, key: "departmentName", value: cNContact.departmentName)
+        if (shouldInclude("contactType")) {
+            addString(&contact, key: "contactType", value: cNContact.contactType == CNContactType.person ? "person" : "organization")
+        }
         
-        if cNContact.emailAddresses.count > 0 {
-            contact["emailAddresses"] = cNContact.emailAddresses.map { (item) -> [String: Any] in
-                var dict = getLabeledDict(item)
-                addString(&dict, key: "value", value: item.value as String)
-                return dict
+        if (shouldInclude("dates")){
+            if cNContact.dates.count > 0 {
+                contact["dates"] = cNContact.dates.map { (item) -> [String: Any] in
+                    var dict = getLabeledDict(item)
+                    dict["year"] = item.value.year == NSDateComponentUndefined ? nil : item.value.year
+                    dict["month"] = item.value.month == NSDateComponentUndefined ? nil : item.value.month
+                    dict["day"] = item.value.day == NSDateComponentUndefined ? nil : item.value.day
+                    return dict
+                }
             }
         }
         
-        addString(&contact, key: "familyName", value: cNContact.familyName)
-        addString(&contact, key: "givenName", value: cNContact.givenName)
-        addString(&contact, key: "identifier", value: cNContact.identifier)
+        if (shouldInclude("departmentName")){
+            addString(&contact, key: "departmentName", value: cNContact.departmentName)
+        }
         
-        contact["imageDataAvailable"] = cNContact.imageDataAvailable
-        
-        if cNContact.instantMessageAddresses.count > 0 {
-            contact["instantMessageAddresses"] = cNContact.instantMessageAddresses.map { (item) -> [String: Any] in
-                var dict = getLabeledDict(item)
-                addString(&dict, key: "service", value: item.value.service)
-                addString(&dict, key: "localizedService", value: CNInstantMessageAddress.localizedString(forService: item.value.service))
-                addString(&dict, key: "username", value: item.value.username)
-                return dict
+        if (shouldInclude("emailAddresses")) {
+            if cNContact.emailAddresses.count > 0 {
+                contact["emailAddresses"] = cNContact.emailAddresses.map { (item) -> [String: Any] in
+                    var dict = getLabeledDict(item)
+                    addString(&dict, key: "value", value: item.value as String)
+                    return dict
+                }
             }
         }
         
-        addString(&contact, key: "jobTitle", value: cNContact.jobTitle)
-        addString(&contact, key: "middleName", value: cNContact.middleName)
-        addString(&contact, key: "namePrefix", value: cNContact.namePrefix)
-        addString(&contact, key: "nameSuffix", value: cNContact.nameSuffix)
-        addString(&contact, key: "nickname", value: cNContact.nickname)
-        
-        if let nonGregorianBirthday = cNContact.nonGregorianBirthday {
-            var date = [String: Int]()
-            date["year"] = nonGregorianBirthday.year == NSDateComponentUndefined ? nil : nonGregorianBirthday.year
-            date["month"] = nonGregorianBirthday.month == NSDateComponentUndefined ? nil : nonGregorianBirthday.month
-            date["day"] = nonGregorianBirthday.day == NSDateComponentUndefined ? nil : nonGregorianBirthday.day
-            contact["nonGregorianBirthday"] = date
+        if (shouldInclude("familyName")) {
+            addString(&contact, key: "familyName", value: cNContact.familyName)
+        }
+        if (shouldInclude("givenName")) {
+            addString(&contact, key: "givenName", value: cNContact.givenName)
+        }
+        if (shouldInclude("identifier")) {
+            addString(&contact, key: "identifier", value: cNContact.identifier)
         }
         
-        addString(&contact, key: "note", value: cNContact.note)
-        addString(&contact, key: "organizationName", value: cNContact.organizationName)
+        if (shouldInclude("imageDataAvailable")) {
+            contact["imageDataAvailable"] = cNContact.imageDataAvailable
+        }
         
-        if cNContact.phoneNumbers.count > 0 {
-            contact["phoneNumbers"] = cNContact.phoneNumbers.map { (item) -> [String: Any] in
-                var dict = getLabeledDict(item)
-                addString(&dict, key: "stringValue", value: item.value.stringValue)
-                addString(&dict, key: "countryCode", value: item.value.value(forKey: "countryCode") as? String)
-                addString(&dict, key: "digits", value: item.value.value(forKey: "digits") as? String)
-                return dict
+        if (shouldInclude("instantMessageAddresses")) {
+            if cNContact.instantMessageAddresses.count > 0 {
+                contact["instantMessageAddresses"] = cNContact.instantMessageAddresses.map { (item) -> [String: Any] in
+                    var dict = getLabeledDict(item)
+                    addString(&dict, key: "service", value: item.value.service)
+                    addString(&dict, key: "localizedService", value: CNInstantMessageAddress.localizedString(forService: item.value.service))
+                    addString(&dict, key: "username", value: item.value.username)
+                    return dict
+                }
             }
         }
         
-        addString(&contact, key: "phoneticFamilyName", value: cNContact.phoneticFamilyName)
-        addString(&contact, key: "phoneticGivenName", value: cNContact.phoneticGivenName)
-        addString(&contact, key: "phoneticMiddleName", value: cNContact.phoneticMiddleName)
+        if (shouldInclude("jobTitle")) {
+            addString(&contact, key: "jobTitle", value: cNContact.jobTitle)
+        }
+        if (shouldInclude("middleName")) {
+            addString(&contact, key: "middleName", value: cNContact.middleName)
+        }
+        if (shouldInclude("namePrefix")) {
+            addString(&contact, key: "namePrefix", value: cNContact.namePrefix)
+        }
+        if (shouldInclude("nameSuffix")) {
+            addString(&contact, key: "nameSuffix", value: cNContact.nameSuffix)
+        }
+        if (shouldInclude("nickname")) {
+            addString(&contact, key: "nickname", value: cNContact.nickname)
+        }
+        
+        if (shouldInclude("nonGregorianBirthday")) {
+            if let nonGregorianBirthday = cNContact.nonGregorianBirthday {
+                var date = [String: Int]()
+                date["year"] = nonGregorianBirthday.year == NSDateComponentUndefined ? nil : nonGregorianBirthday.year
+                date["month"] = nonGregorianBirthday.month == NSDateComponentUndefined ? nil : nonGregorianBirthday.month
+                date["day"] = nonGregorianBirthday.day == NSDateComponentUndefined ? nil : nonGregorianBirthday.day
+                contact["nonGregorianBirthday"] = date
+            }
+        }
+        
+        if (shouldInclude("note")) {
+            addString(&contact, key: "note", value: cNContact.note)
+        }
+        if (shouldInclude("organizationName")) {
+            addString(&contact, key: "organizationName", value: cNContact.organizationName)
+        }
+        
+        if (shouldInclude("phoneNumbers")) {
+            if cNContact.phoneNumbers.count > 0 {
+                contact["phoneNumbers"] = cNContact.phoneNumbers.map { (item) -> [String: Any] in
+                    var dict = getLabeledDict(item)
+                    addString(&dict, key: "stringValue", value: item.value.stringValue)
+                    addString(&dict, key: "countryCode", value: item.value.value(forKey: "countryCode") as? String)
+                    addString(&dict, key: "digits", value: item.value.value(forKey: "digits") as? String)
+                    return dict
+                }
+            }
+        }
+        
+        if (shouldInclude("phoneticFamilyName")) {
+            addString(&contact, key: "phoneticFamilyName", value: cNContact.phoneticFamilyName)
+        }
+        if (shouldInclude("phoneticGivenName")) {
+            addString(&contact, key: "phoneticGivenName", value: cNContact.phoneticGivenName)
+        }
+        if (shouldInclude("phoneticMiddleName")) {
+            addString(&contact, key: "phoneticMiddleName", value: cNContact.phoneticMiddleName)
+        }
         
         // if #available(iOS 10.0, *) {
         //   contact["phoneticOrganizationName"]   = cNContact.phoneticOrganizationName
@@ -711,47 +804,59 @@ class RNUnifiedContacts: NSObject {
         //   // Fallback on earlier versions
         // }
         
-        if cNContact.postalAddresses.count > 0 {
-            contact["postalAddresses"] = cNContact.postalAddresses.map { (item) -> [String: Any] in
-                var dict = getLabeledDict(item)
-                addString(&dict, key: "street", value: item.value.street)
-                addString(&dict, key: "city", value: item.value.city)
-                addString(&dict, key: "state", value: item.value.state)
-                addString(&dict, key: "postalCode", value: item.value.postalCode)
-                addString(&dict, key: "country", value: item.value.country)
-                addString(&dict, key: "isoCountryCode", value: item.value.isoCountryCode)
-                addString(&dict, key: "mailingAddress", value: CNPostalAddressFormatter.string(from: item.value, style: .mailingAddress))
-                return dict
+        if (shouldInclude("postalAddresses")) {
+            if cNContact.postalAddresses.count > 0 {
+                contact["postalAddresses"] = cNContact.postalAddresses.map { (item) -> [String: Any] in
+                    var dict = getLabeledDict(item)
+                    addString(&dict, key: "street", value: item.value.street)
+                    addString(&dict, key: "city", value: item.value.city)
+                    addString(&dict, key: "state", value: item.value.state)
+                    addString(&dict, key: "postalCode", value: item.value.postalCode)
+                    addString(&dict, key: "country", value: item.value.country)
+                    addString(&dict, key: "isoCountryCode", value: item.value.isoCountryCode)
+                    addString(&dict, key: "mailingAddress", value: CNPostalAddressFormatter.string(from: item.value, style: .mailingAddress))
+                    return dict
+                }
             }
         }
         
-        addString(&contact, key: "previousFamilyName", value: cNContact.previousFamilyName)
+        if (shouldInclude("previousFamilyName")) {
+            addString(&contact, key: "previousFamilyName", value: cNContact.previousFamilyName)
+        }
         
-        if cNContact.socialProfiles.count > 0 {
-            contact["socialProfiles"] = cNContact.socialProfiles.map { (item) -> [String: Any] in
-                var dict = getLabeledDict(item)
-                addString(&dict, key: "urlString", value: item.value.urlString)
-                addString(&dict, key: "username", value: item.value.username)
-                addString(&dict, key: "userIdentifier", value: item.value.userIdentifier)
-                addString(&dict, key: "service", value: item.value.service)
-                addString(&dict, key: "localizedService", value: CNSocialProfile.localizedString(forService: item.value.service))
-                return dict
+        if (shouldInclude("socialProfiles")) {
+            if cNContact.socialProfiles.count > 0 {
+                contact["socialProfiles"] = cNContact.socialProfiles.map { (item) -> [String: Any] in
+                    var dict = getLabeledDict(item)
+                    addString(&dict, key: "urlString", value: item.value.urlString)
+                    addString(&dict, key: "username", value: item.value.username)
+                    addString(&dict, key: "userIdentifier", value: item.value.userIdentifier)
+                    addString(&dict, key: "service", value: item.value.service)
+                    addString(&dict, key: "localizedService", value: CNSocialProfile.localizedString(forService: item.value.service))
+                    return dict
+                }
             }
         }
         
-        if let thumbnailImageData = cNContact.thumbnailImageData {
-            addString(&contact, key: "thumbnailImageData", value: thumbnailImageData.base64EncodedString(options: []))
-        }
-        
-        if cNContact.urlAddresses.count > 0 {
-            contact["urlAddresses"] = cNContact.urlAddresses.map { (item) -> [String: Any] in
-                var dict = getLabeledDict(item)
-                addString(&dict, key: "value", value: item.value as String)
-                return dict
+        if (shouldInclude("thumbnailImageData")) {
+            if let thumbnailImageData = cNContact.thumbnailImageData {
+                addString(&contact, key: "thumbnailImageData", value: thumbnailImageData.base64EncodedString(options: []))
             }
         }
         
-        addString(&contact, key: "fullName", value: CNContactFormatter.string( from: cNContact, style: .fullName ))
+        if (shouldInclude("urlAddresses")) {
+            if cNContact.urlAddresses.count > 0 {
+                contact["urlAddresses"] = cNContact.urlAddresses.map { (item) -> [String: Any] in
+                    var dict = getLabeledDict(item)
+                    addString(&dict, key: "value", value: item.value as String)
+                    return dict
+                }
+            }
+        }
+        
+        if (cNContact.areKeysAvailable(requiredFullNameKeys as [CNKeyDescriptor])) {
+            addString(&contact, key: "fullName", value: CNContactFormatter.string( from: cNContact, style: .fullName ))
+        }
         
         return contact as NSDictionary
     }
