@@ -91,6 +91,29 @@ class RNUnifiedContacts: NSObject {
         callback( [NSNull(), contactAsDictionary] )
     }
 
+    @objc func generateHash(_ identifier: String, callback: (String) -> () ) -> Void {
+        let cNContact = getCNContact( identifier, keysToFetch: keysToFetch as [CNKeyDescriptor] )
+        if ( cNContact == nil ) {
+            callback( "Could not find a contact with the identifier ".appending(identifier))
+            return
+        }
+        
+        let contactAsDictionary = convertCNContactToDictionary( cNContact! )
+        let response = ""
+        var jsonData: NSData = NSJSONSerialization.dataWithJSONObject(dictionary, options: NSJSONWritingOptions.PrettyPrinted, error: &error)!
+        if error == nil {
+            response = NSString(data:jsonData,encoding :NSUTF8StringEncoding)! as String
+            let sha256Contacts = Digest.sha256(response).toHexString()
+            callback(sha256)
+            //callback(Digest. )
+            //return NSString(data: jsonData, encoding: NSUTF8StringEncoding)! as String
+        }else{
+            let uIntContacts: Array<UInt8> = Array(response.utf8)
+            callback( [NSNull(), contactAsDictionary] )
+        }
+        
+    }
+    
     @objc func getGroup(_ identifier: String, callback: (NSArray) -> () ) -> Void {
         let cNGroup = getCNGroup( identifier )
         if ( cNGroup == nil ) {

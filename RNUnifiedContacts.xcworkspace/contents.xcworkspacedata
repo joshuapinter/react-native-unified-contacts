@@ -4,6 +4,50 @@
    <Group
       location = "group:RNUnifiedContacts"
       name = "RNUnifiedContacts">
+      <Group
+         location = "container:RNUnifiedContacts/SHA"
+         name = "SHA">
+         <Group
+            location = "container:RNUnifiedContacts/SHA/Foundation"
+            name = "Foundation">
+            <FileRef
+               location = "group:Array+Foundation.swift">
+            </FileRef>
+            <FileRef
+               location = "group:Data+Extension.swift">
+            </FileRef>
+            <FileRef
+               location = "group:Utils+Foundation.swift">
+            </FileRef>
+         </Group>
+         <FileRef
+            location = "group:Generics.swift">
+         </FileRef>
+         <FileRef
+            location = "group:int+Extension.swift">
+         </FileRef>
+         <FileRef
+            location = "group:SHA2.swift">
+         </FileRef>
+         <FileRef
+            location = "group:Utils.swift">
+         </FileRef>
+         <FileRef
+            location = "group:BatchedCollection.swift">
+         </FileRef>
+         <FileRef
+            location = "group:Checksum.swift">
+         </FileRef>
+         <FileRef
+            location = "group:Digest.swift">
+         </FileRef>
+         <FileRef
+            location = "group:DigestType.swift">
+         </FileRef>
+         <FileRef
+            location = "group:Extensions.swift">
+         </FileRef>
+      </Group>
       <FileRef
          location = "group:RNUnifiedContacts-Bridging-Header.h">
       </FileRef>
@@ -12,6 +56,9 @@
       </FileRef>
       <FileRef
          location = "group:RNUnifiedContactsBridge.m">
+      </FileRef>
+      <FileRef
+         location = "group:RNContactPicker.swift">
       </FileRef>
    </Group>
 </Workspace>

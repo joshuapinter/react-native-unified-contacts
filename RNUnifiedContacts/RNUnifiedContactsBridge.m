@@ -10,7 +10,10 @@
 #import "UIKit/UIKit.h"
 
 #import <React/RCTBridgeModule.h>
+#import <Contacts/Contacts.h>
+#import <ContactsUI/ContactsUI.h>
 
+#import <React/RCTViewManager.h>
 
 @interface RCT_EXTERN_MODULE(RNUnifiedContacts, NSObject)
 
@@ -73,8 +76,18 @@ RCT_EXTERN_METHOD(userCanAccessContacts:(RCTResponseSenderBlock)callback);
 
 RCT_EXTERN_METHOD(requestAccessToContacts:(RCTResponseSenderBlock)callback);
 
+RCT_EXTERN_METHOD(generateHash:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
+
 RCT_EXPORT_METHOD(openPrivacySettings) {
   [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 }
 
+//Picker
+RCT_EXTERN_METHOD(pickContact:(NSDictionary *)data
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(pickContacts:(NSDictionary *)data
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject);
 @end
