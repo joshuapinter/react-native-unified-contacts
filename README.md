@@ -5,7 +5,7 @@
 
 **Your best friend when working with the latest and greatest [Contacts Framework][apple-contacts-framework] in iOS 9+.**
 
-### **Requires iOS 9+ and Swift 3.1**
+### **Requires iOS 9+ and Swift 4**
 
 Apple recently did a complete overhaul of their Contacts Framework that does a number of things, including:
 
@@ -30,32 +30,23 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
 
   2. Navigate to `<your-project-directory>/node_modules/react-native-unified-contacts/` and drag the `RNUnifiedContacts` directory into your project directory in Xcode.
 
-    Ensure that `Copy items if needed` is **not** checked, select `Create groups` and ensure your project is selected for a target.
+  Ensure that `Copy items if needed` is **not** checked, select `Create groups` and ensure your project is selected for a target.
 
-    ![Select files](readme_assets/drag_and_drop_library_to_sidebar.gif)
+  ![Select files](readme_assets/drag_and_drop_library_to_sidebar.gif)
 
-  3. For iOS 10+, you need to add a `NSContactsUsageDescription` key to your `Info.plist` that provides a reason why your app needs to access private information:
+  3. For iOS 10+, you need to add a `NSContactsUsageDescription` key to your `Info.plist`, also called `Privacy - Contacts Usage Description` if entered through XCode's interface. This provides a reason why your app needs to access private information:
 
-  ```
-<key>NSContactsUsageDescription</key>
-<string>ntwrk accesses Contacts in order to quickly add Relationships and allow them to reach out via ntwrk through email, text, phone, etc.</string>
-```
-
-  If done through XCode UI, the key is named `Privacy - Contacts Usage Description`.
+    <key>NSContactsUsageDescription</key>
+    <string>ntwrk accesses Contacts in order to quickly add Relationships and allow them to reach out via ntwrk through email, text, phone, etc.</string>
 
   4. See the [Usage section](#usage) for how to require the library and make use of it.
 
-
-## Usage
-
-  If done through XCode UI, the key is named `Privacy - Contacts Usage Description`.
-
 # Usage
 
-## Require Library
+## Import Contacts Library
 
 ```js
-var Contacts  = require('react-native-unified-contacts');
+import Contacts from 'react-native-unified-contacts';
 ```
 
 ## Getting Contacts
@@ -529,11 +520,34 @@ var base64ImageUri = 'data:image/png;base64,' + contact.thumbnailImageData;
 
 # Troubleshooting
 
+## ExampleApp
+
+![ExampleApp iOS](readme_assets/example_app_ios.gif)
+
+As a quick example and a way to prove that it's working as expected with a fresh React Native app, there's an ExampleApp contained in the repository.
+
+One of the best things to do is to make sure that this is working, see how it works and then take what you need to make it work in your own application.
+
+To quickly run the ExampleApp:
+
+1. `git clone git@github.com:joshuapinter/react-native-unified-contacts.git`
+
+1. `cd react-native-unified-contacts/ExampleApp`
+
+1. `npm install`
+
+1. `open ios/ExampleApp.xcodeproject`
+
+1. Select your favourite device and click run.
+
+
+## Other Issues
+
 If you run into trouble, take a look at the following thread:
 
 https://github.com/joshuapinter/react-native-unified-contacts/issues/15
 
-You should also have the latest version of XCode (8.2+) and Swift (3+).
+You should also have the latest version of XCode (9.2+) and Swift (4+).
 
 If that doesn't help you, please [create an Issue](https://github.com/joshuapinter/react-native-unified-contacts/issues/new) and we'll figure it out together.
 
@@ -566,3 +580,4 @@ Copyright 2016 - `Time.now()` by [Joshua Pinter][joshuapinter]
 [homanp-prs]:               https://github.com/joshuapinter/react-native-unified-contacts/pulls?utf8=%E2%9C%93&q=is%3Apr+author%3Ahomanp+
 [chrise86]:                 https://github.com/chrise86
 [chrise86-prs]:             https://github.com/joshuapinter/react-native-unified-contacts/pulls?utf8=%E2%9C%93&q=is%3Apr%20author%3Achrise86
+
