@@ -11,9 +11,11 @@ import Foundation
 
 @available(iOS 9.0, *)
 @objc(RNUnifiedContacts)
-class RNUnifiedContacts: NSObject {
-
+class RNUnifiedContacts: NSObject, ContactPickerDelegateDelegate {
     //  iOS Reference: https://developer.apple.com/library/ios/documentation/Contacts/Reference/CNContact_Class/#//apple_ref/doc/constant_group/Metadata_Keys
+  
+  var contactDelegate: PickContactDelegate?
+  var contactsDelegate: PickContactsDelegate?
 
     let keysToFetch = [
         CNContactBirthdayKey,
@@ -91,27 +93,39 @@ class RNUnifiedContacts: NSObject {
         callback( [NSNull(), contactAsDictionary] )
     }
 
-    @objc func generateHash(_ identifier: String, callback: (String) -> () ) -> Void {
+    @objc func generateHash(_ identifier: String, callback: (NSArray) -> () ) -> Void {
         let cNContact = getCNContact( identifier, keysToFetch: keysToFetch as [CNKeyDescriptor] )
         if ( cNContact == nil ) {
-            callback( "Could not find a contact with the identifier ".appending(identifier))
+          callback( ["Could not find a contact with the identifier ".appending(identifier), NSNull()] )
             return
         }
+      
         
         let contactAsDictionary = convertCNContactToDictionary( cNContact! )
-        let response = ""
-        var jsonData: NSData = NSJSONSerialization.dataWithJSONObject(dictionary, options: NSJSONWritingOptions.PrettyPrinted, error: &error)!
-        if error == nil {
-            response = NSString(data:jsonData,encoding :NSUTF8StringEncoding)! as String
-            let sha256Contacts = Digest.sha256(response).toHexString()
-            callback(sha256)
-            //callback(Digest. )
-            //return NSString(data: jsonData, encoding: NSUTF8StringEncoding)! as String
-        }else{
-            let uIntContacts: Array<UInt8> = Array(response.utf8)
-            callback( [NSNull(), contactAsDictionary] )
-        }
+      var response = ""
+      
+      
+      
+      do {
+        let jsonData = try JSONSerialization.data(withJSONObject: contactAsDictionary, options: .prettyPrinted)
+        // here "jsonData" is the dictionary encoded in JSON data
         
+        //let decoded = try JSONSerialization.jsonObject(with: jsonData, options: [])
+        // here "decoded" is of type `Any`, decoded from JSON data
+        
+        response = NSString(data:jsonData,encoding :String.Encoding.utf8.rawValue)! as String
+        
+        
+        
+        let sha256Contacts = Digest.sha256(response.bytes).toHexString()
+        print(sha256Contacts)
+        //callback(sha256Contacts)
+        callback( [NSNull(), sha256Contacts] )
+        //callback("Hello World")
+      } catch {
+        print(error.localizedDescription)
+        callback( ["Something bad happened ".appending(identifier), NSNull()] )
+      }
     }
     
     @objc func getGroup(_ identifier: String, callback: (NSArray) -> () ) -> Void {
@@ -297,6 +311,8 @@ class RNUnifiedContacts: NSObject {
         }
 
     }
+  
+  
 
     @objc func updateContact(_ identifier: String, contactData: NSDictionary, callback: (NSArray) -> () ) -> Void {
 
@@ -755,4 +771,56 @@ class RNUnifiedContacts: NSObject {
         )
     }
 
+  func present(viewController: UIViewController) {
+    DispatchQueue.main.async { [weak self] in
+      self?.getTopViewController(window: UIApplication.shared.keyWindow)?.present(viewController, animated: true, completion: nil)
+    }
+  }
+  func getTopViewController(window: UIWindow?) -> UIViewController? {
+    if let window = window {
+      var top = window.rootViewController
+      while true {
+        if let presented = top?.presentedViewController {
+          top = presented
+        } else if let nav = top as? UINavigationController {
+          top = nav.visibleViewController
+        } else if let tab = top as? UITabBarController {
+          top = tab.selectedViewController
+        } else {
+          break
+        }
+      }
+      return top
+    }
+    return nil
+  }
+  @objc func pickContact(_ data: [String: Any], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    let vc = CNContactPickerViewController()
+    contactDelegate = PickContactDelegate(delegate: self, resolve: resolve, reject: reject)
+    vc.delegate = contactDelegate
+    
+    if let displayedPropertyKeys = data["displayedPropertyKeys"] as? [String] {
+      vc.displayedPropertyKeys = displayedPropertyKeys
+    }
+    
+    present(viewController: vc)
+  }
+  
+  @objc func pickContacts(_ data: [String: Any], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    let vc = CNContactPickerViewController()
+    contactsDelegate = PickContactsDelegate(delegate: self, resolve: resolve, reject: reject)
+    vc.delegate = contactsDelegate
+    
+    if let displayedPropertyKeys = data["displayedPropertyKeys"] as? [String] {
+      vc.displayedPropertyKeys = displayedPropertyKeys
+    }
+    
+    present(viewController: vc)
+  }
+  
+  func done() {
+    contactDelegate = nil
+    contactsDelegate = nil
+  }
+  
 }
