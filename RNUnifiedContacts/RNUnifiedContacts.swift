@@ -231,6 +231,12 @@ class RNUnifiedContacts: NSObject {
             mutableContact.emailAddresses.append( emailAddressAsCNLabeledValue )
         }
 
+        for postalAddress in contactData["postalAddresses"] as! NSArray {
+            let postalAddressAsCNLabeledValue = convertPostalAddressToCNLabeledValue ( postalAddress as! NSDictionary )
+
+            mutableContact.postalAddresses.append( postalAddressAsCNLabeledValue )
+        }
+
         do {
 
             saveRequest.add(mutableContact, toContainerWithIdentifier:nil)
@@ -314,6 +320,16 @@ class RNUnifiedContacts: NSObject {
                 let emailAddressAsCNLabeledValue = convertEmailAddressToCNLabeledValue ( emailAddress as! NSDictionary )
 
                 mutableContact.emailAddresses.append( emailAddressAsCNLabeledValue )
+            }
+        }
+
+        if ( contactData["postalAddresses"] != nil ) {
+            mutableContact.postalAddresses.removeAll()
+
+            for postalAddress in contactData["postalAddresses"] as! NSArray {
+                let postalAddressAsCNLabeledValue = convertPostalAddressToCNLabeledValue ( postalAddress as! NSDictionary )
+
+                mutableContact.postalAddresses.append( postalAddressAsCNLabeledValue )
             }
         }
 
@@ -729,6 +745,33 @@ class RNUnifiedContacts: NSObject {
         return CNLabeledValue(
             label:label,
             value: emailAddress["value"] as! NSString
+        )
+    }
+
+        func convertPostalAddressToCNLabeledValue(_ postalAddress: NSDictionary) -> CNLabeledValue<CNPostalAddress> {
+        var label = String()
+        switch (postalAddress["label"] as! String) {
+        case "home":
+            label = CNLabelHome
+        case "work":
+            label = CNLabelWork
+        case "other":
+            label = CNLabelOther
+        default:
+            label = ""
+        }
+
+        let mutableAddress = CNMutablePostalAddress()
+        let userAddressUpdates = postalAddress["value"] as! [String: Any]
+        mutableAddress.street = userAddressUpdates["street"] as! String
+        mutableAddress.city = userAddressUpdates["city"] as! String
+        mutableAddress.state = userAddressUpdates["state"] as! String
+        mutableAddress.postalCode = userAddressUpdates["postalCode"] as! String
+        mutableAddress.country = userAddressUpdates["country"] as! String
+ 
+        return CNLabeledValue(
+            label: label,
+            value: address as CNPostalAddress
         )
     }
 

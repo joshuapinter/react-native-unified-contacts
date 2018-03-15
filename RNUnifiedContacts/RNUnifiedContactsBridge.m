@@ -35,6 +35,11 @@
               @"ICLOUD"   : @"iCloud",
               @"OTHER"    : @"other",
               },
+          @"postalAddressLabel": @{
+              @"HOME"     : @"home",
+              @"WORK"     : @"work",
+              @"OTHER"    : @"other",
+              },
          };
 }
 
