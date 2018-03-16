@@ -748,29 +748,30 @@ class RNUnifiedContacts: NSObject {
         )
     }
 
-        func convertPostalAddressToCNLabeledValue(_ postalAddress: NSDictionary) -> CNLabeledValue<CNPostalAddress> {
-        var label = String()
-        switch (postalAddress["label"] as! String) {
+    func convertPostalAddressToCNLabeledValue(_ postalAddress: NSDictionary) -> CNLabeledValue<CNPostalAddress> {
+        var formattedLabel = String()
+        let userProvidedLabel = postalAddress["label"] as! String
+        let lowercaseUserProvidedLabel = userProvidedLabel.lowercased()
+        switch (lowercaseUserProvidedLabel) {
         case "home":
-            label = CNLabelHome
+            formattedLabel = CNLabelHome
         case "work":
-            label = CNLabelWork
+            formattedLabel = CNLabelWork
         case "other":
-            label = CNLabelOther
+            formattedLabel = CNLabelOther
         default:
-            label = ""
+            formattedLabel = userProvidedLabel
         }
 
         let mutableAddress = CNMutablePostalAddress()
-        let userAddressUpdates = postalAddress["value"] as! [String: Any]
-        mutableAddress.street = userAddressUpdates["street"] as! String
-        mutableAddress.city = userAddressUpdates["city"] as! String
-        mutableAddress.state = userAddressUpdates["state"] as! String
-        mutableAddress.postalCode = userAddressUpdates["postalCode"] as! String
-        mutableAddress.country = userAddressUpdates["country"] as! String
+        mutableAddress.street = postalAddress["street"] as! String
+        mutableAddress.city = postalAddress["city"] as! String
+        mutableAddress.state = postalAddress["state"] as! String
+        mutableAddress.postalCode = postalAddress["postalCode"] as! String
+        mutableAddress.country = postalAddress["country"] as! String
  
         return CNLabeledValue(
-            label: label,
+            label: formattedLabel,
             value: mutableAddress as CNPostalAddress
         )
     }
