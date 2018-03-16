@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "UIKit/UIKit.h"
 
-#import "RCTBridgeModule.h"
+#import <React/RCTBridgeModule.h>
 
 
 @interface RCT_EXTERN_MODULE(RNUnifiedContacts, NSObject)
@@ -38,6 +38,7 @@
          };
 }
 
+// Contacts
 RCT_EXTERN_METHOD(getContact:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
 
 RCT_EXTERN_METHOD(getContacts:(RCTResponseSenderBlock)callback);
@@ -50,6 +51,24 @@ RCT_EXTERN_METHOD(updateContact:(NSString *)identifier contactData:(NSDictionary
 
 RCT_EXTERN_METHOD(deleteContact:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
 
+// Groups
+RCT_EXTERN_METHOD(getGroup:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
+
+RCT_EXTERN_METHOD(getGroups:(RCTResponseSenderBlock)callback);
+
+RCT_EXTERN_METHOD(contactsInGroup:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
+
+RCT_EXTERN_METHOD(addGroup:(NSDictionary *)groupData callback:(RCTResponseSenderBlock)callback);
+
+RCT_EXTERN_METHOD(updateGroup:(NSString *)identifier groupData:(NSDictionary *)groupData callback:(RCTResponseSenderBlock)callback);
+
+RCT_EXTERN_METHOD(deleteGroup:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
+
+RCT_EXTERN_METHOD(addContactsToGroup:(NSString *)identifier contactIdentifiers:(NSArray *)contactIdentifiers callback:(RCTResponseSenderBlock)callback);
+
+RCT_EXTERN_METHOD(removeContactsFromGroup:(NSString *)identifier contactIdentifiers:(NSArray *)contactIdentifiers callback:(RCTResponseSenderBlock)callback);
+
+// Generic
 RCT_EXTERN_METHOD(userCanAccessContacts:(RCTResponseSenderBlock)callback);
 
 RCT_EXTERN_METHOD(requestAccessToContacts:(RCTResponseSenderBlock)callback);
@@ -57,7 +76,5 @@ RCT_EXTERN_METHOD(requestAccessToContacts:(RCTResponseSenderBlock)callback);
 RCT_EXPORT_METHOD(openPrivacySettings) {
   [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 }
-
-
 
 @end
