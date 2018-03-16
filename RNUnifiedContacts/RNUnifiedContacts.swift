@@ -231,6 +231,12 @@ class RNUnifiedContacts: NSObject {
             mutableContact.emailAddresses.append( emailAddressAsCNLabeledValue )
         }
 
+        for postalAddress in contactData["postalAddresses"] as! NSArray {
+            let postalAddressAsCNLabeledValue = convertPostalAddressToCNLabeledValue ( postalAddress as! NSDictionary )
+
+            mutableContact.postalAddresses.append( postalAddressAsCNLabeledValue )
+        }
+
         do {
 
             saveRequest.add(mutableContact, toContainerWithIdentifier:nil)
@@ -314,6 +320,16 @@ class RNUnifiedContacts: NSObject {
                 let emailAddressAsCNLabeledValue = convertEmailAddressToCNLabeledValue ( emailAddress as! NSDictionary )
 
                 mutableContact.emailAddresses.append( emailAddressAsCNLabeledValue )
+            }
+        }
+
+        if ( contactData["postalAddresses"] != nil ) {
+            mutableContact.postalAddresses.removeAll()
+
+            for postalAddress in contactData["postalAddresses"] as! NSArray {
+                let postalAddressAsCNLabeledValue = convertPostalAddressToCNLabeledValue ( postalAddress as! NSDictionary )
+
+                mutableContact.postalAddresses.append( postalAddressAsCNLabeledValue )
             }
         }
 
@@ -733,6 +749,34 @@ class RNUnifiedContacts: NSObject {
         return CNLabeledValue(
             label:formattedLabel,
             value: emailAddress["value"] as! NSString
+        )
+    }
+
+    func convertPostalAddressToCNLabeledValue(_ postalAddress: NSDictionary) -> CNLabeledValue<CNPostalAddress> {
+        var formattedLabel = String()
+        let userProvidedLabel = postalAddress["label"] as! String
+        let lowercaseUserProvidedLabel = userProvidedLabel.lowercased()
+        switch (lowercaseUserProvidedLabel) {
+        case "home":
+            formattedLabel = CNLabelHome
+        case "work":
+            formattedLabel = CNLabelWork
+        case "other":
+            formattedLabel = CNLabelOther
+        default:
+            formattedLabel = userProvidedLabel
+        }
+
+        let mutableAddress = CNMutablePostalAddress()
+        mutableAddress.street = postalAddress["street"] as! String
+        mutableAddress.city = postalAddress["city"] as! String
+        mutableAddress.state = postalAddress["state"] as! String
+        mutableAddress.postalCode = postalAddress["postalCode"] as! String
+        mutableAddress.country = postalAddress["country"] as! String
+ 
+        return CNLabeledValue(
+            label: formattedLabel,
+            value: mutableAddress as CNPostalAddress
         )
     }
 
