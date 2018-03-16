@@ -77,4 +77,10 @@ RCT_EXPORT_METHOD(openPrivacySettings) {
   [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 }
 
+++ (BOOL)requiresMainQueueSetup
+ +{
+ +    return YES;
+ +}
++
+
 @end
