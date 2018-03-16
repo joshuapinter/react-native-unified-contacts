@@ -691,7 +691,7 @@ class RNUnifiedContacts: NSObject {
             formattedLabel = CNLabelWork
         case "mobile":
             formattedLabel = CNLabelPhoneNumberMobile
-        case "iPhone":
+        case "iphone":
             formattedLabel = CNLabelPhoneNumberiPhone
         case "main":
             formattedLabel = CNLabelPhoneNumberMain
@@ -722,7 +722,7 @@ class RNUnifiedContacts: NSObject {
             formattedLabel = CNLabelHome
         case "work":
             formattedLabel = CNLabelWork
-        case "iCloud":
+        case "icloud":
             formattedLabel = CNLabelEmailiCloud
         case "other":
             formattedLabel = CNLabelOther
