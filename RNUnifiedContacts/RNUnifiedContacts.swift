@@ -293,7 +293,7 @@ class RNUnifiedContacts: NSObject {
             mutableContact.familyName = contactData["familyName"] as! String
         }
 
-        if ( contactData["givenName"] != nil ) {
+        if ( contactData["organizationName"] != nil ) {
             mutableContact.organizationName = contactData["organizationName"] as! String
         }
 
