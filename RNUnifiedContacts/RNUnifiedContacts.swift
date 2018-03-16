@@ -771,7 +771,7 @@ class RNUnifiedContacts: NSObject {
  
         return CNLabeledValue(
             label: label,
-            value: address as CNPostalAddress
+            value: mutableAddress as CNPostalAddress
         )
     }
 
