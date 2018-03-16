@@ -681,53 +681,57 @@ class RNUnifiedContacts: NSObject {
     }
 
     func convertPhoneNumberToCNLabeledValue(_ phoneNumber: NSDictionary) -> CNLabeledValue<CNPhoneNumber> {
-        var label = String()
-        switch (phoneNumber["label"] as! String) {
+        var formattedLabel = String()
+        let userProvidedLabel = phoneNumber["label"] as! String
+        let lowercaseUserProvidedLabel = userProvidedLabel.lowercased()
+        switch (lowercaseUserProvidedLabel) {
         case "home":
-            label = CNLabelHome
+            formattedLabel = CNLabelHome
         case "work":
-            label = CNLabelWork
+            formattedLabel = CNLabelWork
         case "mobile":
-            label = CNLabelPhoneNumberMobile
-        case "iPhone":
-            label = CNLabelPhoneNumberiPhone
+            formattedLabel = CNLabelPhoneNumberMobile
+        case "iphone":
+            formattedLabel = CNLabelPhoneNumberiPhone
         case "main":
-            label = CNLabelPhoneNumberMain
+            formattedLabel = CNLabelPhoneNumberMain
         case "home fax":
-            label = CNLabelPhoneNumberHomeFax
+            formattedLabel = CNLabelPhoneNumberHomeFax
         case "work fax":
-            label = CNLabelPhoneNumberWorkFax
+            formattedLabel = CNLabelPhoneNumberWorkFax
         case "pager":
-            label = CNLabelPhoneNumberPager
+            formattedLabel = CNLabelPhoneNumberPager
         case "other":
-            label = CNLabelOther
+            formattedLabel = CNLabelOther
         default:
-            label = ""
+            formattedLabel = userProvidedLabel
         }
 
         return CNLabeledValue(
-            label:label,
+            label:formattedLabel,
             value:CNPhoneNumber(stringValue: phoneNumber["stringValue"] as! String)
         )
     }
 
     func convertEmailAddressToCNLabeledValue(_ emailAddress: NSDictionary) -> CNLabeledValue<NSString> {
-        var label = String()
-        switch (emailAddress["label"] as! String) {
+        var formattedLabel = String()
+        let userProvidedLabel = emailAddress["label"] as! String
+        let lowercaseUserProvidedLabel = userProvidedLabel.lowercased()
+        switch (lowercaseUserProvidedLabel) {
         case "home":
-            label = CNLabelHome
+            formattedLabel = CNLabelHome
         case "work":
-            label = CNLabelWork
-        case "iCloud":
-            label = CNLabelEmailiCloud
+            formattedLabel = CNLabelWork
+        case "icloud":
+            formattedLabel = CNLabelEmailiCloud
         case "other":
-            label = CNLabelOther
+            formattedLabel = CNLabelOther
         default:
-            label = ""
+            formattedLabel = userProvidedLabel
         }
 
         return CNLabeledValue(
-            label:label,
+            label:formattedLabel,
             value: emailAddress["value"] as! NSString
         )
     }
