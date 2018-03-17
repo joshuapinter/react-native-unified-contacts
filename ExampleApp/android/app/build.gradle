@@ -140,8 +140,6 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
-
-    implementation project(path: ':react-native-unified-contacts', configuration: 'default')
 }
 
 // Run this once to be able to run the application with BUCK
