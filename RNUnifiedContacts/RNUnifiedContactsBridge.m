@@ -35,6 +35,11 @@
               @"ICLOUD"   : @"iCloud",
               @"OTHER"    : @"other",
               },
+          @"postalAddressLabel": @{
+              @"HOME"     : @"home",
+              @"WORK"     : @"work",
+              @"OTHER"    : @"other",
+              },
          };
 }
 
@@ -75,6 +80,10 @@ RCT_EXTERN_METHOD(requestAccessToContacts:(RCTResponseSenderBlock)callback);
 
 RCT_EXPORT_METHOD(openPrivacySettings) {
   [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+}
+
++ (BOOL)requiresMainQueueSetup {
+    return YES;
 }
 
 @end
