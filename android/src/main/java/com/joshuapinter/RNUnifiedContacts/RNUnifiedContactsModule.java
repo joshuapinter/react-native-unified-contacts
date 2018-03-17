@@ -1,4 +1,4 @@
-package com.joshuapinter;
+package com.joshuapinter.RNUnifiedContacts;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -507,19 +507,25 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     // us to just use Javascript for permissions management in Android. So in index.js you'll see
     // it handled there.
     //
-//    @ReactMethod
-//    public Boolean userCanAccessContacts(Callback successCallback) {
-//        int userCanAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS );
-//
-//        if (userCanAccessContacts == PackageManager.PERMISSION_GRANTED) {
-//            successCallback.invoke(true);
-//            return true;
-//        }
-//        else {
-//            successCallback.invoke(false);
-//            return false;
-//        }
-//    }
+
+    // PW: Brought this back to ensure compatibility between iOS and Android
+   @ReactMethod
+   public Boolean userCanAccessContacts(Callback successCallback) {
+    //    int userCanAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS );
+
+    //    if (userCanAccessContacts == PackageManager.PERMISSION_GRANTED) {
+    //        successCallback.invoke(true);
+    //        return true;
+    //    }
+    //    else {
+    //        successCallback.invoke(false);
+    //        return false;
+    //    }
+
+
+        successCallback.invoke(true);
+        return true;
+   }
 
 
 

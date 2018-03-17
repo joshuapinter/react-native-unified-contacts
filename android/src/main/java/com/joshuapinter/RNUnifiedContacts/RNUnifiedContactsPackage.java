@@ -1,4 +1,4 @@
-package com.joshuapinter;
+package com.joshuapinter.RNUnifiedContacts;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
@@ -22,7 +22,6 @@ public class RNUnifiedContactsPackage implements ReactPackage {
         return modules;
     }
 
-    @Override
     public List<Class<? extends JavaScriptModule>> createJSModules() {
         return Collections.emptyList();
     }
