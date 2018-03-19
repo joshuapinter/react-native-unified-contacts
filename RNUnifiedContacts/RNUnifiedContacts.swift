@@ -80,6 +80,18 @@ class RNUnifiedContacts: NSObject {
         }
     }
 
+    @objc func alreadyRequestedAccessToContacts(_ callback: (Array<Bool>) -> ()) -> Void {
+        let authorizationStatus = CNContactStore.authorizationStatus(for: CNEntityType.contacts)
+
+        switch authorizationStatus{
+        case .notDetermined:
+            callback([false])
+
+        case .authorized, .restricted, .denied:
+            callback([true])
+        }
+    }
+
     @objc func getContact(_ identifier: String, callback: (NSArray) -> () ) -> Void {
         let cNContact = getCNContact( identifier, keysToFetch: keysToFetch as [CNKeyDescriptor] )
         if ( cNContact == nil ) {

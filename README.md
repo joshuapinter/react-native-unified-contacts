@@ -103,12 +103,30 @@ let contactData = {
   'familyName':       'Appleseed',
   'organizationName': 'Apple Inc',
   'phoneNumbers': [
-    {'label': Contacts.phoneNumberLabel.HOME, 'stringValue': '555-522-8243'},
-    {'label': Contacts.phoneNumberLabel.WORK, 'stringValue': '(408) 555-5270'},
+    {'label': 'Home', 'stringValue': '555-522-8243'},
+    {'label': 'Work', 'stringValue': '(408) 555-5270'},
   ],
   'emailAddresses': [
-    {'label': Contacts.emailAddressLabel.WORK, 'value': 'john.appleseed@apple.com'},
-    {'label': Contacts.emailAddressLabel.HOME, 'value': 'john@gmail.com'},
+    {'label': 'Work', 'value': 'john.appleseed@apple.com'},
+    {'label': 'Home', 'value': 'john@gmail.com'},
+  ],
+  'postalAddresses': [
+    {
+      'label': 'Work', 
+      'street': '123 Fake Street',
+      'city':  'Boston',
+      'state':  'MA',
+      'postalCode':  '90210',
+      'country':  'United States',
+    },
+    {
+      'label': 'Home', 
+      'street': '123 North Street',
+      'city':  'Halifax',
+      'state':  'NS',
+      'postalCode':  'M5M 4T4',
+      'country':  'Canada',
+    },
   ],
 }
 
@@ -134,12 +152,30 @@ let contactData = {
   'familyName':       'Appleseed',
   'organizationName': 'Apple Inc',
   'phoneNumbers': [
-    {'label': Contacts.phoneNumberLabel.HOME, 'stringValue': '555-522-8243'},
-    {'label': Contacts.phoneNumberLabel.WORK, 'stringValue': '(408) 555-5270'},
+    {'label': 'Home', 'stringValue': '555-522-8243'},
+    {'label': 'Work', 'stringValue': '(408) 555-5270'},
   ],
   'emailAddresses': [
-    {'label': Contacts.emailAddressLabel.WORK, 'value': 'john.appleseed@apple.com'},
-    {'label': Contacts.emailAddressLabel.HOME, 'value': 'john@gmail.com'},
+    {'label': 'Work', 'value': 'john.appleseed@apple.com'},
+    {'label': 'Home', 'value': 'john@gmail.com'},
+  ],
+  'postalAddresses': [
+    {
+      'label': 'Work', 
+      'street': '123 Fake Street',
+      'city':  'Boston',
+      'state':  'MA',
+      'postalCode':  '90210',
+      'country':  'United States',
+    },
+    {
+      'label': 'Home', 
+      'street': '123 North Street',
+      'city':  'Halifax',
+      'state':  'NS',
+      'postalCode':  'M5M 4T4',
+      'country':  'Canada',
+    },
   ],
 }
 
@@ -153,7 +189,7 @@ Contacts.updateContact(contactIdentifier, contactData, (error, success) => {
 });
 ```
 
-_NOTE: If your `contactData` includes the keys `phoneNumbers` or `emailAddresses`, the associated value will completely replace any Phone Numbers or Email Addresses for that Contact, respectively. In other words, if you have a contact with two Phone Numbers and you'd like to add a third, you need to pass in ALL THREE Phone Numbers, not just the new one. Same goes for Email Addresses._
+_NOTE: If your `contactData` includes the keys `phoneNumbers`, `emailAddresses`, or `postalAddresses` the associated value will completely replace any Phone Numbers, Email Addresses or Postal Addresses for that Contact, respectively. In other words, if you have a contact with two Phone Numbers and you'd like to add a third, you need to pass in ALL THREE Phone Numbers, not just the new one. Same goes for Email Addresses and Postal Addresses._
 
 
 ## Deleting Contacts
@@ -353,6 +389,21 @@ This will do everything you'd expect. Here's the workflow:
      2. If user has already denied access to Contacts, return `false`.
 
         _The user will have to go to their privacy settings and allow access manually. We provide a [`openPrivacySettings`](#open-privacy-settings) method that allows you to bring up the privacy page easily for the user. See below._
+
+
+### Check if Already Requsted Access To Contacts
+
+```js
+Contacts.alreadyRequestedAccessToContacts( (hasRequsted) => {
+  if (hasRequsted) {
+    console.log("You have already requested access to contacts");
+  }
+  else {
+    console.log("You have not yet asked for access to contacts");
+  }
+});
+```
+Since you cannot ask again after the user refuses, this allows you to change the UI
 
 
 ### Open the User's Privacy Settings
