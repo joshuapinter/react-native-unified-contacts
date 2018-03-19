@@ -508,57 +508,52 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     // it handled there.
     //
 
-    // PW: Brought this back to ensure compatibility between iOS and Android
-   @ReactMethod
-   public Boolean userCanAccessContacts(Callback successCallback) {
-    //    int userCanAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS );
+//    @ReactMethod
+//    public Boolean userCanAccessContacts(Callback successCallback) {
+//        int userCanAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS );
 
-    //    if (userCanAccessContacts == PackageManager.PERMISSION_GRANTED) {
-    //        successCallback.invoke(true);
-    //        return true;
-    //    }
-    //    else {
-    //        successCallback.invoke(false);
-    //        return false;
-    //    }
-
-
-        successCallback.invoke(true);
-        return true;
-   }
+//        if (userCanAccessContacts == PackageManager.PERMISSION_GRANTED) {
+//            successCallback.invoke(true);
+//            return true;
+//        }
+//        else {
+//            successCallback.invoke(false);
+//            return false;
+//        }
+//    }
 
 
 
-    @ReactMethod
-    public void getMessages() {
-        Activity currentActivity = getCurrentActivity();
+//     @ReactMethod
+//     public void getMessages() {
+//         Activity currentActivity = getCurrentActivity();
 
-        if (ContextCompat.checkSelfPermission(currentActivity.getBaseContext(), "android.permission.READ_SMS") != PackageManager.PERMISSION_GRANTED) {
-            Log.w("Test3", "request permission");
-            final int REQUEST_CODE_ASK_PERMISSIONS = 123;
-            ActivityCompat.requestPermissions(currentActivity, new String[]{"android.permission.READ_SMS"}, REQUEST_CODE_ASK_PERMISSIONS);
-        }
+//         if (ContextCompat.checkSelfPermission(currentActivity.getBaseContext(), "android.permission.READ_SMS") != PackageManager.PERMISSION_GRANTED) {
+//             Log.w("Test3", "request permission");
+//             final int REQUEST_CODE_ASK_PERMISSIONS = 123;
+//             ActivityCompat.requestPermissions(currentActivity, new String[]{"android.permission.READ_SMS"}, REQUEST_CODE_ASK_PERMISSIONS);
+//         }
 
-//        ActivityCompat.requestPermissions(currentActivity,
-//                new String[]{Manifest.permission.READ_SMS},
-//                1);
+// //        ActivityCompat.requestPermissions(currentActivity,
+// //                new String[]{Manifest.permission.READ_SMS},
+// //                1);
 
-        Cursor cursor = currentActivity.getContentResolver().query(Uri.parse("content://sms/sent"), null, null, null, null);
+//         Cursor cursor = currentActivity.getContentResolver().query(Uri.parse("content://sms/sent"), null, null, null, null);
 
-        if (cursor.moveToFirst()) { // must check the result to prevent exception
-            do {
-                String msgData = "";
-                for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
-                    msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx);
-                }
+//         if (cursor.moveToFirst()) { // must check the result to prevent exception
+//             do {
+//                 String msgData = "";
+//                 for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
+//                     msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx);
+//                 }
 
-                Log.w("Test1", msgData);
-            } while (cursor.moveToNext());
-        } else {
-            Log.w("Test2", "Messages empty.");
-            // empty box, no SMS
-        }
-    }
+//                 Log.w("Test1", msgData);
+//             } while (cursor.moveToNext());
+//         } else {
+//             Log.w("Test2", "Messages empty.");
+//             // empty box, no SMS
+//         }
+//     }
 
 
 }
