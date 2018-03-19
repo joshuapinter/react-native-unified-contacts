@@ -64,7 +64,21 @@ Apple recently did a complete overhaul of their Contacts Framework that does a n
   }
   ```
 
-  4. In in android/app/src/main/java/[your-app]/MainActivity.java:
+  4. Also in `android/app/build.gradle`:
+  _Set minSdkVersion to 23 (Android 6.0 or i.e. Android M)_
+  
+  ```gradle
+  ...
+
+  android {
+    ...
+    defaultConfig {
+      ...        
+      minSdkVersion 23
+      ...
+  ```
+
+  5. In in android/app/src/main/java/[your-app]/MainActivity.java:
   
   ```java
   import com.joshuapinter.RNUnifiedContacts.RNUnifiedContactsPackage; // <------ Add this line
