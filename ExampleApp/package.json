@@ -9,7 +9,7 @@
   "dependencies": {
     "react": "^16.2.0",
     "react-native": "^0.54.2",
-    "react-native-unified-contacts": "https://github.com/joshuapinter/react-native-unified-contacts.git#android"
+    "react-native-unified-contacts": "https://github.com/paintedbicycle/react-native-unified-contacts.git#pw-android"
   },
   "devDependencies": {
     "babel-jest": "^22.1.0",

@@ -80,7 +80,14 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getContacts( Callback errorCallback, Callback successCallback ) {
+    public void getContacts(final Callback callback) {
+        searchContacts(null, callback);
+    }
+
+    @ReactMethod
+    public void searchContacts( String searchText, Callback callback ) {
+
+        // ToDo: Use searchText to filter results
         WritableArray contacts = Arguments.createArray();
 
         contentResolver = getCurrentActivity().getContentResolver();
@@ -100,7 +107,12 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
         contactCursor.close();
 
-        successCallback.invoke(contacts);
+        // ToDo: Add check for error and return error callback instead
+        // i.e. callback.invoke(error, null)
+
+
+        // Success
+        callback.invoke(null, contacts);
     }
 
     @ReactMethod
