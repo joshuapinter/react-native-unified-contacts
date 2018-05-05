@@ -693,6 +693,7 @@ var base64ImageUri = 'data:image/png;base64,' + contact.thumbnailImageData;
 ## ExampleApp
 
 ![ExampleApp iOS](readme_assets/example_app_ios.gif)
+![ExampleApp Android](readme_assets/example_app_android.gif)
 
 As a quick example and a way to prove that it's working as expected with a fresh React Native app, there's an ExampleApp contained in the repository.
 
