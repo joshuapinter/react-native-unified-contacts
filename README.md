@@ -11,9 +11,8 @@
 
 |                                    | iOS | Android | Windows | Notes |
 |------------------------------------|:---:|:-------:|:-------:| ----- |
-| `getContacts`                      | ✅  | 🚫      | 🚫     |       |
 | `getContact`                       | ✅  | 🚫      | 🚫     |       |
-| `getContacts`                      | ✅  | 🚫      | 🚫     |       |
+| `getContacts`                      | ✅  | ✅      | 🚫     |       |
 | `searchContacts`                   | ✅  | 🚫      | 🚫     |       |
 | `addContact`                       | ✅  | 🚫      | 🚫     |       |
 | `updateContact`                    | ✅  | 🚫      | 🚫     |       |
@@ -26,8 +25,8 @@
 | `deleteGroup`                      | ✅  | 🚫      | 🚫     |       |
 | `addContactsToGroup`               | ✅  | 🚫      | 🚫     |       |
 | `removeContactsFromGroup`          | ✅  | 🚫      | 🚫     |       |
-| `userCanAccessContacts`            | ✅  | 🚫      | 🚫     |       |
-| `requestAccessToContacts`          | ✅  | 🚫      | 🚫     |       |
+| `userCanAccessContacts`            | ✅  | ✅      | 🚫     |       |
+| `requestAccessToContacts`          | ✅  | ✅      | 🚫     |       |
 | `alreadyRequestedAccessToContacts` | ✅  | 🚫      | 🚫     |       |
 | `openPrivacySettings`              | ✅  | 🚫      | 🚫     |       |
 
