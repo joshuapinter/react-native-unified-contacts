@@ -5,7 +5,31 @@
 
 **Your best friend when working with the latest and greatest [Contacts Framework][apple-contacts-framework] in iOS 9+ and combining that with Android 6 (SDK 23)+ support**
 
-### **Requires iOS 9+ and Swift 4 for iOS or Android M (6.0 / SDK 23)+ for Anrdoid**
+# Platform Compatibility
+
+**Requires iOS 9+ and Swift 4 for iOS or Android M (6.0 / SDK 23)+ for Anrdoid**
+
+|                                    | iOS | Android | Windows | Notes |
+|------------------------------------|:---:|:-------:|:-------:| ----- |
+| `getContacts`                      | ✅  | 🚫      | 🚫     |       |
+| `getContact`                       | ✅  | 🚫      | 🚫     |       |
+| `getContacts`                      | ✅  | 🚫      | 🚫     |       |
+| `searchContacts`                   | ✅  | 🚫      | 🚫     |       |
+| `addContact`                       | ✅  | 🚫      | 🚫     |       |
+| `updateContact`                    | ✅  | 🚫      | 🚫     |       |
+| `deleteContact`                    | ✅  | 🚫      | 🚫     |       |
+| `getGroup`                         | ✅  | 🚫      | 🚫     |       |
+| `getGroups`                        | ✅  | 🚫      | 🚫     |       |
+| `contactsInGroup`                  | ✅  | 🚫      | 🚫     |       |
+| `addGroup`                         | ✅  | 🚫      | 🚫     |       |
+| `updateGroup`                      | ✅  | 🚫      | 🚫     |       |
+| `deleteGroup`                      | ✅  | 🚫      | 🚫     |       |
+| `addContactsToGroup`               | ✅  | 🚫      | 🚫     |       |
+| `removeContactsFromGroup`          | ✅  | 🚫      | 🚫     |       |
+| `userCanAccessContacts`            | ✅  | 🚫      | 🚫     |       |
+| `requestAccessToContacts`          | ✅  | 🚫      | 🚫     |       |
+| `alreadyRequestedAccessToContacts` | ✅  | 🚫      | 🚫     |       |
+| `openPrivacySettings`              | ✅  | 🚫      | 🚫     |       |
 
 Apple recently did a complete overhaul of their Contacts Framework that does a number of things, including:
 
