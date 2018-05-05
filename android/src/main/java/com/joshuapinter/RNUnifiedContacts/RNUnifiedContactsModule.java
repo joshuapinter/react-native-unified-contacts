@@ -1,4 +1,4 @@
-package com.joshuapinter;
+package com.joshuapinter.RNUnifiedContacts;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -16,6 +16,12 @@ import android.support.v4.content.ContextCompat;
 import android.text.format.DateFormat;
 import android.util.Base64;
 import android.util.Log;
+import android.Manifest;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds;
+import android.provider.ContactsContract.CommonDataKinds.Organization;
+import android.provider.ContactsContract.CommonDataKinds.StructuredName;
+import android.provider.ContactsContract.RawContacts;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
@@ -80,7 +86,14 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getContacts( Callback errorCallback, Callback successCallback ) {
+    public void getContacts(final Callback callback) {
+        searchContacts(null, callback);
+    }
+
+    @ReactMethod
+    public void searchContacts( String searchText, Callback callback ) {
+
+        // ToDo: Use searchText to filter results
         WritableArray contacts = Arguments.createArray();
 
         contentResolver = getCurrentActivity().getContentResolver();
@@ -100,8 +113,14 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
         contactCursor.close();
 
-        successCallback.invoke(contacts);
+        // ToDo: Add check for error and return error callback instead
+        // i.e. callback.invoke(error, null)
+
+
+        // Success
+        callback.invoke(null, contacts);
     }
+
 
     @ReactMethod
     public void selectContact(Callback errorCallback, Callback successCallback) {
@@ -140,8 +159,9 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     private WritableMap getContactDetailsFromContactId(int contactId) {
         WritableMap contactMap = Arguments.createMap();
 
-        contactMap.putInt(    "id",         contactId ); // Provided for Android devs used to getting it like this. Maybe _ID is necessary as well.
-        contactMap.putString( "identifier", String.valueOf(contactId) ); // TODO: Consider standardizing on "id" instead.
+        String contactIdAsString = Integer.toString(contactId);
+        contactMap.putString( "identifier", contactIdAsString ); // TODO: Consider standardizing on "id" instead.
+        contactMap.putInt( "id",         contactId ); // Provided for Android devs used to getting it like this. Maybe _ID is necessary as well.
 
         WritableMap names = getNamesFromContact(contactId);
         contactMap.merge( names );
@@ -204,6 +224,8 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         names.putString( "familyName",  familyName );
         names.putString( "suffix",      suffix );
         names.putString( "displayName", displayName );
+        names.putString( "fullName", displayName );
+
 
         namesCursor.close();
 
@@ -507,52 +529,82 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     // us to just use Javascript for permissions management in Android. So in index.js you'll see
     // it handled there.
     //
-//    @ReactMethod
-//    public Boolean userCanAccessContacts(Callback successCallback) {
-//        int userCanAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS );
-//
-//        if (userCanAccessContacts == PackageManager.PERMISSION_GRANTED) {
-//            successCallback.invoke(true);
-//            return true;
-//        }
-//        else {
-//            successCallback.invoke(false);
-//            return false;
-//        }
-//    }
+
+   @ReactMethod
+   public Boolean userCanAccessContacts(Callback successCallback) {
+       int userCanAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS );
+
+       if (userCanAccessContacts == PackageManager.PERMISSION_GRANTED) {
+           successCallback.invoke(true);
+           return true;
+       }
+       else {
+           successCallback.invoke(false);
+           return false;
+       }
+   }
 
 
 
-    @ReactMethod
-    public void getMessages() {
-        Activity currentActivity = getCurrentActivity();
+    // @ReactMethod
+    // public Boolean requestAccessToContacts(Callback successCallback) {
 
-        if (ContextCompat.checkSelfPermission(currentActivity.getBaseContext(), "android.permission.READ_SMS") != PackageManager.PERMISSION_GRANTED) {
-            Log.w("Test3", "request permission");
-            final int REQUEST_CODE_ASK_PERMISSIONS = 123;
-            ActivityCompat.requestPermissions(currentActivity, new String[]{"android.permission.READ_SMS"}, REQUEST_CODE_ASK_PERMISSIONS);
-        }
+    //     // https://developer.android.com/training/permissions/requesting.html
+    //     // https://github.com/googlesamples/android-RuntimePermissions/blob/master/Application/src/main/java/com/example/android/system/runtimepermissions/MainActivity.java
+    //     // Here, thisActivity is the current activity
+    //     if (ContextCompat.checkSelfPermission(getCurrentActivity(),
+    //             Manifest.permission.READ_CONTACTS)
+    //         != PackageManager.PERMISSION_GRANTED) {
 
-//        ActivityCompat.requestPermissions(currentActivity,
-//                new String[]{Manifest.permission.READ_SMS},
-//                1);
+    //         // Permission is not granted
+    //         // Should we show an explanation?
+    //         if (ActivityCompat.shouldShowRequestPermissionRationale(getCurrentActivity(),
+    //                 Manifest.permission.READ_CONTACTS)) {
 
-        Cursor cursor = currentActivity.getContentResolver().query(Uri.parse("content://sms/sent"), null, null, null, null);
+    //             // Show an explanation to the user *asynchronously* -- don't block
+    //             // this thread waiting for the user's response! After the user
+    //             // sees the explanation, try again to request the permission.
 
-        if (cursor.moveToFirst()) { // must check the result to prevent exception
-            do {
-                String msgData = "";
-                for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
-                    msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx);
-                }
+    //         } else {
 
-                Log.w("Test1", msgData);
-            } while (cursor.moveToNext());
-        } else {
-            Log.w("Test2", "Messages empty.");
-            // empty box, no SMS
-        }
-    }
+    //             // No explanation needed; request the permission
+    //             ActivityCompat.requestPermissions(getCurrentActivity(),
+    //                     new String[]{Manifest.permission.READ_CONTACTS},
+    //                     MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+    //             // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+    //             // app-defined int constant. The callback method gets the
+    //             // result of the request.
+    //         }
+    //     } else {
+    //         // Permission has already been granted
+    //     }
+    // }
+
+
+    // @Override
+    // public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    //     switch (requestCode) {
+    //         case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+    //             // If request is cancelled, the result arrays are empty.
+    //             if (grantResults.length > 0
+    //                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+    //                 // permission was granted, yay! Do the
+    //                 // contacts-related task you need to do.
+
+    //             } else {
+
+    //                 // permission denied, boo! Disable the
+    //                 // functionality that depends on this permission.
+    //             }
+    //             return;
+    //         }
+
+    //         // other 'case' lines to check for other
+    //         // permissions this app might request.
+    //     }
+    // }
 
 
 }
