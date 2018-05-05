@@ -727,11 +727,13 @@ If that doesn't help you, please [create an Issue](https://github.com/joshuapint
 * My friend **[Smixx][smixx]** for working through adding a Swift library to a React Native project over his lunch hour.
 * **[Ismail Pelaseyed (homanp)][homanp]** for adding a couple of [huge PRs][homanp-prs] for Creating, Updating and Deleting Contacts.
 * **[Chris Edwards (chrise86)][chrise86]** for adding a tonne of [big PRs][chrise86-prs] for Adding, Updating and Deleting Groups.
+* **[Paul Wright (paintedbicycle)][paintedbicycle]** for acting like a PM with the Android Support, committing a number of critical updates and getting Android back on track. Thank you! 🙏
 
 # TODO
 
 - [X] Add Create/Update/Delete methods for Contacts. **_(Thanks [homanp][homanp]!)_**
-- [ ] Add Android support.
+- [X] Add Basic Android support.
+- [ ] Add Full Android support.
 - [ ] Add integration with Contacts-UI (_Coming Soon!_).
 
 
@@ -751,4 +753,5 @@ Copyright 2016 - 2018 by [Joshua Pinter][joshuapinter]
 [homanp-prs]:               https://github.com/joshuapinter/react-native-unified-contacts/pulls?utf8=%E2%9C%93&q=is%3Apr+author%3Ahomanp+
 [chrise86]:                 https://github.com/chrise86
 [chrise86-prs]:             https://github.com/joshuapinter/react-native-unified-contacts/pulls?utf8=%E2%9C%93&q=is%3Apr%20author%3Achrise86
+[paintedbicycle]:           https://github.com/paintedbicycle
 
