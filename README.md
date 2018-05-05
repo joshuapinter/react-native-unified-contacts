@@ -3,9 +3,32 @@
 <!-- # React Native Unified Contacts -->
 [![npm version](https://badge.fury.io/js/react-native-unified-contacts.svg)](https://badge.fury.io/js/react-native-unified-contacts)
 
-**Your best friend when working with the latest and greatest [Contacts Framework][apple-contacts-framework] in iOS 9+.**
+**Your best friend when working with the latest and greatest [Contacts Framework][apple-contacts-framework] in iOS 9+ and combining that with Android 6 (SDK 23)+ support**
 
-### **Requires iOS 9+ and Swift 4**
+# Platform Compatibility
+
+**Requires iOS 9+ and Swift 4 for iOS or Android M (6.0 / SDK 23)+ for Anrdoid**
+
+|                                    | iOS | Android | Windows | Notes |
+|------------------------------------|:---:|:-------:|:-------:| ----- |
+| `getContact`                       | ✅  | 🚫      | 🚫     |       |
+| `getContacts`                      | ✅  | ✅      | 🚫     |       |
+| `searchContacts`                   | ✅  | 🚫      | 🚫     |       |
+| `addContact`                       | ✅  | 🚫      | 🚫     |       |
+| `updateContact`                    | ✅  | 🚫      | 🚫     |       |
+| `deleteContact`                    | ✅  | 🚫      | 🚫     |       |
+| `getGroup`                         | ✅  | 🚫      | 🚫     |       |
+| `getGroups`                        | ✅  | 🚫      | 🚫     |       |
+| `contactsInGroup`                  | ✅  | 🚫      | 🚫     |       |
+| `addGroup`                         | ✅  | 🚫      | 🚫     |       |
+| `updateGroup`                      | ✅  | 🚫      | 🚫     |       |
+| `deleteGroup`                      | ✅  | 🚫      | 🚫     |       |
+| `addContactsToGroup`               | ✅  | 🚫      | 🚫     |       |
+| `removeContactsFromGroup`          | ✅  | 🚫      | 🚫     |       |
+| `userCanAccessContacts`            | ✅  | ✅      | 🚫     |       |
+| `requestAccessToContacts`          | ✅  | ✅      | 🚫     |       |
+| `alreadyRequestedAccessToContacts` | ✅  | 🚫      | 🚫     |       |
+| `openPrivacySettings`              | ✅  | 🚫      | 🚫     |       |
 
 Apple recently did a complete overhaul of their Contacts Framework that does a number of things, including:
 
@@ -14,10 +37,6 @@ Apple recently did a complete overhaul of their Contacts Framework that does a n
   2. Use the same framework across all their platforms, including iOS, tvOS, watchOS and even OS X.
 
   3. Get unified Contact details not only from a User's local Contact entry, but also from the user's social accounts, like Facebook and Twitter. This allows you to get a Facebook profile picture for a Contact you have in your contact database.
-
-There are a couple of react native packages that give you access to Contacts already ([react-native-contacts][react-native-contacts] and [react-native-addressbook][react-native-addressbook]) but neither of them utilize the new Unified Contacts framework available in iOS 9+. For good reason too, as most people are still supporting devices that are pre-iOS 9.
-
-However, if you have the luxury of supporting iOS 9 and up, you should definitely use this library to  make use of this great new framework by Apple.
 
 
 # Installation
@@ -28,18 +47,118 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
    ```
    _This will install the latest react-native-unified-contacts package and add it to your package.json file._
 
+## Automatic Installation
+
+  2. Link the project:
+  ```bash
+  react-native link react-native-unified-contacts
+  ```
+
+## Manual Installation
+   _Manual installation is only required if automatic linking fails._
+
+### iOS
+
   2. Navigate to `<your-project-directory>/node_modules/react-native-unified-contacts/` and drag the `RNUnifiedContacts` directory into your project directory in Xcode.
 
-  Ensure that `Copy items if needed` is **not** checked, select `Create groups` and ensure your project is selected for a target.
+  3. Ensure that `Copy items if needed` is **not** checked
+
+  4. Select `Create groups` and ensure your project is selected for a target.
 
   ![Select files](readme_assets/drag_and_drop_library_to_sidebar.gif)
 
-  3. For iOS 10+, you need to add a `NSContactsUsageDescription` key to your `Info.plist`, also called `Privacy - Contacts Usage Description` if entered through XCode's interface. This provides a reason why your app needs to access private information:
+### Android
+
+  2. In `android/settings.gradle`:
+
+  ```gradle
+  ...
+  include ':react-native-unified-contacts'
+  project(':react-native-unified-contacts').projectDir = new File(settingsDir, '../node_modules/react-native-unified-contacts/android')
+  ```
+
+  3. In `android/app/build.gradle`:
+
+  ```gradle
+  ...
+  dependencies {
+      ...
+      implementation project(':react-native-unified-contacts')
+  }
+  ```
+
+  4. Also in `android/app/build.gradle`:
+  _Set minSdkVersion to 23 (Android 6.0 or i.e. Android M)_
+
+  ```gradle
+  ...
+
+  android {
+    ...
+    defaultConfig {
+      ...
+      minSdkVersion 23
+      ...
+  ```
+
+  5. In `android/app/source/main/AndroidManifest.xml`:
+  ```xml
+  ...
+    <uses-sdk
+      ...
+      android:minSdkVersion="23"
+      ...
+    />
+    ...
+  ```
+
+  6. In in android/app/src/main/java/[your-app]/MainActivity.java:
+
+  ```java
+  import com.joshuapinter.RNUnifiedContacts.RNUnifiedContactsPackage; // <------ Add this line
+
+  public class MainApplication extends Application implements ReactApplication {
+    ...
+    private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+      @Override
+      public boolean getUseDeveloperSupport() {
+        return BuildConfig.DEBUG;
+      }
+      ...
+      @Override
+      protected List<ReactPackage> getPackages() {
+        return Arrays.<ReactPackage>asList(
+          new MainReactPackage(),
+          ...
+          new RNUnifiedContacts(),  // <------ Add this line
+          ...
+        );
+      }
+      ...
+    }
+  ```
+
+# Post-Install Setup
+
+## Permissions iOS
+
+  For iOS 10+, you need to add a `NSContactsUsageDescription` key to your `Info.plist`, also called `Privacy - Contacts Usage Description` if entered through XCode's interface. This provides a reason why your app needs to access private information:
 
     <key>NSContactsUsageDescription</key>
     <string>ntwrk accesses Contacts in order to quickly add Relationships and allow them to reach out via ntwrk through email, text, phone, etc.</string>
 
-  4. See the [Usage section](#usage) for how to require the library and make use of it.
+## Permissions Android
+
+  Add permissions to your `android/app/src/main/AndroidManifest.xml` file. Below are exampes. You may only need READ_CONTACTS. Only ask for the permissions your app needs.
+
+  ```xml
+  ...
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+  ...
+  ```
+
 
 # Usage
 
@@ -112,7 +231,7 @@ let contactData = {
   ],
   'postalAddresses': [
     {
-      'label': 'Work', 
+      'label': 'Work',
       'street': '123 Fake Street',
       'city':  'Boston',
       'state':  'MA',
@@ -120,7 +239,7 @@ let contactData = {
       'country':  'United States',
     },
     {
-      'label': 'Home', 
+      'label': 'Home',
       'street': '123 North Street',
       'city':  'Halifax',
       'state':  'NS',
@@ -161,7 +280,7 @@ let contactData = {
   ],
   'postalAddresses': [
     {
-      'label': 'Work', 
+      'label': 'Work',
       'street': '123 Fake Street',
       'city':  'Boston',
       'state':  'MA',
@@ -169,7 +288,7 @@ let contactData = {
       'country':  'United States',
     },
     {
-      'label': 'Home', 
+      'label': 'Home',
       'street': '123 North Street',
       'city':  'Halifax',
       'state':  'NS',
@@ -619,7 +738,7 @@ If that doesn't help you, please [create an Issue](https://github.com/joshuapint
 
 The MIT License (MIT)
 
-Copyright 2016 - `Time.now()` by [Joshua Pinter][joshuapinter]
+Copyright 2016 - 2018 by [Joshua Pinter][joshuapinter]
 
 
 [apple-contacts-framework]: https://developer.apple.com/library/ios/documentation/Contacts/Reference/Contacts_Framework/index.html

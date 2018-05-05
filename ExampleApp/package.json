@@ -1,15 +1,15 @@
 {
   "name": "ExampleApp",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest"
   },
   "dependencies": {
-    "react": "^16.2.0",
-    "react-native": "^0.54.2",
-    "react-native-unified-contacts": "^1.6.2"
+    "react": "16.3.2",
+    "react-native": "0.55.0",
+    "react-native-unified-contacts": "https://github.com/joshuapinter/react-native-unified-contacts.git#master"
   },
   "devDependencies": {
     "babel-jest": "^22.1.0",

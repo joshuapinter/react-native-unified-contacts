@@ -1,9 +1,9 @@
 {
   "name": "react-native-unified-contacts",
+  "version": "2.0.0-pre.1",
   "description": "Your best friend when working with the latest and greatest Contacts Framework in iOS 9+ in React Native.",
   "author": "Joshua Pinter",
   "license": "MIT",
-  "version": "1.6.2",
   "nativePackage": true,
   "homepage": "https://github.com/joshuapinter/react-native-unified-contacts",
   "repository": "https://github.com/joshuapinter/react-native-unified-contacts.git",
@@ -16,7 +16,8 @@
     "react-component",
     "addressbook",
     "contacts",
-    "ios"
+    "ios",
+    "android"
   ],
   "main": "index.js",
   "scripts": {

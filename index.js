@@ -1,3 +1,5 @@
-var ReactNative = require('react-native')
+import {
+  NativeModules
+} from 'react-native';
 
-module.exports = ReactNative.NativeModules.RNUnifiedContacts
+export default NativeModules.RNUnifiedContacts;

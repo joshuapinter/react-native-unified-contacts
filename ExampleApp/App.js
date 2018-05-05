@@ -62,7 +62,7 @@ export default class App extends Component<{}> {
 
           <Button title="Get Contacts" onPress={ () => this._getContacts() } />
 
-          <FlatList 
+          <FlatList
             style={styles.contacts}
             data={this.state.contacts}
             keyExtractor={ (contact) => contact.identifier }
@@ -80,7 +80,7 @@ export default class App extends Component<{}> {
   }
 
   _checkIfUserCanAccessContacts() {
-    Contacts.userCanAccessContacts( (canUserAccessContacts) => { 
+    Contacts.userCanAccessContacts( (canUserAccessContacts) => {
       this.setState( { canUserAccessContacts } );
     });
   }
@@ -95,7 +95,7 @@ export default class App extends Component<{}> {
       }
 
       this.setState( { canUserAccessContacts } );
-    });  
+    });
   }
 
   _openPrivacySettings() {
