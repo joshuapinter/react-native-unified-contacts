@@ -9,10 +9,6 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
 
-    <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="27" />
-
     <application
       android:name=".MainApplication"
       android:allowBackup="true"
