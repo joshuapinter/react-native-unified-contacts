@@ -39,15 +39,15 @@ Apple recently did a complete overhaul of their Contacts Framework that does a n
   2. Navigate to `<your-project-directory>/node_modules/react-native-unified-contacts/` and drag the `RNUnifiedContacts` directory into your project directory in Xcode.
 
   3. Ensure that `Copy items if needed` is **not** checked
-  
+
   4. Select `Create groups` and ensure your project is selected for a target.
 
   ![Select files](readme_assets/drag_and_drop_library_to_sidebar.gif)
 
 ### Android
-  
+
   2. In `android/settings.gradle`:
-  
+
   ```gradle
   ...
   include ':react-native-unified-contacts'
@@ -55,7 +55,7 @@ Apple recently did a complete overhaul of their Contacts Framework that does a n
   ```
 
   3. In `android/app/build.gradle`:
-  
+
   ```gradle
   ...
   dependencies {
@@ -66,14 +66,14 @@ Apple recently did a complete overhaul of their Contacts Framework that does a n
 
   4. Also in `android/app/build.gradle`:
   _Set minSdkVersion to 23 (Android 6.0 or i.e. Android M)_
-  
+
   ```gradle
   ...
 
   android {
     ...
     defaultConfig {
-      ...        
+      ...
       minSdkVersion 23
       ...
   ```
@@ -90,7 +90,7 @@ Apple recently did a complete overhaul of their Contacts Framework that does a n
   ```
 
   6. In in android/app/src/main/java/[your-app]/MainActivity.java:
-  
+
   ```java
   import com.joshuapinter.RNUnifiedContacts.RNUnifiedContactsPackage; // <------ Add this line
 
@@ -125,7 +125,7 @@ Apple recently did a complete overhaul of their Contacts Framework that does a n
     <string>ntwrk accesses Contacts in order to quickly add Relationships and allow them to reach out via ntwrk through email, text, phone, etc.</string>
 
 ## Permissions Android
-  
+
   Add permissions to your `android/app/src/main/AndroidManifest.xml` file. Below are exampes. You may only need READ_CONTACTS. Only ask for the permissions your app needs.
 
   ```xml
@@ -208,7 +208,7 @@ let contactData = {
   ],
   'postalAddresses': [
     {
-      'label': 'Work', 
+      'label': 'Work',
       'street': '123 Fake Street',
       'city':  'Boston',
       'state':  'MA',
@@ -216,7 +216,7 @@ let contactData = {
       'country':  'United States',
     },
     {
-      'label': 'Home', 
+      'label': 'Home',
       'street': '123 North Street',
       'city':  'Halifax',
       'state':  'NS',
@@ -257,7 +257,7 @@ let contactData = {
   ],
   'postalAddresses': [
     {
-      'label': 'Work', 
+      'label': 'Work',
       'street': '123 Fake Street',
       'city':  'Boston',
       'state':  'MA',
@@ -265,7 +265,7 @@ let contactData = {
       'country':  'United States',
     },
     {
-      'label': 'Home', 
+      'label': 'Home',
       'street': '123 North Street',
       'city':  'Halifax',
       'state':  'NS',
