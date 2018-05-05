@@ -48,6 +48,8 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     private Callback mErrorCallback;
     private ContentResolver contentResolver;
 
+    private int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 0;
+
     public RNUnifiedContactsModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
@@ -546,65 +548,47 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
 
 
-    // @ReactMethod
-    // public Boolean requestAccessToContacts(Callback successCallback) {
+   @ReactMethod
+   public void requestAccessToContacts( Callback successCallback ) {
 
-    //     // https://developer.android.com/training/permissions/requesting.html
-    //     // https://github.com/googlesamples/android-RuntimePermissions/blob/master/Application/src/main/java/com/example/android/system/runtimepermissions/MainActivity.java
-    //     // Here, thisActivity is the current activity
-    //     if (ContextCompat.checkSelfPermission(getCurrentActivity(),
-    //             Manifest.permission.READ_CONTACTS)
-    //         != PackageManager.PERMISSION_GRANTED) {
+        // https://developer.android.com/training/permissions/requesting.html
+        // https://github.com/googlesamples/android-RuntimePermissions/blob/master/Application/src/main/java/com/example/android/system/runtimepermissions/MainActivity.java
+        // Here, thisActivity is the current activity
 
-    //         // Permission is not granted
-    //         // Should we show an explanation?
-    //         if (ActivityCompat.shouldShowRequestPermissionRationale(getCurrentActivity(),
-    //                 Manifest.permission.READ_CONTACTS)) {
+        boolean canAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS ) == PackageManager.PERMISSION_GRANTED;
 
-    //             // Show an explanation to the user *asynchronously* -- don't block
-    //             // this thread waiting for the user's response! After the user
-    //             // sees the explanation, try again to request the permission.
+        if ( canAccessContacts ) {
+//            return true;
+        }
+        else {
+            ActivityCompat.requestPermissions( getCurrentActivity(), new String[]{ Manifest.permission.READ_CONTACTS }, MY_PERMISSIONS_REQUEST_READ_CONTACTS );
+        }
+     }
 
-    //         } else {
-
-    //             // No explanation needed; request the permission
-    //             ActivityCompat.requestPermissions(getCurrentActivity(),
-    //                     new String[]{Manifest.permission.READ_CONTACTS},
-    //                     MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-
-    //             // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-    //             // app-defined int constant. The callback method gets the
-    //             // result of the request.
-    //         }
-    //     } else {
-    //         // Permission has already been granted
-    //     }
-    // }
-
-
-    // @Override
-    // public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-    //     switch (requestCode) {
-    //         case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
-    //             // If request is cancelled, the result arrays are empty.
-    //             if (grantResults.length > 0
-    //                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-    //                 // permission was granted, yay! Do the
-    //                 // contacts-related task you need to do.
-
-    //             } else {
-
-    //                 // permission denied, boo! Disable the
-    //                 // functionality that depends on this permission.
-    //             }
-    //             return;
-    //         }
-
-    //         // other 'case' lines to check for other
-    //         // permissions this app might request.
-    //     }
-    // }
+//
+//     @Override
+//     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+//         switch (requestCode) {
+//             case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+//                 // If request is cancelled, the result arrays are empty.
+//                 if (grantResults.length > 0
+//                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//
+//                     // permission was granted, yay! Do the
+//                     // contacts-related task you need to do.
+//
+//                 } else {
+//
+//                     // permission denied, boo! Disable the
+//                     // functionality that depends on this permission.
+//                 }
+//                 return;
+//             }
+//
+//             // other 'case' lines to check for other
+//             // permissions this app might request.
+//         }
+//     }
 
 
 }
