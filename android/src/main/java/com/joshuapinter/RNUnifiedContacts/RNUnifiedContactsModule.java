@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -146,6 +147,24 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         }
 
     }
+
+    @ReactMethod
+    public void openPrivacySettings() {
+
+        Uri packageUri = Uri.fromParts( "package", getReactApplicationContext().getPackageName(), null );
+
+        Intent applicationDetailsSettingsIntent = new Intent();
+
+        applicationDetailsSettingsIntent.setAction( Settings.ACTION_APPLICATION_DETAILS_SETTINGS );
+        applicationDetailsSettingsIntent.setData( packageUri );
+        applicationDetailsSettingsIntent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+
+        getReactApplicationContext().startActivity( applicationDetailsSettingsIntent );
+
+    }
+
+
+
 
 
     @ReactMethod

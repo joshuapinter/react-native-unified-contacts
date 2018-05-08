@@ -28,7 +28,7 @@
 | `userCanAccessContacts`            | ✅  | ✅      | 🚫     |       |
 | `requestAccessToContacts`          | ✅  | ✅      | 🚫     |       |
 | `alreadyRequestedAccessToContacts` | ✅  | 🚫      | 🚫     |       |
-| `openPrivacySettings`              | ✅  | 🚫      | 🚫     |       |
+| `openPrivacySettings`              | ✅  | ✅      | 🚫     |       |
 
 Apple recently did a complete overhaul of their Contacts Framework that does a number of things, including:
 
