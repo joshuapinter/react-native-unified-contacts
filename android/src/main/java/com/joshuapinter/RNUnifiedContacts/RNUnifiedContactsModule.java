@@ -32,19 +32,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.support.v4.app.ActivityCompat.startActivity;
+
 class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
     private Promise mSelectContactPromise;
     private Callback mSuccessCallback;
     private Callback mErrorCallback;
     private ContentResolver contentResolver;
+    private static Promise requestAccessToContactsPromise;
 
-    private int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 0;
+    private static final int ON_ACTIVITY_RESULT_REQUEST_READ_CONTACTS = 0;
 
     public RNUnifiedContactsModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
-        reactContext.addActivityEventListener(mActivityEventListener);
+        reactContext.addActivityEventListener( mActivityEventListener );
     }
 
     @Override
@@ -78,9 +81,11 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 //        },
     }
 
+
     // TODO: This is no longer necessary because React Native has a PermissionsAndroid library that allows
     // us to just use Javascript for permissions management in Android. So, implement this in index.js.
     //
+    @Deprecated
     @ReactMethod
     public Boolean userCanAccessContacts( Callback successCallback ) {
 
@@ -112,12 +117,9 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
     }
 
+    @Deprecated
     @ReactMethod
     public void requestAccessToContacts( Callback successCallback ) {
-
-        // https://developer.android.com/training/permissions/requesting.html
-        // https://github.com/googlesamples/android-RuntimePermissions/blob/master/Application/src/main/java/com/example/android/system/runtimepermissions/MainActivity.java
-        // Here, thisActivity is the current activity
 
         boolean canAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS ) == PackageManager.PERMISSION_GRANTED;
 
@@ -125,34 +127,26 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 //            return true;
         }
         else {
-            ActivityCompat.requestPermissions( getCurrentActivity(), new String[]{ Manifest.permission.READ_CONTACTS }, MY_PERMISSIONS_REQUEST_READ_CONTACTS );
+            ActivityCompat.requestPermissions( getCurrentActivity(), new String[]{ Manifest.permission.READ_CONTACTS }, ON_ACTIVITY_RESULT_REQUEST_READ_CONTACTS );
         }
     }
 
-//
-//     @Override
-//     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-//         switch (requestCode) {
-//             case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
-//                 // If request is cancelled, the result arrays are empty.
-//                 if (grantResults.length > 0
-//                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//
-//                     // permission was granted, yay! Do the
-//                     // contacts-related task you need to do.
-//
-//                 } else {
-//
-//                     // permission denied, boo! Disable the
-//                     // functionality that depends on this permission.
-//                 }
-//                 return;
-//             }
-//
-//             // other 'case' lines to check for other
-//             // permissions this app might request.
-//         }
-//     }
+    @ReactMethod
+    public void requestAccessToContactsAsPromise( Promise promise ) {
+
+        requestAccessToContactsPromise = promise;
+
+        boolean canAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS ) == PackageManager.PERMISSION_GRANTED;
+
+        if ( canAccessContacts ) {
+            requestAccessToContactsPromise.resolve( true );
+        }
+        else {
+            ActivityCompat.requestPermissions( getCurrentActivity(), new String[]{ Manifest.permission.READ_CONTACTS }, ON_ACTIVITY_RESULT_REQUEST_READ_CONTACTS );
+        }
+
+    }
+
 
     @ReactMethod
     public void getContacts(final Callback callback) {
@@ -190,7 +184,6 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         callback.invoke(null, contacts);
     }
 
-
     @ReactMethod
     public void selectContact(Callback errorCallback, Callback successCallback) {
         mErrorCallback = errorCallback;
@@ -205,7 +198,35 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         }
     }
 
+    public static void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+
+        switch( requestCode ) {
+
+            case ON_ACTIVITY_RESULT_REQUEST_READ_CONTACTS:
+
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    requestAccessToContactsPromise.resolve( true );
+                }
+                else {
+                    requestAccessToContactsPromise.resolve( false );
+                }
+
+                break;
+
+        }
+
+    }
+
+
+
+
+
+    //////////////
+    // PRIVATE  //
+    //////////////
+
     private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
+
         @Override
         public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
             Uri contactUri = data.getData();
@@ -220,10 +241,11 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
             WritableMap contactMap = getContactDetailsFromContactId(contactId);
 
-//            Log.w("Test12", contactMap.toString());
             mSuccessCallback.invoke(contactMap);
         }
+
     };
+
 
     private WritableMap getContactDetailsFromContactId(int contactId) {
         WritableMap contactMap = Arguments.createMap();
@@ -589,5 +611,5 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         int columnIndex = cursor.getColumnIndex(column);
         return cursor.getInt(columnIndex);
     }
-
+    
 }

@@ -98,17 +98,17 @@ export default class App extends Component<{}> {
     this.setState( { canUserAccessContacts } );
   }
 
-  _requestAccessToContacts() {
-    Contacts.requestAccessToContacts( (canUserAccessContacts) => {
-      if (canUserAccessContacts) {
-        console.log("User has access to Contacts!");
-      }
-      else {
-        console.log("User DOES NOT have access to Contacts!");
-      }
+  async _requestAccessToContacts() {
+    canUserAccessContacts = await Contacts.requestAccessToContactsAsPromise();
 
-      this.setState( { canUserAccessContacts } );
-    });
+    if (canUserAccessContacts) {
+      console.log( "User has access to Contacts!");
+    }
+    else {
+      console.log( "User DOES NOT have access to Contacts!");
+    }
+
+    this.setState( { canUserAccessContacts } );
   }
 
   _openPrivacySettings() {

@@ -31,4 +31,7 @@ public class RNUnifiedContactsPackage implements ReactPackage {
         return Collections.emptyList();
     }
 
+    public static void onRequestPermissionsResult( int requestCode, String[] permissions, int[] grantResults ) {
+        RNUnifiedContactsModule.onRequestPermissionsResult( requestCode, permissions, grantResults );
+    }
 }
