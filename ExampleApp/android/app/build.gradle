@@ -142,6 +142,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.facebook.react:react-native:+'
+
     // From node_modules
     implementation project(':react-native-unified-contacts')
 }
