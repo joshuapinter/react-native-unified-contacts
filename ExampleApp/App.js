@@ -85,10 +85,17 @@ export default class App extends Component<{}> {
     );
   }
 
-  _checkIfUserCanAccessContacts() {
-    Contacts.userCanAccessContacts( (canUserAccessContacts) => {
-      this.setState( { canUserAccessContacts } );
-    });
+  // _checkIfUserCanAccessContacts() {
+  //   Contacts.userCanAccessContacts( (canUserAccessContacts) => {
+  //     console.log( "test1", canUserAccessContacts );
+
+  //     this.setState( { canUserAccessContacts } );
+  //   });
+  // }
+  async _checkIfUserCanAccessContacts() {
+    canUserAccessContacts = await Contacts.userCanAccessContactsAsPromise();
+
+    this.setState( { canUserAccessContacts } );
   }
 
   _requestAccessToContacts() {

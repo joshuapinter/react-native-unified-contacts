@@ -6,8 +6,6 @@ import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
@@ -15,13 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.format.DateFormat;
 import android.util.Base64;
-import android.util.Log;
 import android.Manifest;
-import android.provider.ContactsContract;
-import android.provider.ContactsContract.CommonDataKinds;
-import android.provider.ContactsContract.CommonDataKinds.Organization;
-import android.provider.ContactsContract.CommonDataKinds.StructuredName;
-import android.provider.ContactsContract.RawContacts;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
@@ -34,7 +26,6 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
-import java.io.ByteArrayInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -86,6 +77,82 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 //            @"OTHER"    : @"other",
 //        },
     }
+
+    // TODO: This is no longer necessary because React Native has a PermissionsAndroid library that allows
+    // us to just use Javascript for permissions management in Android. So, implement this in index.js.
+    //
+    @ReactMethod
+    public Boolean userCanAccessContacts( Callback successCallback ) {
+
+        int userCanAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS );
+
+        if ( userCanAccessContacts == PackageManager.PERMISSION_GRANTED ) {
+            successCallback.invoke( true );
+            return true;
+        }
+        else {
+            successCallback.invoke( false );
+            return false;
+        }
+    }
+
+    @ReactMethod
+    public Boolean userCanAccessContactsAsPromise( Promise promise ) {
+
+        int userCanAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS );
+
+        if ( userCanAccessContacts == PackageManager.PERMISSION_GRANTED ) {
+            promise.resolve( true );
+            return true;
+        }
+        else {
+            promise.resolve( false );
+            return false;
+        }
+
+    }
+
+    @ReactMethod
+    public void requestAccessToContacts( Callback successCallback ) {
+
+        // https://developer.android.com/training/permissions/requesting.html
+        // https://github.com/googlesamples/android-RuntimePermissions/blob/master/Application/src/main/java/com/example/android/system/runtimepermissions/MainActivity.java
+        // Here, thisActivity is the current activity
+
+        boolean canAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS ) == PackageManager.PERMISSION_GRANTED;
+
+        if ( canAccessContacts ) {
+//            return true;
+        }
+        else {
+            ActivityCompat.requestPermissions( getCurrentActivity(), new String[]{ Manifest.permission.READ_CONTACTS }, MY_PERMISSIONS_REQUEST_READ_CONTACTS );
+        }
+    }
+
+//
+//     @Override
+//     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+//         switch (requestCode) {
+//             case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+//                 // If request is cancelled, the result arrays are empty.
+//                 if (grantResults.length > 0
+//                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//
+//                     // permission was granted, yay! Do the
+//                     // contacts-related task you need to do.
+//
+//                 } else {
+//
+//                     // permission denied, boo! Disable the
+//                     // functionality that depends on this permission.
+//                 }
+//                 return;
+//             }
+//
+//             // other 'case' lines to check for other
+//             // permissions this app might request.
+//         }
+//     }
 
     @ReactMethod
     public void getContacts(final Callback callback) {
@@ -522,73 +589,5 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         int columnIndex = cursor.getColumnIndex(column);
         return cursor.getInt(columnIndex);
     }
-
-
-
-
-
-    // This is no longer necessary because React Native has a PermissionsAndroid library that allows
-    // us to just use Javascript for permissions management in Android. So in index.js you'll see
-    // it handled there.
-    //
-
-   @ReactMethod
-   public Boolean userCanAccessContacts(Callback successCallback) {
-       int userCanAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS );
-
-       if (userCanAccessContacts == PackageManager.PERMISSION_GRANTED) {
-           successCallback.invoke(true);
-           return true;
-       }
-       else {
-           successCallback.invoke(false);
-           return false;
-       }
-   }
-
-
-
-   @ReactMethod
-   public void requestAccessToContacts( Callback successCallback ) {
-
-        // https://developer.android.com/training/permissions/requesting.html
-        // https://github.com/googlesamples/android-RuntimePermissions/blob/master/Application/src/main/java/com/example/android/system/runtimepermissions/MainActivity.java
-        // Here, thisActivity is the current activity
-
-        boolean canAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS ) == PackageManager.PERMISSION_GRANTED;
-
-        if ( canAccessContacts ) {
-//            return true;
-        }
-        else {
-            ActivityCompat.requestPermissions( getCurrentActivity(), new String[]{ Manifest.permission.READ_CONTACTS }, MY_PERMISSIONS_REQUEST_READ_CONTACTS );
-        }
-     }
-
-//
-//     @Override
-//     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-//         switch (requestCode) {
-//             case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
-//                 // If request is cancelled, the result arrays are empty.
-//                 if (grantResults.length > 0
-//                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//
-//                     // permission was granted, yay! Do the
-//                     // contacts-related task you need to do.
-//
-//                 } else {
-//
-//                     // permission denied, boo! Disable the
-//                     // functionality that depends on this permission.
-//                 }
-//                 return;
-//             }
-//
-//             // other 'case' lines to check for other
-//             // permissions this app might request.
-//         }
-//     }
-
 
 }
