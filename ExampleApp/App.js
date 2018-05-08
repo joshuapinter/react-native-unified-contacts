@@ -56,11 +56,17 @@ export default class App extends Component<{}> {
             <Text style={ { color: 'white' } }>{ this.state.canUserAccessContacts ? 'ACCESS GRANTED' : 'ACCESS DENIED' }</Text>
           </View>
 
-          <Button title="Request Access to Contacts" onPress={ () => this._requestAccessToContacts() } />
+          <View style={ styles.button }>
+            <Button title="Request Access to Contacts" onPress={ () => this._requestAccessToContacts() } />
+          </View>
 
-          <Button title="Open Privacy Settings" onPress={ () => this._openPrivacySettings() } />
+          <View style={ styles.button }>
+            <Button title="Open Privacy Settings" onPress={ () => this._openPrivacySettings() } />
+          </View>
 
-          <Button title="Get Contacts" onPress={ () => this._getContacts() } />
+          <View style={ styles.button }>
+            <Button title="Get Contacts" onPress={ () => this._getContacts() } />
+          </View>
 
           <FlatList
             style={styles.contacts}
@@ -138,6 +144,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingVertical: 5,
     paddingHorizontal: 7,
+    marginBottom: 10,
+  },
+  button: {
+    marginBottom: 10,
   },
   contacts: {
     flex: 1,
