@@ -175,18 +175,28 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void searchContacts( String searchText, Callback callback ) {
 
-        // ToDo: Use searchText to filter results
         WritableArray contacts = Arguments.createArray();
 
         contentResolver = getCurrentActivity().getContentResolver();
 
+        String   whereString = null;
+        String[] whereParams = null;
+
+        if ( searchText != null && !searchText.equals( "" ) ) {
+            whereString = "display_name LIKE ?";
+            whereParams = new String[]{ "%" + searchText + "%" };
+        }
+
         Cursor contactCursor = contentResolver.query(
-                ContactsContract.Contacts.CONTENT_URI,
-                null, null, null, null);
+                ContactsContract.Data.CONTENT_URI,
+                null,
+                whereString,
+                whereParams,
+                null );
 
         while( contactCursor.moveToNext() ) {
 
-            int contactId = getIntFromCursor( contactCursor, ContactsContract.Contacts._ID );
+            int contactId = getIntFromCursor( contactCursor, ContactsContract.Data.CONTACT_ID );
 
             WritableMap contact = getContactDetailsFromContactId(contactId);
 
@@ -197,7 +207,6 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
         // ToDo: Add check for error and return error callback instead
         // i.e. callback.invoke(error, null)
-
 
         // Success
         callback.invoke(null, contacts);
@@ -298,8 +307,6 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
         String note = getNoteFromContact(contactId);
         contactMap.putString( "note", note );
-
-//        Log.w("Test13", contactMap.toString());
 
         return contactMap;
     }

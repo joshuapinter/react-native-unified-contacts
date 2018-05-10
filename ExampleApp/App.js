@@ -12,6 +12,7 @@ import {
   StyleSheet,
   Switch,
   Text,
+  TextInput,
   View
 } from 'react-native';
 
@@ -68,6 +69,11 @@ export default class App extends Component<{}> {
             <Button title="Get Contacts" onPress={ () => this._getContacts() } />
           </View>
 
+          <View style={ styles.button }>
+            <TextInput value={ this.state.searchText } onChangeText={ text => this.setState( { searchText: text } ) } />
+            <Button title="Search Name in Contacts" onPress={ () => this._searchContacts( this.state.searchText ) } />
+          </View>
+
           <FlatList
             style={styles.contacts}
             data={this.state.contacts}
@@ -122,7 +128,19 @@ export default class App extends Component<{}> {
           console.error(error);
         }
         else {
-          // console.log('contacts[0].fullName', contacts[0].fullName);
+          this.setState( { contacts } );
+        }
+      });
+    }
+  }
+
+  _searchContacts( searchText ) {
+    if (this.state.canUserAccessContacts) {
+      Contacts.searchContacts( searchText, (error, contacts) =>  {
+        if (error) {
+          console.error(error);
+        }
+        else {
           this.setState( { contacts } );
         }
       });
@@ -134,7 +152,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5FCFF',
-    paddingTop: 40,
+    padding: 40,
   },
   welcome: {
     fontSize: 20,
