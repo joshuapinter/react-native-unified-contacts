@@ -14,7 +14,7 @@
 | [`getContact`](#get-a-single-contact)                                               | ✅  | 🚫      | 🚫     |       |
 | [`getContacts`](#get-all-contacts)                                                  | ✅  | ✅      | 🚫     |       |
 | [`searchContacts`](#search-all-contacts)                                            | ✅  | ✅      | 🚫     |       |
-| [`selectContact`](#select-a-single-contact)                                         | 🚫  | ✅      | 🚫     |       |
+| [`selectContact`](#select-a-single-contact)                                         | 🚫  | 🚫      | 🚫     |       |
 | [`addContact`](#add-a-single-contact)                                               | ✅  | 🚫      | 🚫     |       |
 | [`updateContact`](#update-a-single-contact)                                         | ✅  | 🚫      | 🚫     |       |
 | [`deleteContact`](#delete-a-single-contact)                                         | ✅  | 🚫      | 🚫     |       |
@@ -217,6 +217,7 @@ _This will search the given (first), family (last) and nick names of all of the 
 
 This will launch the stock Contacts app and allow you to select a particular Contact, returning the Contact card to your app.
 **Android Only**
+**DISABLED TEMPORARILY**
 
 ```js
 Contacts.selectContact( (error, contacts) =>  {

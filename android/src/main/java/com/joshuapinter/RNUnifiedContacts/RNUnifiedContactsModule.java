@@ -46,7 +46,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     public RNUnifiedContactsModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
-        reactContext.addActivityEventListener( mActivityEventListener );
+//        reactContext.addActivityEventListener( mActivityEventListener );
     }
 
     @Override
@@ -210,18 +210,18 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         callback.invoke(null, contacts);
     }
 
-    @ReactMethod
-    public void selectContact(Callback callback) {
-        this.callback = callback;
-
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
-        Activity currentActivity = getCurrentActivity();
-
-        if (intent.resolveActivity(currentActivity.getPackageManager()) != null) {
-            currentActivity.startActivityForResult(intent, 1);
-        }
-    }
+//    @ReactMethod
+//    public void selectContact(Callback callback) {
+//        this.callback = callback;
+//
+//        Intent intent = new Intent(Intent.ACTION_PICK);
+//        intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+//        Activity currentActivity = getCurrentActivity();
+//
+//        if (intent.resolveActivity(currentActivity.getPackageManager()) != null) {
+//            currentActivity.startActivityForResult(intent, 1);
+//        }
+//    }
 
     public static void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
 
@@ -250,26 +250,26 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     // PRIVATE  //
     //////////////
 
-    private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
-
-        @Override
-        public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-        Uri contactUri = data.getData();
-
-        contentResolver = activity.getContentResolver();
-
-        Cursor contactCursor = contentResolver.query(contactUri, null, null, null, null);
-
-        contactCursor.moveToFirst();
-
-        int contactId = getIntFromCursor( contactCursor, ContactsContract.Contacts._ID );
-
-        WritableMap contact = getContactDetailsFromContactId( contactId );
-
-        callback.invoke( null, contact );
-        }
-
-    };
+//    private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
+//
+//        @Override
+//        public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+//        Uri contactUri = data.getData();
+//
+//        contentResolver = activity.getContentResolver();
+//
+//        Cursor contactCursor = contentResolver.query(contactUri, null, null, null, null);
+//
+//        contactCursor.moveToFirst();
+//
+//        int contactId = getIntFromCursor( contactCursor, ContactsContract.Contacts._ID );
+//
+//        WritableMap contact = getContactDetailsFromContactId( contactId );
+//
+//        callback.invoke( null, contact );
+//        }
+//
+//    };
 
 
     private WritableMap getContactDetailsFromContactId(int contactId) {
