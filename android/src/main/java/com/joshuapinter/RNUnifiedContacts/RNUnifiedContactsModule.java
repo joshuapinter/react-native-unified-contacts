@@ -37,7 +37,6 @@ import static android.support.v4.app.ActivityCompat.startActivity;
 
 class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
-    private Promise mSelectContactPromise;
     private Callback callback;
     private ContentResolver contentResolver;
     private static Promise requestAccessToContactsPromise;
