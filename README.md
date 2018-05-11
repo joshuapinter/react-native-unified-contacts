@@ -9,26 +9,27 @@
 
 **Requires iOS 9+ and Swift 4 for iOS or Android M (6.0 / SDK 23)+ for Anrdoid**
 
-|                                    | iOS | Android | Windows | Notes |
-|------------------------------------|:---:|:-------:|:-------:| ----- |
-| `getContact`                       | ✅  | 🚫      | 🚫     |       |
-| `getContacts`                      | ✅  | ✅      | 🚫     |       |
-| `searchContacts`                   | ✅  | ✅      | 🚫     |       |
-| `addContact`                       | ✅  | 🚫      | 🚫     |       |
-| `updateContact`                    | ✅  | 🚫      | 🚫     |       |
-| `deleteContact`                    | ✅  | 🚫      | 🚫     |       |
-| `getGroup`                         | ✅  | 🚫      | 🚫     |       |
-| `getGroups`                        | ✅  | 🚫      | 🚫     |       |
-| `contactsInGroup`                  | ✅  | 🚫      | 🚫     |       |
-| `addGroup`                         | ✅  | 🚫      | 🚫     |       |
-| `updateGroup`                      | ✅  | 🚫      | 🚫     |       |
-| `deleteGroup`                      | ✅  | 🚫      | 🚫     |       |
-| `addContactsToGroup`               | ✅  | 🚫      | 🚫     |       |
-| `removeContactsFromGroup`          | ✅  | 🚫      | 🚫     |       |
-| `userCanAccessContacts`            | ✅  | ✅      | 🚫     |       |
-| `requestAccessToContacts`          | ✅  | ✅      | 🚫     |       |
-| `alreadyRequestedAccessToContacts` | ✅  | 🚫      | 🚫     |       |
-| `openPrivacySettings`              | ✅  | ✅      | 🚫     |       |
+|                                                                                     | iOS | Android | Windows | Notes |
+|-------------------------------------------------------------------------------------|:---:|:-------:|:-------:| ----- |
+| [`getContact`](#get-a-single-contact)                                               | ✅  | 🚫      | 🚫     |       |
+| [`getContacts`](#get-all-contacts)                                                  | ✅  | ✅      | 🚫     |       |
+| [`searchContacts`](#search-all-contacts)                                            | ✅  | ✅      | 🚫     |       |
+| [`selectContact`](#select-a-single-contact)                                         | 🚫  | ✅      | 🚫     |       |
+| [`addContact`](#add-a-single-contact)                                               | ✅  | 🚫      | 🚫     |       |
+| [`updateContact`](#update-a-single-contact)                                         | ✅  | 🚫      | 🚫     |       |
+| [`deleteContact`](#delete-a-single-contact)                                         | ✅  | 🚫      | 🚫     |       |
+| [`getGroup`](#get-a-single-group)                                                   | ✅  | 🚫      | 🚫     |       |
+| [`getGroups`](#get-all-groups)                                                      | ✅  | 🚫      | 🚫     |       |
+| [`contactsInGroup`](#get-contacts-in-group)                                         | ✅  | 🚫      | 🚫     |       |
+| [`addGroup`](#add-a-group)                                                          | ✅  | 🚫      | 🚫     |       |
+| [`updateGroup`](#update-a-group)                                                    | ✅  | 🚫      | 🚫     |       |
+| [`deleteGroup`](#delete-a-group)                                                    | ✅  | 🚫      | 🚫     |       |
+| [`addContactsToGroup`](#add-contacts-to-a-group)                                    | ✅  | 🚫      | 🚫     |       |
+| [`removeContactsFromGroup`](#remove-contacts-from-a-group)                          | ✅  | 🚫      | 🚫     |       |
+| [`userCanAccessContacts`](#can-the-user-access-contacts)                            | ✅  | ✅      | 🚫     |       |
+| [`requestAccessToContacts`](#request-access-to-contacts)                            | ✅  | ✅      | 🚫     |       |
+| [`alreadyRequestedAccessToContacts`](#check-if-already-requsted-access-to-contacts) | ✅  | 🚫      | 🚫     |       |
+| [`openPrivacySettings`](#open-the-users-privacy-settings)                           | ✅  | ✅      | 🚫     |       |
 
 Apple recently did a complete overhaul of their Contacts Framework that does a number of things, including:
 
@@ -211,6 +212,22 @@ Contacts.searchContacts( 'Don Draper', (error, contacts) =>  {
 });
 ```
 _This will search the given (first), family (last) and nick names of all of the contacts for the provided string. Future versions will allow you to search other fields as well, like phone or email._
+
+### Select a Single Contact
+
+This will launch the stock Contacts app and allow you to select a particular Contact, returning the Contact card to your app.
+**Android Only**
+
+```js
+Contacts.selectContact( (error, contacts) =>  {
+  if (error) {
+    console.error(error);
+  }
+  else {
+    console.log(contact);
+  }
+});
+```
 
 ## Adding Contacts
 

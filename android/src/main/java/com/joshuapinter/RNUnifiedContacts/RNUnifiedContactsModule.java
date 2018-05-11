@@ -38,8 +38,7 @@ import static android.support.v4.app.ActivityCompat.startActivity;
 class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
     private Promise mSelectContactPromise;
-    private Callback mSuccessCallback;
-    private Callback mErrorCallback;
+    private Callback callback;
     private ContentResolver contentResolver;
     private static Promise requestAccessToContactsPromise;
 
@@ -213,9 +212,8 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void selectContact(Callback errorCallback, Callback successCallback) {
-        mErrorCallback = errorCallback;
-        mSuccessCallback = successCallback;
+    public void selectContact(Callback callback) {
+        this.callback = callback;
 
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
@@ -257,19 +255,19 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
         @Override
         public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-            Uri contactUri = data.getData();
+        Uri contactUri = data.getData();
 
-            contentResolver = activity.getContentResolver();
+        contentResolver = activity.getContentResolver();
 
-            Cursor contactCursor = contentResolver.query(contactUri, null, null, null, null);
+        Cursor contactCursor = contentResolver.query(contactUri, null, null, null, null);
 
-            contactCursor.moveToFirst();
+        contactCursor.moveToFirst();
 
-            int contactId = getIntFromCursor( contactCursor, ContactsContract.Contacts._ID );
+        int contactId = getIntFromCursor( contactCursor, ContactsContract.Contacts._ID );
 
-            WritableMap contactMap = getContactDetailsFromContactId(contactId);
+        WritableMap contact = getContactDetailsFromContactId( contactId );
 
-            mSuccessCallback.invoke(contactMap);
+        callback.invoke( null, contact );
         }
 
     };
