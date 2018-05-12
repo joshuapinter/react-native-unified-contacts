@@ -104,38 +104,34 @@ export default class App extends Component<{}> {
     );
   }
 
-  // _checkIfUserCanAccessContacts() {
-  //   Contacts.userCanAccessContacts( (canUserAccessContacts) => {
-  //     console.log( "test1", canUserAccessContacts );
-
-  //     this.setState( { canUserAccessContacts } );
-  //   });
-  // }
-  async _checkIfUserCanAccessContacts() {
-    canUserAccessContacts = await Contacts.userCanAccessContactsAsPromise();
-
-    this.setState( { canUserAccessContacts } );
+  _checkIfUserCanAccessContacts() {
+    Contacts.userCanAccessContacts( canUserAccessContacts => {
+      this.setState( { canUserAccessContacts } );
+    } );
   }
 
-  async _checkIfAlreadyRequestedAccessToContacts() {
-    alreadyRequestedAccessToContacts = await Contacts.alreadyRequestedAccessToContactsAsPromise();
-
-    this.setState( { alreadyRequestedAccessToContacts } );
+  _checkIfAlreadyRequestedAccessToContacts() {
+    Contacts.alreadyRequestedAccessToContacts( ( errors, alreadyRequestedAccessToContacts ) => {
+      if ( errors ) {
+        console.error( errors );
+      }
+      else {
+        this.setState( { alreadyRequestedAccessToContacts } );
+      }
+    } );
   }
 
-  async _requestAccessToContacts() {
-    canUserAccessContacts = await Contacts.requestAccessToContactsAsPromise();
-
-    if (canUserAccessContacts) {
-      console.log( "User has access to Contacts!");
-    }
-    else {
-      console.log( "User DOES NOT have access to Contacts!");
-    }
-
-    this.setState( {
-      canUserAccessContacts,
-      alreadyRequestedAccessToContacts: true
+  _requestAccessToContacts() {
+    Contacts.requestAccessToContacts( ( errors, canUserAccessContacts ) => {
+      if ( errors ) {
+        console.error( errors );
+      }
+      else {
+        this.setState( {
+          canUserAccessContacts,
+          alreadyRequestedAccessToContacts: true
+        } );
+      }
     } );
   }
 
