@@ -1,6 +1,5 @@
 package com.joshuapinter.RNUnifiedContacts;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -18,9 +17,7 @@ import android.text.format.DateFormat;
 import android.util.Base64;
 import android.Manifest;
 
-import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -35,21 +32,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static android.support.v4.app.ActivityCompat.startActivity;
-
 class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
-    private Callback callback;
-    private ContentResolver contentResolver;
-    private static Promise requestAccessToContactsPromise;
+    private ContentResolver   contentResolver;
+    private static Promise    requestAccessToContactsPromise;
     private SharedPreferences sharedPreferences;
 
-    private static final int ON_ACTIVITY_RESULT_REQUEST_READ_CONTACTS = 0;
+    private static final int ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS = 0;
 
     public RNUnifiedContactsModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences( getReactApplicationContext() );
+
 
 //        reactContext.addActivityEventListener( mActivityEventListener );
     }
@@ -123,17 +118,17 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
     @Deprecated
     @ReactMethod
-    public void requestAccessToContacts( Callback successCallback ) {
+    public void requestAccessToContacts( Callback callback ) {
 
         boolean canAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS ) == PackageManager.PERMISSION_GRANTED;
 
         alreadyRequestedAccessToContacts( true ); // Set shared preferences so we know permissions have already been asked before. Note: This is the only way to properly capture when the User checksk "Don't ask again."
 
         if ( canAccessContacts ) {
-//            return true;
+            callback.invoke( null, true );
         }
         else {
-            ActivityCompat.requestPermissions( getCurrentActivity(), new String[]{ Manifest.permission.READ_CONTACTS }, ON_ACTIVITY_RESULT_REQUEST_READ_CONTACTS );
+            ActivityCompat.requestPermissions( getCurrentActivity(), new String[]{ Manifest.permission.READ_CONTACTS }, ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS );
         }
     }
 
@@ -150,11 +145,12 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
             requestAccessToContactsPromise.resolve( true );
         }
         else {
-            ActivityCompat.requestPermissions( getCurrentActivity(), new String[]{ Manifest.permission.READ_CONTACTS }, ON_ACTIVITY_RESULT_REQUEST_READ_CONTACTS );
+            ActivityCompat.requestPermissions( getCurrentActivity(), new String[]{ Manifest.permission.READ_CONTACTS }, ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS );
         }
 
     }
 
+    @ReactMethod
     public void alreadyRequestedAccessToContactsAsPromise( Promise promise ) {
 
         promise.resolve( alreadyRequestedAccessToContacts() );
@@ -175,10 +171,6 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         getReactApplicationContext().startActivity( applicationDetailsSettingsIntent );
 
     }
-
-
-
-
 
     @ReactMethod
     public void getContacts(final Callback callback) {
@@ -242,7 +234,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
         switch( requestCode ) {
 
-            case ON_ACTIVITY_RESULT_REQUEST_READ_CONTACTS:
+            case ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS:
 
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     requestAccessToContactsPromise.resolve( true );
