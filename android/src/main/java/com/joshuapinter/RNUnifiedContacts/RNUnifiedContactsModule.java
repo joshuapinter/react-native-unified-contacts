@@ -151,6 +151,13 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void alreadyRequestedAccessToContacts( Callback callback ) {
+
+        callback.invoke( null, alreadyRequestedAccessToContacts() );
+
+    }
+
+    @ReactMethod
     public void alreadyRequestedAccessToContactsAsPromise( Promise promise ) {
 
         promise.resolve( alreadyRequestedAccessToContacts() );
