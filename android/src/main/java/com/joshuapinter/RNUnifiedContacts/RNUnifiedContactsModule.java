@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -40,11 +42,14 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     private Callback callback;
     private ContentResolver contentResolver;
     private static Promise requestAccessToContactsPromise;
+    private SharedPreferences sharedPreferences;
 
     private static final int ON_ACTIVITY_RESULT_REQUEST_READ_CONTACTS = 0;
 
     public RNUnifiedContactsModule(ReactApplicationContext reactContext) {
         super(reactContext);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences( getReactApplicationContext() );
 
 //        reactContext.addActivityEventListener( mActivityEventListener );
     }
@@ -122,6 +127,8 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
         boolean canAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS ) == PackageManager.PERMISSION_GRANTED;
 
+        alreadyRequestedAccessToContacts( true ); // Set shared preferences so we know permissions have already been asked before. Note: This is the only way to properly capture when the User checksk "Don't ask again."
+
         if ( canAccessContacts ) {
 //            return true;
         }
@@ -137,12 +144,20 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
         boolean canAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS ) == PackageManager.PERMISSION_GRANTED;
 
+        alreadyRequestedAccessToContacts( true ); // Set shared preferences so we know permissions have already been asked before. Note: This is the only way to properly capture when the User checksk "Don't ask again."
+
         if ( canAccessContacts ) {
             requestAccessToContactsPromise.resolve( true );
         }
         else {
             ActivityCompat.requestPermissions( getCurrentActivity(), new String[]{ Manifest.permission.READ_CONTACTS }, ON_ACTIVITY_RESULT_REQUEST_READ_CONTACTS );
         }
+
+    }
+
+    public void alreadyRequestedAccessToContactsAsPromise( Promise promise ) {
+
+        promise.resolve( alreadyRequestedAccessToContacts() );
 
     }
 
@@ -634,5 +649,15 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         int columnIndex = cursor.getColumnIndex(column);
         return cursor.getInt(columnIndex);
     }
-    
+
+    private void alreadyRequestedAccessToContacts( boolean value ) {
+        SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+        sharedPreferencesEditor.putBoolean( "ALREADY_REQUESTED_ACCESS_TO_CONTACTS", value );
+        sharedPreferencesEditor.apply();
+    }
+
+    private boolean alreadyRequestedAccessToContacts() {
+        return sharedPreferences.getBoolean( "ALREADY_REQUESTED_ACCESS_TO_CONTACTS", false );
+    }
+
 }

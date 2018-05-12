@@ -28,7 +28,7 @@
 | [`removeContactsFromGroup`](#remove-contacts-from-a-group)                          | ✅  | 🚫      | 🚫     |       |
 | [`userCanAccessContacts`](#can-the-user-access-contacts)                            | ✅  | ✅      | 🚫     |       |
 | [`requestAccessToContacts`](#request-access-to-contacts)                            | ✅  | ✅      | 🚫     |       |
-| [`alreadyRequestedAccessToContacts`](#check-if-already-requsted-access-to-contacts) | ✅  | 🚫      | 🚫     |       |
+| [`alreadyRequestedAccessToContacts`](#check-if-already-requsted-access-to-contacts) | ✅  | ✅️      | 🚫     | Android lets you request permission after denying, but not if "Don't ask again" is checked.      |
 | [`openPrivacySettings`](#open-the-users-privacy-settings)                           | ✅  | ✅      | 🚫     |       |
 
 Apple recently did a complete overhaul of their Contacts Framework that does a number of things, including:

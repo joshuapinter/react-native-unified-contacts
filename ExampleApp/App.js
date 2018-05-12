@@ -36,6 +36,7 @@ export default class App extends Component<{}> {
     }
 
     this._checkIfUserCanAccessContacts();
+    this._checkIfAlreadyRequestedAccessToContacts();
   }
 
   render() {
@@ -47,6 +48,14 @@ export default class App extends Component<{}> {
       badgeColor = '#FF838A';
     }
 
+    let alreadyRequestedBadgeColor;
+    if ( this.state.alreadyRequestedAccessToContacts ) {
+      alreadyRequestedBadgeColor = '#44B240';
+    }
+    else {
+      alreadyRequestedBadgeColor = '#FF838A';
+    }
+
     return (
       <View style={styles.container}>
           <Text style={styles.welcome}>
@@ -55,6 +64,10 @@ export default class App extends Component<{}> {
 
           <View style={ [ styles.badge, { backgroundColor: badgeColor } ] }>
             <Text style={ { color: 'white' } }>{ this.state.canUserAccessContacts ? 'ACCESS GRANTED' : 'ACCESS DENIED' }</Text>
+          </View>
+
+          <View style={ [ styles.badge, { backgroundColor: alreadyRequestedBadgeColor } ] }>
+            <Text style={ { color: 'white' } }>{ this.state.alreadyRequestedAccessToContacts ? 'ALREADY REQUESTED' : 'NEVER REQUESTED' }</Text>
           </View>
 
           <View style={ styles.button }>
@@ -104,6 +117,12 @@ export default class App extends Component<{}> {
     this.setState( { canUserAccessContacts } );
   }
 
+  async _checkIfAlreadyRequestedAccessToContacts() {
+    alreadyRequestedAccessToContacts = await Contacts.alreadyRequestedAccessToContactsAsPromise();
+
+    this.setState( { alreadyRequestedAccessToContacts } );
+  }
+
   async _requestAccessToContacts() {
     canUserAccessContacts = await Contacts.requestAccessToContactsAsPromise();
 
@@ -114,7 +133,10 @@ export default class App extends Component<{}> {
       console.log( "User DOES NOT have access to Contacts!");
     }
 
-    this.setState( { canUserAccessContacts } );
+    this.setState( {
+      canUserAccessContacts,
+      alreadyRequestedAccessToContacts: true
+    } );
   }
 
   _openPrivacySettings() {
