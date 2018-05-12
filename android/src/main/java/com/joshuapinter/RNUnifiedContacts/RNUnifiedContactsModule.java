@@ -34,17 +34,19 @@ import java.util.Map;
 
 class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
+    private static Callback          callback;
     private ContentResolver   contentResolver;
     private static Promise    requestAccessToContactsPromise;
     private SharedPreferences sharedPreferences;
 
-    private static final int ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS = 0;
+    private static final int ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS            = 0;
+    private static final int ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS_AS_PROMISE = 1;
+
 
     public RNUnifiedContactsModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences( getReactApplicationContext() );
-
 
 //        reactContext.addActivityEventListener( mActivityEventListener );
     }
@@ -120,6 +122,8 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void requestAccessToContacts( Callback callback ) {
 
+        this.callback = callback;
+
         boolean canAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS ) == PackageManager.PERMISSION_GRANTED;
 
         alreadyRequestedAccessToContacts( true ); // Set shared preferences so we know permissions have already been asked before. Note: This is the only way to properly capture when the User checksk "Don't ask again."
@@ -145,7 +149,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
             requestAccessToContactsPromise.resolve( true );
         }
         else {
-            ActivityCompat.requestPermissions( getCurrentActivity(), new String[]{ Manifest.permission.READ_CONTACTS }, ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS );
+            ActivityCompat.requestPermissions( getCurrentActivity(), new String[]{ Manifest.permission.READ_CONTACTS }, ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS_AS_PROMISE );
         }
 
     }
@@ -242,6 +246,17 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         switch( requestCode ) {
 
             case ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS:
+
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    callback.invoke( null, true );
+                }
+                else {
+                    callback.invoke( null, false );
+                }
+
+                break;
+
+            case ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS_AS_PROMISE:
 
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     requestAccessToContactsPromise.resolve( true );
