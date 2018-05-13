@@ -109,7 +109,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         alreadyRequestedAccessToContacts( true ); // Set shared preferences so we know permissions have already been asked before. Note: This is the only way to properly capture when the User checksk "Don't ask again."
 
         if ( canAccessContacts ) {
-            callback.invoke( null, true );
+            callback.invoke( true );
         }
         else {
             ActivityCompat.requestPermissions( getCurrentActivity(), new String[]{ Manifest.permission.READ_CONTACTS }, ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS );
@@ -119,7 +119,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void alreadyRequestedAccessToContacts( Callback callback ) {
 
-        callback.invoke( null, alreadyRequestedAccessToContacts() );
+        callback.invoke( alreadyRequestedAccessToContacts() );
 
     }
 
@@ -203,10 +203,10 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
             case ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS:
 
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    callback.invoke( null, true );
+                    callback.invoke( true );
                 }
                 else {
-                    callback.invoke( null, false );
+                    callback.invoke( false );
                 }
 
                 break;

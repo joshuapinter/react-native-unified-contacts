@@ -111,27 +111,17 @@ export default class App extends Component<{}> {
   }
 
   _checkIfAlreadyRequestedAccessToContacts() {
-    Contacts.alreadyRequestedAccessToContacts( ( errors, alreadyRequestedAccessToContacts ) => {
-      if ( errors ) {
-        console.error( errors );
-      }
-      else {
-        this.setState( { alreadyRequestedAccessToContacts } );
-      }
+    Contacts.alreadyRequestedAccessToContacts( alreadyRequestedAccessToContacts => {
+      this.setState( { alreadyRequestedAccessToContacts } );
     } );
   }
 
   _requestAccessToContacts() {
-    Contacts.requestAccessToContacts( ( errors, canUserAccessContacts ) => {
-      if ( errors ) {
-        console.error( errors );
-      }
-      else {
-        this.setState( {
-          canUserAccessContacts,
-          alreadyRequestedAccessToContacts: true
-        } );
-      }
+    Contacts.requestAccessToContacts( canUserAccessContacts => {
+      this.setState( {
+        canUserAccessContacts,
+        alreadyRequestedAccessToContacts: true
+      } );
     } );
   }
 
@@ -140,16 +130,16 @@ export default class App extends Component<{}> {
   }
 
   _getContacts() {
-    if (this.state.canUserAccessContacts) {
-      Contacts.getContacts( (error, contacts) =>  {
-        if (error) {
-          console.error(error);
-        }
-        else {
-          this.setState( { contacts } );
-        }
-      });
-    }
+    if ( !this.state.canUserAccessContacts ) return;
+
+    Contacts.getContacts( (error, contacts) =>  {
+      if (error) {
+        console.error(error);
+      }
+      else {
+        this.setState( { contacts } );
+      }
+    });
   }
 
   // _selectContact() {
