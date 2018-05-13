@@ -531,8 +531,8 @@ This will do everything you'd expect. Here's the workflow:
 ### Check if Already Requsted Access To Contacts
 
 ```js
-Contacts.alreadyRequestedAccessToContacts( (hasRequsted) => {
-  if (hasRequsted) {
+Contacts.alreadyRequestedAccessToContacts( (hasRequested) => {
+  if (hasRequested) {
     console.log("You have already requested access to contacts");
   }
   else {
