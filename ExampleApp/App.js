@@ -9,6 +9,7 @@ import {
   Button,
   FlatList,
   Platform,
+  ScrollView,
   StyleSheet,
   Switch,
   Text,
@@ -57,50 +58,52 @@ export default class App extends Component<{}> {
     }
 
     return (
-      <View style={styles.container}>
-          <Text style={styles.welcome}>
-            Unified Contacts Example App!
-          </Text>
+      <ScrollView style={ styles.scrollView }>
+        <View style={styles.container}>
+            <Text style={styles.welcome}>
+              Unified Contacts Example App!
+            </Text>
 
-          <View style={ [ styles.badge, { backgroundColor: badgeColor } ] }>
-            <Text style={ { color: 'white' } }>{ this.state.canUserAccessContacts ? 'ACCESS GRANTED' : 'ACCESS DENIED' }</Text>
-          </View>
+            <View style={ [ styles.badge, { backgroundColor: badgeColor } ] }>
+              <Text style={ { color: 'white' } }>{ this.state.canUserAccessContacts ? 'ACCESS GRANTED' : 'ACCESS DENIED' }</Text>
+            </View>
 
-          <View style={ [ styles.badge, { backgroundColor: alreadyRequestedBadgeColor } ] }>
-            <Text style={ { color: 'white' } }>{ this.state.alreadyRequestedAccessToContacts ? 'ALREADY REQUESTED' : 'NEVER REQUESTED' }</Text>
-          </View>
+            <View style={ [ styles.badge, { backgroundColor: alreadyRequestedBadgeColor } ] }>
+              <Text style={ { color: 'white' } }>{ this.state.alreadyRequestedAccessToContacts ? 'ALREADY REQUESTED' : 'NEVER REQUESTED' }</Text>
+            </View>
 
-          <View style={ styles.button }>
-            <Button title="Request Access to Contacts" onPress={ () => this._requestAccessToContacts() } />
-          </View>
+            <View style={ styles.button }>
+              <Button title="Request Access to Contacts" onPress={ () => this._requestAccessToContacts() } />
+            </View>
 
-          <View style={ styles.button }>
-            <Button title="Open Privacy Settings" onPress={ () => this._openPrivacySettings() } />
-          </View>
+            <View style={ styles.button }>
+              <Button title="Open Privacy Settings" onPress={ () => this._openPrivacySettings() } />
+            </View>
 
-          <View style={ styles.button }>
-            <Button title="Get Contacts" onPress={ () => this._getContacts() } />
-          </View>
+            <View style={ styles.button }>
+              <Button title="Get Contacts" onPress={ () => this._getContacts() } />
+            </View>
 
-          <View style={ styles.button }>
-            <TextInput value={ this.state.searchText } onChangeText={ text => this.setState( { searchText: text } ) } />
-            <Button title="Search Name in Contacts" onPress={ () => this._searchContacts( this.state.searchText ) } />
-          </View>
+            <View style={ styles.button }>
+              <TextInput value={ this.state.searchText } onChangeText={ text => this.setState( { searchText: text } ) } />
+              <Button title="Search Name in Contacts" onPress={ () => this._searchContacts( this.state.searchText ) } />
+            </View>
 
-          <FlatList
-            style={styles.contacts}
-            data={this.state.contacts}
-            keyExtractor={ (contact) => contact.identifier }
-            renderItem={ ({item}) => (
-              <View style={styles.contact}>
-                <Text style={styles.name}>
-                  { item.fullName }
-                </Text>
-              </View>
-            ) }
-          />
+            <FlatList
+              style={styles.contacts}
+              data={this.state.contacts}
+              keyExtractor={ (contact) => contact.identifier }
+              renderItem={ ({item}) => (
+                <View style={styles.contact}>
+                  <Text style={styles.name}>
+                    { item.fullName }
+                  </Text>
+                </View>
+              ) }
+            />
 
-      </View>
+        </View>
+      </ScrollView>
     );
   }
 
@@ -170,9 +173,11 @@ export default class App extends Component<{}> {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scrollView: {
     flex: 1,
     backgroundColor: '#F5FCFF',
+  },
+  container: {
     padding: 40,
   },
   welcome: {
@@ -202,7 +207,6 @@ const styles = StyleSheet.create({
   contact: {
     backgroundColor: '#FFFFFF',
     padding: 20,
-    marginHorizontal: 20,
     marginVertical: 5,
     flex: 1,
     borderTopColor: '#A8E5FF',
