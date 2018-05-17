@@ -29,7 +29,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
@@ -146,7 +148,8 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void searchContacts( String searchText, Callback callback ) {
 
-        WritableArray contacts = Arguments.createArray();
+        WritableArray contacts   = Arguments.createArray();
+        Set<Integer>  contactIds = new HashSet<Integer>();
 
         contentResolver = getCurrentActivity().getContentResolver();
 
@@ -169,9 +172,14 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
             int contactId = getIntFromCursor( contactCursor, ContactsContract.Data.CONTACT_ID );
 
+            if ( contactIds.contains( contactId ) ) continue;
+
             WritableMap contact = getContactDetailsFromContactId(contactId);
 
             contacts.pushMap(contact);
+
+            contactIds.add( contactId );
+
         }
 
         contactCursor.close();
