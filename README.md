@@ -75,7 +75,7 @@ Apple recently did a complete overhaul of their Contacts Framework that does a n
   ```gradle
   ...
   include ':react-native-unified-contacts'
-  project(':react-native-unified-contacts').projectDir = new File(settingsDir, '../node_modules/react-native-unified-contacts/android')
+  project(':react-native-unified-contacts').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-unified-contacts/android')
   ```
 
   3. In `android/app/build.gradle`:
