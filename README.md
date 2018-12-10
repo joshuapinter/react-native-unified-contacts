@@ -131,7 +131,7 @@ Apple recently did a complete overhaul of their Contacts Framework that does a n
         return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
           ...
-          new RNUnifiedContacts(),  // <------ Add this line
+          new RNUnifiedContactsPackage(),  // <------ Add this line
           ...
         );
       }
