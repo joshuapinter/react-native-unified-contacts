@@ -1,8 +1,12 @@
 package com.exampleapp;
 
-import com.facebook.react.ReactActivity;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 
-public class MainActivity extends ReactActivity {
+import com.facebook.react.ReactActivity;
+import com.joshuapinter.RNUnifiedContacts.RNUnifiedContactsPackage;
+
+public class MainActivity extends ReactActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     /**
      * Returns the name of the main component registered from JavaScript.
@@ -11,5 +15,12 @@ public class MainActivity extends ReactActivity {
     @Override
     protected String getMainComponentName() {
         return "ExampleApp";
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+
+        RNUnifiedContactsPackage.onRequestPermissionsResult( requestCode, permissions, grantResults );
+
     }
 }

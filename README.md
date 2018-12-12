@@ -3,9 +3,33 @@
 <!-- # React Native Unified Contacts -->
 [![npm version](https://badge.fury.io/js/react-native-unified-contacts.svg)](https://badge.fury.io/js/react-native-unified-contacts)
 
-**Your best friend when working with the latest and greatest [Contacts Framework][apple-contacts-framework] in iOS 9+.**
+**Your best friend when working with the latest and greatest [Contacts Framework][apple-contacts-framework] in iOS 9+ and combining that with Android 6 (SDK 23)+ support**
 
-### **Requires iOS 9+ and Swift 3.1**
+# Platform Compatibility
+
+**Requires iOS 9+ and Swift 4 for iOS or Android M (6.0 / SDK 23)+ for Anrdoid**
+
+|                                                                                     | iOS | Android | Windows | Notes |
+|-------------------------------------------------------------------------------------|:---:|:-------:|:-------:| ----- |
+| [`getContact`](#get-a-single-contact)                                               | ✅  | 🚫      | 🚫     |       |
+| [`getContacts`](#get-all-contacts)                                                  | ✅  | ✅      | 🚫     |       |
+| [`searchContacts`](#search-all-contacts)                                            | ✅  | ✅      | 🚫     |       |
+| [`selectContact`](#select-a-single-contact)                                         | 🚫  | 🚫      | 🚫     |       |
+| [`addContact`](#add-a-single-contact)                                               | ✅  | 🚫      | 🚫     |       |
+| [`updateContact`](#update-a-single-contact)                                         | ✅  | 🚫      | 🚫     |       |
+| [`deleteContact`](#delete-a-single-contact)                                         | ✅  | 🚫      | 🚫     |       |
+| [`getGroup`](#get-a-single-group)                                                   | ✅  | 🚫      | 🚫     |       |
+| [`getGroups`](#get-all-groups)                                                      | ✅  | 🚫      | 🚫     |       |
+| [`contactsInGroup`](#get-contacts-in-group)                                         | ✅  | 🚫      | 🚫     |       |
+| [`addGroup`](#add-a-group)                                                          | ✅  | 🚫      | 🚫     |       |
+| [`updateGroup`](#update-a-group)                                                    | ✅  | 🚫      | 🚫     |       |
+| [`deleteGroup`](#delete-a-group)                                                    | ✅  | 🚫      | 🚫     |       |
+| [`addContactsToGroup`](#add-contacts-to-a-group)                                    | ✅  | 🚫      | 🚫     |       |
+| [`removeContactsFromGroup`](#remove-contacts-from-a-group)                          | ✅  | 🚫      | 🚫     |       |
+| [`userCanAccessContacts`](#can-the-user-access-contacts)                            | ✅  | ✅      | 🚫     |       |
+| [`requestAccessToContacts`](#request-access-to-contacts)                            | ✅  | ✅      | 🚫     |       |
+| [`alreadyRequestedAccessToContacts`](#check-if-already-requsted-access-to-contacts) | ✅  | ✅️      | 🚫     | Android lets you request permission after denying, but not if "Don't ask again" is checked.      |
+| [`openPrivacySettings`](#open-the-users-privacy-settings)                           | ✅  | ✅      | 🚫     |       |
 
 Apple recently did a complete overhaul of their Contacts Framework that does a number of things, including:
 
@@ -14,10 +38,6 @@ Apple recently did a complete overhaul of their Contacts Framework that does a n
   2. Use the same framework across all their platforms, including iOS, tvOS, watchOS and even OS X.
 
   3. Get unified Contact details not only from a User's local Contact entry, but also from the user's social accounts, like Facebook and Twitter. This allows you to get a Facebook profile picture for a Contact you have in your contact database.
-
-There are a couple of react native packages that give you access to Contacts already ([react-native-contacts][react-native-contacts] and [react-native-addressbook][react-native-addressbook]) but neither of them utilize the new Unified Contacts framework available in iOS 9+. For good reason too, as most people are still supporting devices that are pre-iOS 9.
-
-However, if you have the luxury of supporting iOS 9 and up, you should definitely use this library to  make use of this great new framework by Apple.
 
 
 # Installation
@@ -28,34 +48,125 @@ However, if you have the luxury of supporting iOS 9 and up, you should definitel
    ```
    _This will install the latest react-native-unified-contacts package and add it to your package.json file._
 
+## Automatic Installation
+
+  2. Link the project:
+  ```bash
+  react-native link react-native-unified-contacts
+  ```
+
+## Manual Installation
+   _Manual installation is only required if automatic linking fails._
+
+### iOS
+
   2. Navigate to `<your-project-directory>/node_modules/react-native-unified-contacts/` and drag the `RNUnifiedContacts` directory into your project directory in Xcode.
 
-    Ensure that `Copy items if needed` is **not** checked, select `Create groups` and ensure your project is selected for a target.
+  3. Ensure that `Copy items if needed` is **not** checked
 
-    ![Select files](readme_assets/drag_and_drop_library_to_sidebar.gif)
+  4. Select `Create groups` and ensure your project is selected for a target.
 
-  3. For iOS 10+, you need to add a `NSContactsUsageDescription` key to your `Info.plist` that provides a reason why your app needs to access private information:
+  ![Select files](readme_assets/drag_and_drop_library_to_sidebar.gif)
 
+### Android
+
+  2. In `android/settings.gradle`:
+
+  ```gradle
+  ...
+  include ':react-native-unified-contacts'
+  project(':react-native-unified-contacts').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-unified-contacts/android')
   ```
-<key>NSContactsUsageDescription</key>
-<string>ntwrk accesses Contacts in order to quickly add Relationships and allow them to reach out via ntwrk through email, text, phone, etc.</string>
-```
 
-  If done through XCode UI, the key is named `Privacy - Contacts Usage Description`.
+  3. In `android/app/build.gradle`:
 
-  4. See the [Usage section](#usage) for how to require the library and make use of it.
+  ```gradle
+  ...
+  dependencies {
+      ...
+      implementation project(':react-native-unified-contacts')
+  }
+  ```
 
+  4. Also in `android/app/build.gradle`:
+  _Set minSdkVersion to 23 (Android 6.0 or i.e. Android M)_
 
-## Usage
+  ```gradle
+  ...
 
-  If done through XCode UI, the key is named `Privacy - Contacts Usage Description`.
+  android {
+    ...
+    defaultConfig {
+      ...
+      minSdkVersion 23
+      ...
+  ```
+
+  5. In `android/app/source/main/AndroidManifest.xml`:
+  ```xml
+  ...
+    <uses-sdk
+      ...
+      android:minSdkVersion="23"
+      ...
+    />
+    ...
+  ```
+
+  6. In in android/app/src/main/java/[your-app]/MainActivity.java:
+
+  ```java
+  import com.joshuapinter.RNUnifiedContacts.RNUnifiedContactsPackage; // <------ Add this line
+
+  public class MainApplication extends Application implements ReactApplication {
+    ...
+    private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+      @Override
+      public boolean getUseDeveloperSupport() {
+        return BuildConfig.DEBUG;
+      }
+      ...
+      @Override
+      protected List<ReactPackage> getPackages() {
+        return Arrays.<ReactPackage>asList(
+          new MainReactPackage(),
+          ...
+          new RNUnifiedContactsPackage(),  // <------ Add this line
+          ...
+        );
+      }
+      ...
+    }
+  ```
+
+# Post-Install Setup
+
+## Permissions iOS
+
+  For iOS 10+, you need to add a `NSContactsUsageDescription` key to your `Info.plist`, also called `Privacy - Contacts Usage Description` if entered through XCode's interface. This provides a reason why your app needs to access private information:
+
+    <key>NSContactsUsageDescription</key>
+    <string>ntwrk accesses Contacts in order to quickly add Relationships and allow them to reach out via ntwrk through email, text, phone, etc.</string>
+
+## Permissions Android
+
+  Add permissions to your `android/app/src/main/AndroidManifest.xml` file. Below are exampes. You may only need READ_CONTACTS. Only ask for the permissions your app needs.
+
+  ```xml
+  ...
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+  ...
+  ```
+
 
 # Usage
 
-## Require Library
+## Import Contacts Library
 
 ```js
-var Contacts  = require('react-native-unified-contacts');
+import Contacts from 'react-native-unified-contacts';
 ```
 
 ## Getting Contacts
@@ -102,6 +213,23 @@ Contacts.searchContacts( 'Don Draper', (error, contacts) =>  {
 ```
 _This will search the given (first), family (last) and nick names of all of the contacts for the provided string. Future versions will allow you to search other fields as well, like phone or email._
 
+### Select a Single Contact
+
+This will launch the stock Contacts app and allow you to select a particular Contact, returning the Contact card to your app.
+**Android Only**
+**DISABLED TEMPORARILY**
+
+```js
+Contacts.selectContact( (error, contacts) =>  {
+  if (error) {
+    console.error(error);
+  }
+  else {
+    console.log(contact);
+  }
+});
+```
+
 ## Adding Contacts
 
 ### Add a single contact
@@ -112,12 +240,30 @@ let contactData = {
   'familyName':       'Appleseed',
   'organizationName': 'Apple Inc',
   'phoneNumbers': [
-    {'label': Contacts.phoneNumberLabel.HOME, 'stringValue': '555-522-8243'},
-    {'label': Contacts.phoneNumberLabel.WORK, 'stringValue': '(408) 555-5270'},
+    {'label': 'Home', 'stringValue': '555-522-8243'},
+    {'label': 'Work', 'stringValue': '(408) 555-5270'},
   ],
   'emailAddresses': [
-    {'label': Contacts.emailAddressLabel.WORK, 'value': 'john.appleseed@apple.com'},
-    {'label': Contacts.emailAddressLabel.HOME, 'value': 'john@gmail.com'},
+    {'label': 'Work', 'value': 'john.appleseed@apple.com'},
+    {'label': 'Home', 'value': 'john@gmail.com'},
+  ],
+  'postalAddresses': [
+    {
+      'label': 'Work',
+      'street': '123 Fake Street',
+      'city':  'Boston',
+      'state':  'MA',
+      'postalCode':  '90210',
+      'country':  'United States',
+    },
+    {
+      'label': 'Home',
+      'street': '123 North Street',
+      'city':  'Halifax',
+      'state':  'NS',
+      'postalCode':  'M5M 4T4',
+      'country':  'Canada',
+    },
   ],
 }
 
@@ -143,12 +289,30 @@ let contactData = {
   'familyName':       'Appleseed',
   'organizationName': 'Apple Inc',
   'phoneNumbers': [
-    {'label': Contacts.phoneNumberLabel.HOME, 'stringValue': '555-522-8243'},
-    {'label': Contacts.phoneNumberLabel.WORK, 'stringValue': '(408) 555-5270'},
+    {'label': 'Home', 'stringValue': '555-522-8243'},
+    {'label': 'Work', 'stringValue': '(408) 555-5270'},
   ],
   'emailAddresses': [
-    {'label': Contacts.emailAddressLabel.WORK, 'value': 'john.appleseed@apple.com'},
-    {'label': Contacts.emailAddressLabel.HOME, 'value': 'john@gmail.com'},
+    {'label': 'Work', 'value': 'john.appleseed@apple.com'},
+    {'label': 'Home', 'value': 'john@gmail.com'},
+  ],
+  'postalAddresses': [
+    {
+      'label': 'Work',
+      'street': '123 Fake Street',
+      'city':  'Boston',
+      'state':  'MA',
+      'postalCode':  '90210',
+      'country':  'United States',
+    },
+    {
+      'label': 'Home',
+      'street': '123 North Street',
+      'city':  'Halifax',
+      'state':  'NS',
+      'postalCode':  'M5M 4T4',
+      'country':  'Canada',
+    },
   ],
 }
 
@@ -162,7 +326,7 @@ Contacts.updateContact(contactIdentifier, contactData, (error, success) => {
 });
 ```
 
-_NOTE: If your `contactData` includes the keys `phoneNumbers` or `emailAddresses`, the associated value will completely replace any Phone Numbers or Email Addresses for that Contact, respectively. In other words, if you have a contact with two Phone Numbers and you'd like to add a third, you need to pass in ALL THREE Phone Numbers, not just the new one. Same goes for Email Addresses._
+_NOTE: If your `contactData` includes the keys `phoneNumbers`, `emailAddresses`, or `postalAddresses` the associated value will completely replace any Phone Numbers, Email Addresses or Postal Addresses for that Contact, respectively. In other words, if you have a contact with two Phone Numbers and you'd like to add a third, you need to pass in ALL THREE Phone Numbers, not just the new one. Same goes for Email Addresses and Postal Addresses._
 
 
 ## Deleting Contacts
@@ -364,6 +528,21 @@ This will do everything you'd expect. Here's the workflow:
         _The user will have to go to their privacy settings and allow access manually. We provide a [`openPrivacySettings`](#open-privacy-settings) method that allows you to bring up the privacy page easily for the user. See below._
 
 
+### Check if Already Requsted Access To Contacts
+
+```js
+Contacts.alreadyRequestedAccessToContacts( (hasRequested) => {
+  if (hasRequested) {
+    console.log("You have already requested access to contacts");
+  }
+  else {
+    console.log("You have not yet asked for access to contacts");
+  }
+});
+```
+Since you cannot ask again after the user refuses, this allows you to change the UI
+
+
 ### Open the User's Privacy Settings
 
 ```js
@@ -529,11 +708,35 @@ var base64ImageUri = 'data:image/png;base64,' + contact.thumbnailImageData;
 
 # Troubleshooting
 
+## ExampleApp
+
+![ExampleApp iOS](readme_assets/example_app_ios.gif)
+![ExampleApp Android](readme_assets/example_app_android.gif)
+
+As a quick example and a way to prove that it's working as expected with a fresh React Native app, there's an ExampleApp contained in the repository.
+
+One of the best things to do is to make sure that this is working, see how it works and then take what you need to make it work in your own application.
+
+To quickly run the ExampleApp:
+
+1. `git clone git@github.com:joshuapinter/react-native-unified-contacts.git`
+
+1. `cd react-native-unified-contacts/ExampleApp`
+
+1. `npm install`
+
+1. `open ios/ExampleApp.xcodeproject`
+
+1. Select your favourite device and click run.
+
+
+## Other Issues
+
 If you run into trouble, take a look at the following thread:
 
 https://github.com/joshuapinter/react-native-unified-contacts/issues/15
 
-You should also have the latest version of XCode (8.2+) and Swift (3+).
+You should also have the latest version of XCode (9.2+) and Swift (4+).
 
 If that doesn't help you, please [create an Issue](https://github.com/joshuapinter/react-native-unified-contacts/issues/new) and we'll figure it out together.
 
@@ -542,11 +745,13 @@ If that doesn't help you, please [create an Issue](https://github.com/joshuapint
 * My friend **[Smixx][smixx]** for working through adding a Swift library to a React Native project over his lunch hour.
 * **[Ismail Pelaseyed (homanp)][homanp]** for adding a couple of [huge PRs][homanp-prs] for Creating, Updating and Deleting Contacts.
 * **[Chris Edwards (chrise86)][chrise86]** for adding a tonne of [big PRs][chrise86-prs] for Adding, Updating and Deleting Groups.
+* **[Paul Wright (paintedbicycle)][paintedbicycle]** for acting like a PM with the Android Support, committing a number of critical updates and getting Android back on track. Thank you! 🙏
 
 # TODO
 
 - [X] Add Create/Update/Delete methods for Contacts. **_(Thanks [homanp][homanp]!)_**
-- [ ] Add Android support.
+- [X] Add Basic Android support.
+- [ ] Add Full Android support.
 - [ ] Add integration with Contacts-UI (_Coming Soon!_).
 
 
@@ -554,7 +759,7 @@ If that doesn't help you, please [create an Issue](https://github.com/joshuapint
 
 The MIT License (MIT)
 
-Copyright 2016 - `Time.now()` by [Joshua Pinter][joshuapinter]
+Copyright 2016 - 2018 by [Joshua Pinter][joshuapinter]
 
 
 [apple-contacts-framework]: https://developer.apple.com/library/ios/documentation/Contacts/Reference/Contacts_Framework/index.html
@@ -566,3 +771,5 @@ Copyright 2016 - `Time.now()` by [Joshua Pinter][joshuapinter]
 [homanp-prs]:               https://github.com/joshuapinter/react-native-unified-contacts/pulls?utf8=%E2%9C%93&q=is%3Apr+author%3Ahomanp+
 [chrise86]:                 https://github.com/chrise86
 [chrise86-prs]:             https://github.com/joshuapinter/react-native-unified-contacts/pulls?utf8=%E2%9C%93&q=is%3Apr%20author%3Achrise86
+[paintedbicycle]:           https://github.com/paintedbicycle
+
