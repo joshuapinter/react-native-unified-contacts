@@ -44,6 +44,10 @@
 }
 
 // Contacts
+RCT_EXTERN_METHOD(getContactsWithFields:(NSArray *)fields callback:(RCTResponseSenderBlock)callback);
+
+RCT_EXTERN_METHOD(getContactImage:(NSString *)identifier thumbnail:(BOOL)thumbnail callback:(RCTResponseSenderBlock)callback);
+
 RCT_EXTERN_METHOD(getContact:(NSString *)identifier callback:(RCTResponseSenderBlock)callback);
 
 RCT_EXTERN_METHOD(getContacts:(RCTResponseSenderBlock)callback);
@@ -81,7 +85,7 @@ RCT_EXTERN_METHOD(requestAccessToContacts:(RCTResponseSenderBlock)callback);
 RCT_EXTERN_METHOD(alreadyRequestedAccessToContacts:(RCTResponseSenderBlock)callback);
 
 RCT_EXPORT_METHOD(openPrivacySettings) {
-  [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 }
 
 + (BOOL)requiresMainQueueSetup {
@@ -89,3 +93,4 @@ RCT_EXPORT_METHOD(openPrivacySettings) {
 }
 
 @end
+
