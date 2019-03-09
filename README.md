@@ -9,27 +9,27 @@
 
 **Requires iOS 9+ and Swift 4 for iOS or Android M (6.0 / SDK 23)+ for Anrdoid**
 
-|                                                                                     | iOS | Android | Windows | Notes |
-|-------------------------------------------------------------------------------------|:---:|:-------:|:-------:| ----- |
-| [`getContact`](#get-a-single-contact)                                               | ✅  | 🚫      | 🚫     |       |
-| [`getContacts`](#get-all-contacts)                                                  | ✅  | ✅      | 🚫     |       |
-| [`searchContacts`](#search-all-contacts)                                            | ✅  | ✅      | 🚫     |       |
-| [`selectContact`](#select-a-single-contact)                                         | 🚫  | 🚫      | 🚫     |       |
-| [`addContact`](#add-a-single-contact)                                               | ✅  | 🚫      | 🚫     |       |
-| [`updateContact`](#update-a-single-contact)                                         | ✅  | 🚫      | 🚫     |       |
-| [`deleteContact`](#delete-a-single-contact)                                         | ✅  | 🚫      | 🚫     |       |
-| [`getGroup`](#get-a-single-group)                                                   | ✅  | 🚫      | 🚫     |       |
-| [`getGroups`](#get-all-groups)                                                      | ✅  | 🚫      | 🚫     |       |
-| [`contactsInGroup`](#get-contacts-in-group)                                         | ✅  | 🚫      | 🚫     |       |
-| [`addGroup`](#add-a-group)                                                          | ✅  | 🚫      | 🚫     |       |
-| [`updateGroup`](#update-a-group)                                                    | ✅  | 🚫      | 🚫     |       |
-| [`deleteGroup`](#delete-a-group)                                                    | ✅  | 🚫      | 🚫     |       |
-| [`addContactsToGroup`](#add-contacts-to-a-group)                                    | ✅  | 🚫      | 🚫     |       |
-| [`removeContactsFromGroup`](#remove-contacts-from-a-group)                          | ✅  | 🚫      | 🚫     |       |
-| [`userCanAccessContacts`](#can-the-user-access-contacts)                            | ✅  | ✅      | 🚫     |       |
-| [`requestAccessToContacts`](#request-access-to-contacts)                            | ✅  | ✅      | 🚫     |       |
-| [`alreadyRequestedAccessToContacts`](#check-if-already-requsted-access-to-contacts) | ✅  | ✅️      | 🚫     | Android lets you request permission after denying, but not if "Don't ask again" is checked.      |
-| [`openPrivacySettings`](#open-the-users-privacy-settings)                           | ✅  | ✅      | 🚫     |       |
+|                                                                                     | iOS | Android | Notes |
+|-------------------------------------------------------------------------------------|:---:|:-------:|:------|
+| [`getContact`](#get-a-single-contact)                                               | ✅  | 🚫      |       |
+| [`getContacts`](#get-all-contacts)                                                  | ✅  | ✅      |       |
+| [`searchContacts`](#search-all-contacts)                                            | ✅  | ✅      |       |
+| [`selectContact`](#select-a-single-contact)                                         | 🚫  | 🚫      |       |
+| [`addContact`](#add-a-single-contact)                                               | ✅  | 🚫      |       |
+| [`updateContact`](#update-a-single-contact)                                         | ✅  | 🚫      |       |
+| [`deleteContact`](#delete-a-single-contact)                                         | ✅  | 🚫      |       |
+| [`getGroup`](#get-a-single-group)                                                   | ✅  | 🚫      |       |
+| [`getGroups`](#get-all-groups)                                                      | ✅  | 🚫      |       |
+| [`contactsInGroup`](#get-contacts-in-group)                                         | ✅  | 🚫      |       |
+| [`addGroup`](#add-a-group)                                                          | ✅  | 🚫      |       |
+| [`updateGroup`](#update-a-group)                                                    | ✅  | 🚫      |       |
+| [`deleteGroup`](#delete-a-group)                                                    | ✅  | 🚫      |       |
+| [`addContactsToGroup`](#add-contacts-to-a-group)                                    | ✅  | 🚫      |       |
+| [`removeContactsFromGroup`](#remove-contacts-from-a-group)                          | ✅  | 🚫      |       |
+| [`userCanAccessContacts`](#can-the-user-access-contacts)                            | ✅  | ✅      |       |
+| [`requestAccessToContacts`](#request-access-to-contacts)                            | ✅  | ✅      |       |
+| [`alreadyRequestedAccessToContacts`](#check-if-already-requsted-access-to-contacts) | ✅  | ✅️      | Android lets you request permission after denying, but not if "Don't ask again" is checked.      |
+| [`openPrivacySettings`](#open-the-users-privacy-settings)                           | ✅  | ✅      |       |
 
 Apple recently did a complete overhaul of their Contacts Framework that does a number of things, including:
 
