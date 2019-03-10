@@ -85,6 +85,10 @@ export default class App extends Component<{}> {
             </View>
 
             <View style={ styles.button }>
+              <Button title="Select Contact" onPress={ () => this._selectContact() } />
+            </View>
+
+            <View style={ styles.button }>
               <TextInput value={ this.state.searchText } onChangeText={ text => this.setState( { searchText: text } ) } />
               <Button title="Search Name in Contacts" onPress={ () => this._searchContacts( this.state.searchText ) } />
             </View>
@@ -143,6 +147,18 @@ export default class App extends Component<{}> {
         this.setState( { contacts } );
       }
     });
+  }
+
+  _selectContact() {
+    Contacts.selectContact( ( error, contact ) => {
+      if ( error ) {
+        console.error( error );
+      }
+      else {
+        const contacts = [ contact ];
+        this.setState( { contacts } );
+      }
+    } );
   }
 
   // _selectContact() {

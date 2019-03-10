@@ -14,7 +14,7 @@
 | [`getContact`](#get-a-single-contact)                                               | ✅  | 🚫      |       |
 | [`getContacts`](#get-all-contacts)                                                  | ✅  | ✅      |       |
 | [`searchContacts`](#search-all-contacts)                                            | ✅  | ✅      |       |
-| [`selectContact`](#select-a-single-contact)                                         | 🚫  | 🚫      |       |
+| [`selectContact`](#select-a-single-contact)                                         | 🚫  | ✅      | Opens up native Contacts app and allows User to select a single Contact. |
 | [`addContact`](#add-a-single-contact)                                               | ✅  | 🚫      |       |
 | [`updateContact`](#update-a-single-contact)                                         | ✅  | 🚫      |       |
 | [`deleteContact`](#delete-a-single-contact)                                         | ✅  | 🚫      |       |

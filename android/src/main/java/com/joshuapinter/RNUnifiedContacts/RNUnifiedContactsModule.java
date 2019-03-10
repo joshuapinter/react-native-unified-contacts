@@ -1,5 +1,6 @@
 package com.joshuapinter.RNUnifiedContacts;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -17,7 +18,9 @@ import android.text.format.DateFormat;
 import android.util.Base64;
 import android.Manifest;
 
+import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -35,9 +38,11 @@ import java.util.Set;
 
 class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
-    private static final int ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS            = 0;
+    private static final int ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS = 0;
+    private static final int ON_SELECT_CONTACT_RESULT                            = 1;
 
-    private static Callback          callback;
+    private static Callback          requestAccessToContactsCallback;
+    private static Callback          selectContactCallback;
 
     private        ContentResolver   contentResolver;
     private        SharedPreferences sharedPreferences;
@@ -48,7 +53,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences( getReactApplicationContext() );
 
-//        reactContext.addActivityEventListener( mActivityEventListener );
+        reactContext.addActivityEventListener( activityEventListener );
     }
 
     @Override
@@ -104,7 +109,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void requestAccessToContacts( Callback callback ) {
 
-        RNUnifiedContactsModule.callback = callback;
+        requestAccessToContactsCallback = callback;
 
         boolean canAccessContacts = ContextCompat.checkSelfPermission( getCurrentActivity(), Manifest.permission.READ_CONTACTS ) == PackageManager.PERMISSION_GRANTED;
 
@@ -162,11 +167,11 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         }
 
         Cursor contactCursor = contentResolver.query(
-                ContactsContract.Data.CONTENT_URI,
-                null,
-                whereString,
-                whereParams,
-                null );
+            ContactsContract.Data.CONTENT_URI,
+            null,
+            whereString,
+            whereParams,
+            null );
 
         while( contactCursor.moveToNext() ) {
 
@@ -191,19 +196,21 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         callback.invoke(null, contacts);
     }
 
-//    @ReactMethod
-//    public void selectContact(Callback callback) {
-//        this.callback = callback;
-//
-//        Intent intent = new Intent(Intent.ACTION_PICK);
-//        intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
-//        Activity currentActivity = getCurrentActivity();
-//
-//        if (intent.resolveActivity(currentActivity.getPackageManager()) != null) {
-//            currentActivity.startActivityForResult(intent, 1);
-//        }
-//    }
+    @ReactMethod
+    public void selectContact(Callback callback) {
+        selectContactCallback = callback;
 
+        Intent intent = new Intent( Intent.ACTION_PICK );
+        intent.setType( ContactsContract.Contacts.CONTENT_TYPE );
+        Activity currentActivity = getCurrentActivity();
+
+        if ( intent.resolveActivity(currentActivity.getPackageManager()) != null ) {
+            currentActivity.startActivityForResult( intent, ON_SELECT_CONTACT_RESULT );
+        }
+    }
+
+    // TODO: Can this be a private method?
+    //
     public static void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
 
         switch( requestCode ) {
@@ -211,10 +218,10 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
             case ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS:
 
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    callback.invoke( true );
+                    requestAccessToContactsCallback.invoke( true );
                 }
                 else {
-                    callback.invoke( false );
+                    requestAccessToContactsCallback.invoke( false );
                 }
 
                 break;
@@ -231,26 +238,26 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     // PRIVATE  //
     //////////////
 
-//    private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
-//
-//        @Override
-//        public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-//        Uri contactUri = data.getData();
-//
-//        contentResolver = activity.getContentResolver();
-//
-//        Cursor contactCursor = contentResolver.query(contactUri, null, null, null, null);
-//
-//        contactCursor.moveToFirst();
-//
-//        int contactId = getIntFromCursor( contactCursor, ContactsContract.Contacts._ID );
-//
-//        WritableMap contact = getContactDetailsFromContactId( contactId );
-//
-//        callback.invoke( null, contact );
-//        }
-//
-//    };
+    private final ActivityEventListener activityEventListener = new BaseActivityEventListener() {
+
+        @Override
+        public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+          Uri contactUri = data.getData();
+
+          contentResolver = activity.getContentResolver();
+
+          Cursor contactCursor = contentResolver.query(contactUri, null, null, null, null);
+
+          contactCursor.moveToFirst();
+
+          int contactId = getIntFromCursor( contactCursor, ContactsContract.Contacts._ID );
+
+          WritableMap contact = getContactDetailsFromContactId( contactId );
+
+          selectContactCallback.invoke( null, contact );
+        }
+
+    };
 
 
     private WritableMap getContactDetailsFromContactId(int contactId) {
@@ -297,12 +304,12 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         String[] whereParams = new String[]{String.valueOf(contactId), ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE };
 
         Cursor namesCursor = contentResolver.query(
-                ContactsContract.Data.CONTENT_URI,
-                null,
-                whereString,
-                whereParams,
-                null,
-                null);
+            ContactsContract.Data.CONTENT_URI,
+            null,
+            whereString,
+            whereParams,
+            null,
+            null);
 
         if ( !namesCursor.moveToFirst() ) return names;
 
@@ -337,12 +344,12 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
 
         Cursor photoCursor = contentResolver.query(
-                photoUri,
-                new String[] {ContactsContract.Contacts.Photo.PHOTO},
-                null,
-                null,
-                null,
-                null);
+            photoUri,
+            new String[] {ContactsContract.Contacts.Photo.PHOTO},
+            null,
+            null,
+            null,
+            null);
 
         if ( !photoCursor.moveToFirst() ) return thumbnail;
 
@@ -374,12 +381,12 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         String[] whereParams = new String[]{String.valueOf(contactId), ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE };
 
         Cursor organizationCursor = contentResolver.query(
-                ContactsContract.Data.CONTENT_URI,
-                null,
-                whereString,
-                whereParams,
-                null,
-                null);
+            ContactsContract.Data.CONTENT_URI,
+            null,
+            whereString,
+            whereParams,
+            null,
+            null);
 
         if ( !organizationCursor.moveToFirst() ) return organization;
 
@@ -421,11 +428,11 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         WritableArray phoneNumbers = Arguments.createArray();
 
         Cursor phoneNumbersCursor = contentResolver.query(
-                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                null,
-                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId,
-                null,
-                null);
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            null,
+            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId,
+            null,
+            null);
 
         while (phoneNumbersCursor.moveToNext()) {
             WritableMap phoneNumber = Arguments.createMap();
@@ -457,11 +464,11 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         WritableArray emailAddresses = Arguments.createArray();
 
         Cursor emailAddressesCursor = contentResolver.query(
-                ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                null,
-                ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = " + contactId,
-                null,
-                null);
+            ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+            null,
+            ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = " + contactId,
+            null,
+            null);
 
         while (emailAddressesCursor.moveToNext()) {
             WritableMap emailAddress = Arguments.createMap();
@@ -495,12 +502,12 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         String[] whereParams = new String[]{String.valueOf(contactId), ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE };
 
         Cursor postalAddressesCursor = contentResolver.query(
-                ContactsContract.Data.CONTENT_URI,
-                null,
-                whereString,
-                whereParams,
-                null,
-                null);
+            ContactsContract.Data.CONTENT_URI,
+            null,
+            whereString,
+            whereParams,
+            null,
+            null);
 
         while (postalAddressesCursor.moveToNext()) {
             WritableMap postalAddress = Arguments.createMap();
@@ -550,12 +557,12 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         String[] whereParams = new String[]{String.valueOf(contactId), String.valueOf(ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY), ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE };
 
         Cursor birthdayCursor = contentResolver.query(
-                ContactsContract.Data.CONTENT_URI,
-                null,
-                whereString,
-                whereParams,
-                null,
-                null);
+            ContactsContract.Data.CONTENT_URI,
+            null,
+            whereString,
+            whereParams,
+            null,
+            null);
 
         if ( !birthdayCursor.moveToFirst() ) return null;
 
@@ -590,12 +597,12 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         String[] whereParams = new String[]{String.valueOf(contactId), ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE };
 
         Cursor noteCursor = contentResolver.query(
-                ContactsContract.Data.CONTENT_URI,
-                null,
-                whereString,
-                whereParams,
-                null,
-                null);
+            ContactsContract.Data.CONTENT_URI,
+            null,
+            whereString,
+            whereParams,
+            null,
+            null);
 
         if ( !noteCursor.moveToFirst() ) return null;
 
