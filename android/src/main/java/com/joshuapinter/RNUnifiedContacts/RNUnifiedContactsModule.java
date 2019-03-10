@@ -242,19 +242,29 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
         @Override
         public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-          Uri contactUri = data.getData();
 
-          contentResolver = activity.getContentResolver();
+            switch( requestCode ) {
 
-          Cursor contactCursor = contentResolver.query(contactUri, null, null, null, null);
+                case ON_SELECT_CONTACT_RESULT:
 
-          contactCursor.moveToFirst();
+                    if ( resultCode == 0 ) return;
 
-          int contactId = getIntFromCursor( contactCursor, ContactsContract.Contacts._ID );
+                    Uri contactUri = data.getData();
 
-          WritableMap contact = getContactDetailsFromContactId( contactId );
+                    contentResolver = activity.getContentResolver();
 
-          selectContactCallback.invoke( null, contact );
+                    Cursor contactCursor = contentResolver.query( contactUri, null, null, null, null );
+
+                    contactCursor.moveToFirst();
+
+                    int contactId = getIntFromCursor( contactCursor, ContactsContract.Contacts._ID );
+
+                    WritableMap contact = getContactDetailsFromContactId( contactId );
+
+                    selectContactCallback.invoke( null, contact );
+
+                    break;
+            }
         }
 
     };
