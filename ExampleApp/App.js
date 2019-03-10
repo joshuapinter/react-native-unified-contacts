@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   container: {
-    padding: 40,
+    padding: 20,
   },
   welcome: {
     fontSize: 20,
@@ -207,10 +207,12 @@ const styles = StyleSheet.create({
   contact: {
     backgroundColor: '#FFFFFF',
     padding: 20,
+    margin: 5,
     marginVertical: 5,
     flex: 1,
     borderTopColor: '#A8E5FF',
     borderTopWidth: 5,
+    elevation: 2
   },
   name: {
     fontSize: 24,
