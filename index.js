@@ -1,5 +1,5 @@
 import {
   NativeModules
-} from 'react-native';
+} from "react-native";
 
 export default NativeModules.RNUnifiedContacts;
