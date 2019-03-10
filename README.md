@@ -213,14 +213,14 @@ Contacts.searchContacts( 'Don Draper', (error, contacts) =>  {
 ```
 _This will search the given (first), family (last) and nick names of all of the contacts for the provided string. Future versions will allow you to search other fields as well, like phone or email._
 
+
 ### Select a Single Contact
 
 This will launch the stock Contacts app and allow you to select a particular Contact, returning the Contact card to your app.
 **Android Only**
-**DISABLED TEMPORARILY**
 
 ```js
-Contacts.selectContact( (error, contacts) =>  {
+Contacts.selectContact( (error, contact) =>  {
   if (error) {
     console.error(error);
   }
@@ -229,6 +229,10 @@ Contacts.selectContact( (error, contacts) =>  {
   }
 });
 ```
+
+<img src="readme_assets/select_contact.gif" alt="Select Contact GIF">
+
+
 
 ## Adding Contacts
 
