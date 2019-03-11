@@ -38,8 +38,8 @@ import java.util.Set;
 
 class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
-    private static final int ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS = 0;
-    private static final int ON_SELECT_CONTACT_RESULT                            = 1;
+    private static final int ON_REQUEST_PERMISSIONS_RESULT_READ_CONTACTS = 0;
+    private static final int ON_SELECT_CONTACT_RESULT                    = 1;
 
     private static Callback          requestAccessToContactsCallback;
     private static Callback          selectContactCallback;
@@ -119,7 +119,7 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
             callback.invoke( true );
         }
         else {
-            ActivityCompat.requestPermissions( getCurrentActivity(), new String[]{ Manifest.permission.READ_CONTACTS }, ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS );
+            ActivityCompat.requestPermissions( getCurrentActivity(), new String[]{ Manifest.permission.READ_CONTACTS }, ON_REQUEST_PERMISSIONS_RESULT_READ_CONTACTS );
         }
     }
 
@@ -209,13 +209,11 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         }
     }
 
-    // TODO: Can this be a private method?
-    //
     public static void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
 
         switch( requestCode ) {
 
-            case ON_REQUEST_PERMISSIONS_RESULT_REQUEST_READ_CONTACTS:
+            case ON_REQUEST_PERMISSIONS_RESULT_READ_CONTACTS:
 
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     requestAccessToContactsCallback.invoke( true );
@@ -233,10 +231,11 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
 
 
 
-
     //////////////
     // PRIVATE  //
     //////////////
+
+
 
     private final ActivityEventListener activityEventListener = new BaseActivityEventListener() {
 
