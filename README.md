@@ -15,6 +15,7 @@
 | [`getContacts`](#get-all-contacts)                                                  | ✅  | ✅      |       |
 | [`searchContacts`](#search-all-contacts)                                            | ✅  | ✅      |       |
 | [`selectContact`](#select-a-single-contact)                                         | 🚫  | ✅      | Opens up native Contacts app and allows User to select a single Contact. |
+| [`openContact`](#open-a-single-contact)                                             | 🚫  | ✅      | Opens up a native card for a single Contact, allowing the User to contact them. |
 | [`addContact`](#add-a-single-contact)                                               | ✅  | 🚫      |       |
 | [`updateContact`](#update-a-single-contact)                                         | ✅  | 🚫      |       |
 | [`deleteContact`](#delete-a-single-contact)                                         | ✅  | 🚫      |       |
@@ -232,6 +233,15 @@ Contacts.selectContact( (error, contact) =>  {
 
 <img src="readme_assets/select_contact.gif" alt="Select Contact GIF">
 
+
+### Open a Single Contact
+
+This will launch the stock Contact card of a single Contact and allows you to contact them through text, phone, email, etc.
+**Android Only**
+
+```js
+Contacts.openContact( contactIdentifier );
+```
 
 
 ## Adding Contacts

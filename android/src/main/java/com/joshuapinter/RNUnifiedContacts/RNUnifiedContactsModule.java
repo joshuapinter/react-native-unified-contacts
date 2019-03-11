@@ -209,7 +209,16 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         }
     }
 
-    public static void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    @ReactMethod
+    public void openContact( String contactId ) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Uri uri = Uri.withAppendedPath( ContactsContract.Contacts.CONTENT_URI, contactId );
+        intent.setData( uri );
+        getCurrentActivity().startActivity( intent );
+    }
+
+
+    public static void onRequestPermissionsResult( int requestCode, String permissions[], int[] grantResults ) {
 
         switch( requestCode ) {
 
