@@ -151,6 +151,13 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void getContact( String contactId, Callback callback ) {
+        WritableMap contact = getContactDetailsFromContactId( Integer.valueOf( contactId ) );
+
+        selectContactCallback.invoke( null, contact );
+    }
+
+    @ReactMethod
     public void searchContacts( String searchText, Callback callback ) {
 
         WritableArray contacts   = Arguments.createArray();
@@ -216,7 +223,6 @@ class RNUnifiedContactsModule extends ReactContextBaseJavaModule {
         intent.setData( uri );
         getCurrentActivity().startActivity( intent );
     }
-
 
     public static void onRequestPermissionsResult( int requestCode, String permissions[], int[] grantResults ) {
 
