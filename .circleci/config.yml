@@ -1,42 +1,155 @@
-# Java Gradle CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-#
 version: 2
 jobs:
-  build:
+  node:
+    working_directory: ~/ExampleApp
     docker:
-      # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/node:8
+    steps:
+      - checkout
 
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
+      - restore_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
 
-    working_directory: ~/android
+      - restore_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
 
-    environment:
-      # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx3200m
-      TERM: dumb
+      - run: yarn install
+
+      - save_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+          paths:
+            - ~/.cache/yarn
+
+      - save_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+          paths:
+            - node_modules
+
+      - run:
+          name: jest tests
+          command: |
+            mkdir -p test-results/jest
+            yarn run test
+          environment:
+            JEST_JUNIT_OUTPUT: test-results/jest/junit.xml
+
+      - persist_to_workspace:
+          root: ~/ExampleApp
+          paths:
+            - node_modules
+
+      - store_test_results:
+          path: test-results
+
+      - store_artifacts:
+          path: test-results
+
+  android:
+    working_directory: ~/ExampleApp/android
+    docker:
+      - image: circleci/android:api-27-node8-alpha
+    steps:
+      - checkout:
+          path: ~/ExampleApp
+
+      - attach_workspace:
+          at: ~/ExampleApp
+
+      - restore_cache:
+          key: bundle-v1-{{ checksum "Gemfile.lock" }}-{{ arch }}
+
+      - run: bundle install
+
+      - save_cache:
+          key: bundle-v1-{{ checksum "Gemfile.lock" }}-{{ arch }}
+          paths:
+            - vendor/bundle
+
+      - run:
+          name: fastlane tests
+          command: |
+            mkdir -p test-results/fastlane
+            bundle exec fastlane test
+            mv fastlane/report.xml test-results/fastlane
+      - store_test_results:
+          path: test-results
+
+      - store_artifacts:
+          path: test-results
+
+  ios:
+    macos:
+      xcode: "9.0"
+    working_directory: ~/ExampleApp/ios
+
+    # use a --login shell so our "set Ruby version" command gets picked up for later steps
+    shell: /bin/bash --login -o pipefail
 
     steps:
       - checkout
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "build.gradle" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+      - run:
+          name: set Ruby version
+          command:  echo "ruby-2.4" > ~/.ruby-version
 
-      - run: gradle dependencies
+      - restore_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+
+      - restore_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+
+      # not using a workspace here as Node and Yarn versions
+      # differ between our macOS executor image and the Docker containers above
+      - run: yarn install
 
       - save_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
           paths:
-            - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}
+            - ~/.cache/yarn
 
-      # run tests!
-      - run: gradle test
+      - save_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+          paths:
+            - node_modules
+
+      - restore_cache:
+          key: bundle-v1-{{ checksum "ios/Gemfile.lock" }}-{{ arch }}
+
+      - run:
+          command: bundle install
+          working_directory: ios
+
+      - save_cache:
+          key: bundle-v1-{{ checksum "ios/Gemfile.lock" }}-{{ arch }}
+          paths:
+            - vendor/bundle
+
+      - run:
+          command: bundle exec fastlane test
+          working_directory: ios
+
+      - run:
+          name: set up test results
+          working_directory: ios
+          when: always
+          command: |
+            mkdir -p test-results/fastlane test-results/xcode
+            mv fastlane/report.xml test-results/fastlane
+            mv fastlane/test_output/report.junit test-results/xcode/junit.xml
+      - store_test_results:
+          path: ios/test-results
+
+      - store_artifacts:
+          path: ios/test-results
+
+workflows:
+  version: 2
+  node-android-ios:
+    jobs:
+      - node
+      - android:
+          requires:
+            - node
+      - ios:
+          requires:
+            - node
