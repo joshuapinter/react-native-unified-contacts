@@ -766,7 +766,6 @@ If that doesn't help you, please [create an Issue](https://github.com/joshuapint
 - [X] Add Create/Update/Delete methods for Contacts. **_(Thanks [homanp][homanp]!)_**
 - [X] Add Basic Android support.
 - [ ] Add Full Android support.
-- [ ] Add integration with Contacts-UI (_Coming Soon!_).
 
 
 # License
