@@ -217,6 +217,8 @@ _This will search the given (first), family (last) and nick names of all of the 
 
 ### Select a Single Contact
 
+<img src="readme_assets/select_contact.gif" alt="Select Contact GIF" align="right">
+
 This will launch the stock Contacts app and allow you to select a particular Contact, returning the Contact card to your app.
 **Android Only**
 
@@ -231,8 +233,7 @@ Contacts.selectContact( (error, contact) =>  {
 });
 ```
 
-<img src="readme_assets/select_contact.gif" alt="Select Contact GIF">
-
+<br clear="right"/>
 
 ### Open a Single Contact
 
