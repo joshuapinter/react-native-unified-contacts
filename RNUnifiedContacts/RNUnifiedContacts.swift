@@ -32,7 +32,7 @@ class RNUnifiedContacts: NSObject {
         CNContactNameSuffixKey,
         CNContactNicknameKey,
         CNContactNonGregorianBirthdayKey,
-        CNContactNoteKey,
+        // CNContactNoteKey,
         CNContactOrganizationNameKey,
         CNContactPhoneNumbersKey,
         CNContactPhoneticFamilyNameKey,
@@ -640,7 +640,6 @@ class RNUnifiedContacts: NSObject {
             contact["nonGregorianBirthday"] = date
         }
 
-        addString(&contact, key: "note", value: cNContact.note)
         addString(&contact, key: "organizationName", value: cNContact.organizationName)
 
         if cNContact.phoneNumbers.count > 0 {
