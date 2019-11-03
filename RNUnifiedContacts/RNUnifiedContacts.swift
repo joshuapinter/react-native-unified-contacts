@@ -32,7 +32,7 @@ class RNUnifiedContacts: NSObject {
         CNContactNameSuffixKey,
         CNContactNicknameKey,
         CNContactNonGregorianBirthdayKey,
-        // CNContactNoteKey,
+        // CNContactNoteKey, // NOTE: iOS 13 does not allow fetching of notes without the com.apple.developer.contacts.notes entitlement, which requires special permission from Apple.
         CNContactOrganizationNameKey,
         CNContactPhoneNumbersKey,
         CNContactPhoneticFamilyNameKey,
@@ -640,6 +640,7 @@ class RNUnifiedContacts: NSObject {
             contact["nonGregorianBirthday"] = date
         }
 
+        // addString(&contact, key: "note", value: cNContact.note) // NOTE: iOS 13 does not allow fetching of notes without the com.apple.developer.contacts.notes entitlement, which requires special permission from Apple.
         addString(&contact, key: "organizationName", value: cNContact.organizationName)
 
         if cNContact.phoneNumbers.count > 0 {
